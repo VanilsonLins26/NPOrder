@@ -1,0 +1,60 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Criar Conta";
+}
+
+<div class="padaria-card">
+    <div class="text-center">
+        <img src="~/logo-padaria.png" alt="Logo Padaria" class="logo-img" />
+        <h2 class="mb-2" style="font-size: 2.5rem;">Junte-se a nós</h2>
+        <p class="text-muted mb-4">Crie sua conta para fazer pedidos.</p>
+    </div>
+
+    <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+        <div asp-validation-summary="All" class="text-danger small mb-3"></div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Input.Name" class="mb-1 text-muted">Nome Completo</label>
+            <input asp-for="Input.Name" class="form-control" placeholder="Seu nome" />
+            <span asp-validation-for="Input.Name" class="text-danger small"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Input.Email" class="mb-1 text-muted">E-mail</label>
+            <input asp-for="Input.Email" class="form-control" placeholder="seu@email.com" />
+            <span asp-validation-for="Input.Email" class="text-danger small"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Input.Phone" class="mb-1 text-muted">Celular</label>
+            <input asp-for="Input.Phone" class="form-control" placeholder="(00) 00000-0000" id="phoneInput" />
+            <span asp-validation-for="Input.Phone" class="text-danger small"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Input.Password" class="mb-1 text-muted">Senha</label>
+            <input asp-for="Input.Password" class="form-control" placeholder="Crie uma senha" />
+            <span asp-validation-for="Input.Password" class="text-danger small"></span>
+        </div>
+
+        <div class="form-group mb-4">
+            <label asp-for="Input.ConfirmPassword" class="mb-1 text-muted">Confirmar Senha</label>
+            <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Repita a senha" />
+            <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
+        </div>
+
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+        <button type="submit" class="btn btn-padaria">CRIAR CONTA</button>
+        </form>
+
+        <div class="text-center mt-4 pt-3 border-top">
+            <small class="text-muted">Já tem uma conta?</small><br>
+            <a href="/Account/Login?returnUrl=@System.Net.WebUtility.UrlEncode(Model.ReturnUrl)">Faça Login aqui</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

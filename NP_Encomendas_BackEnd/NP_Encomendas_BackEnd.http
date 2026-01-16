@@ -1,0 +1,6 @@
+@NP_Encomendas_BackEnd_HostAddress = http://localhost:5211
+
+GET {{NP_Encomendas_BackEnd_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

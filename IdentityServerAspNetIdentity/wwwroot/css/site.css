@@ -1,0 +1,82 @@
+﻿/* --- CSS da Padaria --- */
+:root {
+    --padaria-brown: #4A3221;
+    --padaria-gold: #D99A26;
+    --padaria-cream: #F9F6F0;
+    --padaria-white: #ffffff;
+    --text-color: #333333;
+}
+
+body {
+    background-color: var(--padaria-cream) !important; /* Forcei o cor creme */
+    font-family: 'Montserrat', sans-serif;
+    color: var(--text-color);
+}
+
+/* Card Centralizado (Estilo Login) */
+.padaria-card {
+    background-color: var(--padaria-white);
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(74, 50, 33, 0.1);
+    border-top: 5px solid var(--padaria-gold);
+    padding: 2.5rem;
+    max-width: 450px;
+    margin: 3rem auto;
+}
+
+/* Títulos Cursivos */
+h1, h2, h3, .brand-font {
+    font-family: 'Dancing Script', cursive;
+    color: var(--padaria-brown);
+}
+
+/* Botão Personalizado */
+.btn-padaria {
+    background-color: var(--padaria-brown);
+    border: 1px solid var(--padaria-brown);
+    color: var(--padaria-white);
+    font-weight: bold;
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    display: block; /* Garante que ocupe a linha toda */
+}
+
+    .btn-padaria:hover {
+        background-color: var(--padaria-gold);
+        border-color: var(--padaria-gold);
+        color: #fff;
+    }
+
+/* Inputs */
+.form-control {
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-color: #fcfcfc;
+}
+
+    .form-control:focus {
+        border-color: var(--padaria-gold);
+        box-shadow: 0 0 0 0.2rem rgba(217, 154, 38, 0.25);
+    }
+
+.logo-img {
+    height: 100px; /* Isso aqui controla o tamanho da logo */
+    width: auto;
+    display: block;
+    margin: 0 auto 1.5rem auto;
+}
+
+a {
+    color: var(--padaria-brown);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+    a:hover {
+        color: var(--padaria-gold);
+    }
