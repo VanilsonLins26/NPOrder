@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NP_Encomendas_BackEnd.DTOs.Request;
 using NP_Encomendas_BackEnd.DTOs.Response;
+using NP_Encomendas_BackEnd.Models;
 using NP_Encomendas_BackEnd.Pagination;
 using NP_Encomendas_BackEnd.Services;
+using System.Linq.Expressions;
 using System.Security.Claims;
 
 namespace NP_Encomendas_BackEnd.Controllers;
@@ -37,7 +39,13 @@ public class ProductController : ControllerBase
     [HttpGet("paged")]
     public async Task<ActionResult<IEnumerable<ProductResponseDto>>> GetAllPagedAsync([FromQuery]ProductParameters parameters)
     {
-        var productPaged = await _service.GetPagedAsync(parameters);
+        var role = User.FindFirstValue(ClaimTypes.Role);
+        Expression<Func<Product, bool>>? predicate = null;
+
+        if (role != "Admin")
+            predicate = p => p.Active == true;
+
+        var productPaged = await _service.GetPagedAsync(parameters, predicate);
 
         var metadata = new
         {
@@ -59,15 +67,21 @@ public class ProductController : ControllerBase
     [HttpGet("filter/price")]
     public async Task<ActionResult<IEnumerable<ProductResponseDto>>> GetPagedByPriceAsync([FromQuery] ProductFilterPrice parameters)
     {
-        var productsPaged = await _service.FilterByPricePagedAsync(parameters);
+        var predicate = GetUserPredicate();
+
+        var productsPaged = await _service.FilterByPricePagedAsync(parameters, predicate);
         return Ok(productsPaged);
     }
+
+    
 
     [AllowAnonymous]
     [HttpGet("filter/name")]
     public async Task<ActionResult<IEnumerable<ProductResponseDto>>> GetPagedByNameAsync([FromQuery] ProductFilterName parameters)
     {
-        var productsPaged = await _service.FilterByNamePagedAsync(parameters);
+        var predicate = GetUserPredicate();
+
+        var productsPaged = await _service.FilterByNamePagedAsync(parameters, predicate);
         return Ok(productsPaged);
     }
 
@@ -83,11 +97,14 @@ public class ProductController : ControllerBase
         return Ok(product);
     }
 
-    //[Authorize(Roles = "StoreAdmin")]
+    [Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<ActionResult<ProductResponseDto>> CreateAsync([FromBody]ProductRequestDto productDto)
+    public async Task<ActionResult<ProductResponseDto>> CreateAsync([FromForm]ProductRequestDto productDto)
     {
-
+        if (productDto.ImageFile != null)
+        {
+            productDto.ImageUrl = await _service.UploadImage(productDto.ImageFile);
+        }
 
         var productCreated = await _service.Create(productDto);
 
@@ -97,11 +114,14 @@ public class ProductController : ControllerBase
         return Ok(productCreated);
     }
 
-    //[Authorize(Roles = "StoreAdmin")]
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id:int}")]
-    public async Task<ActionResult<ProductResponseDto>> UpdateAsync(int id, [FromBody] ProductRequestDto productDto)
+    public async Task<ActionResult<ProductResponseDto>> UpdateAsync(int id, [FromForm] ProductRequestDto productDto)
     {
-
+        if (productDto.ImageFile != null)
+        {
+            productDto.ImageUrl = await _service.UploadImage(productDto.ImageFile);
+        }
 
         var product = await _service.GetAsync(id);
 
@@ -115,7 +135,7 @@ public class ProductController : ControllerBase
         return Ok(productUpdated);
     }
 
-    [Authorize(Roles = "StoreAdmin")]
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<ProductResponseDto>> DeleteAsync(int id)
     {
@@ -133,6 +153,44 @@ public class ProductController : ControllerBase
             return BadRequest();
 
         return Ok(productDeleted);
+        
+
     }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPatch("active/{produtctId:int}")]
+    public async Task<IActionResult> SetActive(int produtctId, [FromBody] bool active)
+    {
+        var result = await _service.SetActive(produtctId, active);
+        if (result == false)
+            return BadRequest("Ocorreu um erro!");
+
+        return NoContent();
+
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost("promotion")]
+    public async Task<ActionResult<PromotionPriceResponseDTO>> SetPromotionPrice(PromotionPriceRequestDTO promotionDto)
+    {
+        var promotionCreated = await _service.SetPromotionPrice(promotionDto);
+        if (promotionCreated is null)
+            return BadRequest("Ocorreu um erro ao adicionar a promoção");
+
+        return Ok(promotionCreated);
+    }
+
+    private Expression<Func<Product, bool>>? GetUserPredicate()
+    {
+        var role = User.FindFirstValue(ClaimTypes.Role);
+        Expression<Func<Product, bool>>? predicate = null;
+
+        if (role != "Admin")
+            predicate = p => p.Active == true;
+        return predicate;
+    }
+
+
+
 
 }

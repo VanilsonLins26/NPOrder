@@ -24,10 +24,12 @@ public class DTOMapping : Profile
         CreateMap<Order, OrderResponseDTO>().
             ForMember(o => o.StatusName, opt => opt.MapFrom(src => src.Status.GetDisplayName()));
         CreateMap<OrderResponseDTO, Order>();
-       CreateMap<OrderItem, OrderItemRequestDTO>().ReverseMap();
+        CreateMap<OrderItem, OrderItemRequestDTO>().ReverseMap();
         CreateMap<OrderItem, OrderItemResponseDTO>().ReverseMap();
         CreateMap<Address, AddressResponseDTO>().ReverseMap();
         CreateMap<Address, AddressRequestDTO>().ReverseMap();
+        CreateMap<PromotionPrice, PromotionPriceResponseDTO>().ReverseMap();
+        CreateMap<PromotionPrice, PromotionPriceRequestDTO>().ReverseMap();
 
     }
 }

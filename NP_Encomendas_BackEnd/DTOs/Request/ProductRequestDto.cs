@@ -12,6 +12,8 @@ public class ProductRequestDto
     [Required(ErrorMessage = "Informe a descrição!!")]
     public string? Description { get; set; }
     public string? ImageUrl { get; set; }
+    public IFormFile? ImageFile { get; set; }
     [Required(ErrorMessage = "Informe a unidade de medida!!")]
     public string? UnitOfMeasure { get; set; }
+    public bool Customizable { get; set; }
 }

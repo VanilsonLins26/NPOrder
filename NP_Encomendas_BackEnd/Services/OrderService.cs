@@ -37,13 +37,26 @@ public class OrderService : IOrderService
         var orders = new PagedList<Order>();
         if (role.Equals("Client"))
         {
-             orders = await _uof.OrderRepository.GetPagedAsync(o => o.ClientId == userId, o => o.OrderTime, true,
+             orders = await _uof.OrderRepository.GetPagedAsync(o => o.ClientId == userId, o => o.DeliverTime, true,
                             parameters.PageNumber, parameters.PageSize, o => o.OrderItens, o => o.Address);
         }
-        else if (role.Equals("StoreAdmin"))
+        else if (role.Equals("Admin"))
         {
-            orders = await _uof.OrderRepository.GetPagedAsync(null, o => o.OrderTime, true,
-                            parameters.PageNumber, parameters.PageSize, o => o.OrderItens);
+            Expression<Func<Order, bool>>? predicate = null;
+            bool descending = true;
+            if (parameters.ViewModel == OrderViewModel.Active)
+            {
+                predicate = o => o.Status != Status.Delivered && o.Status != Status.Canceled && o.Status != Status.PendingPayment;
+            }
+
+            else if (parameters.ViewModel == OrderViewModel.History)
+            {
+                predicate = o => o.Status == Status.Delivered;
+                descending = true;
+            }
+
+                orders = await _uof.OrderRepository.GetPagedAsync(predicate, o => o.DeliverTime, descending,
+                                parameters.PageNumber, parameters.PageSize, o => o.OrderItens, o => o.Address);
         }
 
             var ordersDto = _mapper.Map<PagedList<OrderResponseDTO>>(orders);
@@ -154,8 +167,8 @@ public class OrderService : IOrderService
 
     public async Task<OrderResponseDTO> OutForDelivery(Order order)
     {
-        if (order.Status != Status.ReadyForPickup)
-            return null;
+       // if (order.Status != Status.ReadyForPickup)
+           // return null;
 
         order.Status = Status.OutForDelivery;
         _uof.OrderRepository.Update(order);
@@ -166,8 +179,8 @@ public class OrderService : IOrderService
 
     public async Task<OrderResponseDTO> Delivered(Order order)
     {
-        if (order.Status != Status.OutForDelivery)
-            return null;
+        //if (order.Status != Status.OutForDelivery)
+            //return null;
 
         order.Status = Status.Delivered;
         _uof.OrderRepository.Update(order);

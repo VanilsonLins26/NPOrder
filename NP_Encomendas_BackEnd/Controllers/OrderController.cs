@@ -32,7 +32,7 @@ public class OrderController : ControllerBase
 
 
     [HttpGet("paged")]
-    [Authorize(Roles = "Client, StoreAdmin")]
+    [Authorize(Roles = "Client, Admin")]
     public async Task<ActionResult<IEnumerable<OrderResponseDTO>>> GetAllOrdersByUser([FromQuery] OrderParameters parameters)
     {
         var role = User.FindFirstValue(ClaimTypes.Role);
@@ -57,14 +57,7 @@ public class OrderController : ControllerBase
 
     }
 
-    [HttpGet("meus-dados")]
-    [Authorize] // Sem role específica, só precisa estar logado
-    public IActionResult VerMeusDados()
-    {
-        return Ok(User.Claims.Select(c => new { c.Type, c.Value }));
-    }
-
-    [Authorize(Roles = "Client, StoreAdmin")]
+    [Authorize(Roles = "Client, Admin")]
     [HttpGet("{id:int}")]
     public async Task<ActionResult<OrderResponseDTO>> GetOrderById(int id)
     {
@@ -117,7 +110,7 @@ public class OrderController : ControllerBase
     }
 
 
-    [Authorize(Roles = "StoreAdmin")]
+    [Authorize(Roles = "Admin")]
     [HttpPost("{orderId:int}/readyforpickup")]
     public async Task<ActionResult<OrderResponseDTO>> ReadyForPickup(int orderId)
     {
@@ -136,7 +129,7 @@ public class OrderController : ControllerBase
 
     }
 
-    [Authorize(Roles = "StoreAdmin")]
+    [Authorize(Roles = "Admin")]
     [HttpPost("{orderId:int}/outfordelivery")]
     public async Task<ActionResult<OrderResponseDTO>> OutForDelivery(int orderId)
     {
@@ -155,7 +148,7 @@ public class OrderController : ControllerBase
 
     }
 
-    [Authorize(Roles = "Client")]
+    [Authorize(Roles = "Admin")]
     [HttpPost("{orderId:int}/delivered")]
     public async Task<ActionResult<OrderResponseDTO>> Delivered(int orderId)
     {
@@ -174,7 +167,7 @@ public class OrderController : ControllerBase
 
     }
 
-    [Authorize(Roles = "Client, StoreAdmin")]
+    [Authorize(Roles = "Client, Admin")]
     [HttpPost("{orderId:int}/cancel")]
     public async Task<ActionResult<OrderResponseDTO>> CancelOrder(int orderId)
     {
@@ -194,7 +187,7 @@ public class OrderController : ControllerBase
     }
 
     [HttpGet("report")]
-    [Authorize(Roles = "StoreAdmin")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<ReportOrdersResponseDTO>> GetOrderReport([FromQuery] OrdersFilterMonthAndYear parameters)
     {
         var userId = GetUserId();

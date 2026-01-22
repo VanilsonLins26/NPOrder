@@ -139,6 +139,7 @@ static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
             TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 }
 
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IProductService, ProductService>();
@@ -156,6 +157,7 @@ builder.Services.AddScoped<ProccessPaymentNotificationService>();
 builder.Services.AddHostedService<OrderCancellationService>();
 builder.Services.AddHostedService<WhatsAppSenderService>();
 builder.Services.AddHttpClient<WhatsAppService>();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
