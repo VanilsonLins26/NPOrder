@@ -5,6 +5,7 @@ using IdentityServerAspNetIdentity.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System;
 
 namespace IdentityServerAspNetIdentity;
 
@@ -14,10 +15,9 @@ internal static class HostingExtensions
     {
         builder.Services.AddRazorPages();
 
-        var mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                                            options.UseMySql(mySqlConnection, ServerVersion
-                                            .AutoDetect(mySqlConnection)));
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                                                    options.UseNpgsql(connectionString));
 
         builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()

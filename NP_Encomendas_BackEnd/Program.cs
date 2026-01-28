@@ -21,6 +21,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 MercadoPagoConfig.AccessToken = builder.Configuration["MercadoPago:AccessToken"];
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -105,10 +107,9 @@ builder.Services.AddCors(options =>
 });
 
 
-var mySqlConnection = builder.Configuration.GetConnectionString("AppContext");
+var connectionString = builder.Configuration.GetConnectionString("AppContext");
 builder.Services.AddDbContext<AppDbContext>(options =>
-                                            options.UseMySql(mySqlConnection, ServerVersion
-                                            .AutoDetect(mySqlConnection)));
+                                            options.UseNpgsql(connectionString));
 
 builder.Services.AddHttpClient<WhatsAppService>((provider, client) =>
 {

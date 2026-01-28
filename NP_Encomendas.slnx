@@ -1,6 +1,8 @@
 <Solution>
   <Folder Name="/Itens de Solução/">
     <File Path="docker-compose.yml" />
+    <File Path="Dockerfile.Backend" />
+    <File Path="Dockerfile.Identity" />
   </Folder>
   <Project Path="IdentityServerAspNetIdentity/IdentityServerAspNetIdentity.csproj" />
   <Project Path="NP_Encomendas_BackEnd/NP_Encomendas_BackEnd.csproj" />

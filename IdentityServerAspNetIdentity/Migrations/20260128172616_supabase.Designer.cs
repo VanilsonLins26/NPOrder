@@ -3,17 +3,17 @@ using System;
 using IdentityServerAspNetIdentity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace IdentityServerAspNetIdentity.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260109034254_attUser")]
-    partial class attUser
+    [Migration("20260128172616_supabase")]
+    partial class supabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,66 +21,66 @@ namespace IdentityServerAspNetIdentity.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "9.0.0")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("IdentityServerAspNetIdentity.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(85)
-                        .HasColumnType("varchar(85)");
+                        .HasColumnType("character varying(85)");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
 
@@ -98,19 +98,19 @@ namespace IdentityServerAspNetIdentity.Migrations
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(85)
-                        .HasColumnType("varchar(85)");
+                        .HasColumnType("character varying(85)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
 
@@ -125,20 +125,20 @@ namespace IdentityServerAspNetIdentity.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("RoleId")
                         .IsRequired()
                         .HasMaxLength(85)
-                        .HasColumnType("varchar(85)");
+                        .HasColumnType("character varying(85)");
 
                     b.HasKey("Id");
 
@@ -151,20 +151,20 @@ namespace IdentityServerAspNetIdentity.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasMaxLength(85)
-                        .HasColumnType("varchar(85)");
+                        .HasColumnType("character varying(85)");
 
                     b.HasKey("Id");
 
@@ -177,19 +177,19 @@ namespace IdentityServerAspNetIdentity.Migrations
                 {
                     b.Property<string>("LoginProvider")
                         .HasMaxLength(85)
-                        .HasColumnType("varchar(85)");
+                        .HasColumnType("character varying(85)");
 
                     b.Property<string>("ProviderKey")
                         .HasMaxLength(85)
-                        .HasColumnType("varchar(85)");
+                        .HasColumnType("character varying(85)");
 
                     b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasMaxLength(85)
-                        .HasColumnType("varchar(85)");
+                        .HasColumnType("character varying(85)");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -202,11 +202,11 @@ namespace IdentityServerAspNetIdentity.Migrations
                 {
                     b.Property<string>("UserId")
                         .HasMaxLength(85)
-                        .HasColumnType("varchar(85)");
+                        .HasColumnType("character varying(85)");
 
                     b.Property<string>("RoleId")
                         .HasMaxLength(85)
-                        .HasColumnType("varchar(85)");
+                        .HasColumnType("character varying(85)");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -219,18 +219,18 @@ namespace IdentityServerAspNetIdentity.Migrations
                 {
                     b.Property<string>("UserId")
                         .HasMaxLength(85)
-                        .HasColumnType("varchar(85)");
+                        .HasColumnType("character varying(85)");
 
                     b.Property<string>("LoginProvider")
                         .HasMaxLength(85)
-                        .HasColumnType("varchar(85)");
+                        .HasColumnType("character varying(85)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(85)
-                        .HasColumnType("varchar(85)");
+                        .HasColumnType("character varying(85)");
 
                     b.Property<string>("Value")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
