@@ -105,6 +105,15 @@ public class ProductService : IProductService
 
     public async Task<PagedList<ProductResponseDto>> GetPagedAsync(ProductParameters parameters, Expression<Func<Product, bool>>? predicate)
     {
+        if (parameters.name != null)
+            predicate = predicate.And(p => p.Name.ToLower().Contains(parameters.name.ToLower().Trim()));
+
+        if (parameters.MinPrice != null)
+            predicate = predicate.And(p => p.Price >= parameters.MinPrice);
+
+        if (parameters.MaxPrice != null)
+            predicate = predicate.And(p => p.Price <= parameters.MaxPrice);
+
         var products = await _uof.ProductRepository.GetPagedAsync(predicate, p => p.Name, false, parameters.PageNumber, parameters.PageSize, p => p.Promotions);
         var productsDto = VerifyPromotion(products);
 

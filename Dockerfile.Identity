@@ -1,0 +1,26 @@
+# Estágio de Build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copia os arquivos de projeto (ajuste os nomes das pastas se estiverem diferentes)
+COPY ["IdentityServerAspNetIdentity/IdentityServerAspNetIdentity.csproj", "IdentityServerAspNetIdentity/"]
+# Se houver dependência entre projetos, copie o outro csproj aqui também
+# COPY ["NP_Encomendas_BackEnd/NP_Encomendas_BackEnd.csproj", "NP_Encomendas_BackEnd/"]
+
+RUN dotnet restore "IdentityServerAspNetIdentity/IdentityServerAspNetIdentity.csproj"
+
+# Copia todo o resto do código
+COPY . .
+WORKDIR "/src/IdentityServerAspNetIdentity"
+RUN dotnet publish "IdentityServerAspNetIdentity.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# Estágio Final (Runtime)
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app/publish .
+
+# O Render injeta a porta na variável PORT, o ASP.NET 8 usa 8080 por padrão
+ENV ASPNETCORE_HTTP_PORTS=8080
+EXPOSE 8080
+
+ENTRYPOINT ["dotnet", "IdentityServerAspNetIdentity.dll"]

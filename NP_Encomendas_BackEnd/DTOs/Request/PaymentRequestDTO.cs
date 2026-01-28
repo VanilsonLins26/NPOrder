@@ -1,8 +1,9 @@
-﻿namespace NP_Encomendas_BackEnd.Models;
+﻿using NP_Encomendas_BackEnd.Models;
 
-public class PaymentEntity
+namespace NP_Encomendas_BackEnd.DTOs.Request;
+
+public class PaymentRequestDTO
 {
-    public int Id { get; set; }
     public string Status { get; set; }
     public int OrderId { get; set; }
     public decimal? TransactionAmount { get; set; }
@@ -13,8 +14,7 @@ public class PaymentEntity
     public string? PaymentMethodId { get; set; }
     public string? PaymentTypeId { get; set; }
     public DateTime DateCreated { get; set; }
-    public DateTime? DateApproved { get; set; }   
+    public DateTime? DateApproved { get; set; }
     public DateTime? MoneyReleaseDate { get; set; }
     public string? PaymentUrl { get; set; }
-    public Order order { get; set; }
 }

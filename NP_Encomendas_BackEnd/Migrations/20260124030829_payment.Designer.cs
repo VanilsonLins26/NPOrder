@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NP_Encomendas_BackEnd.Context;
 
@@ -11,9 +12,11 @@ using NP_Encomendas_BackEnd.Context;
 namespace NP_Encomendas_BackEnd.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260124030829_payment")]
+    partial class payment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -223,62 +226,6 @@ namespace NP_Encomendas_BackEnd.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderItems");
-                });
-
-            modelBuilder.Entity("NP_Encomendas_BackEnd.Models.PaymentEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("DateApproved")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<decimal?>("FeeAmount")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<int?>("Installments")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("MoneyReleaseDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<decimal?>("NetReceivedAmount")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PaymentMethodId")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("PaymentTypeId")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("PaymentUrl")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("StatusDetail")
-                        .HasColumnType("longtext");
-
-                    b.Property<decimal?>("TransactionAmount")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId")
-                        .IsUnique();
-
-                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("NP_Encomendas_BackEnd.Models.Product", b =>
@@ -744,17 +691,6 @@ namespace NP_Encomendas_BackEnd.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("NP_Encomendas_BackEnd.Models.PaymentEntity", b =>
-                {
-                    b.HasOne("NP_Encomendas_BackEnd.Models.Order", "order")
-                        .WithOne("Payment")
-                        .HasForeignKey("NP_Encomendas_BackEnd.Models.PaymentEntity", "OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("order");
-                });
-
             modelBuilder.Entity("NP_Encomendas_BackEnd.Models.PromotionPrice", b =>
                 {
                     b.HasOne("NP_Encomendas_BackEnd.Models.Product", "product")
@@ -769,8 +705,6 @@ namespace NP_Encomendas_BackEnd.Migrations
             modelBuilder.Entity("NP_Encomendas_BackEnd.Models.Order", b =>
                 {
                     b.Navigation("OrderItens");
-
-                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("NP_Encomendas_BackEnd.Models.Product", b =>

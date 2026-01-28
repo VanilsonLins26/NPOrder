@@ -15,6 +15,7 @@ public class AppDbContext : DbContext
     public DbSet<Address> Addresses { get; set; }
     public DbSet<NotificationQueue> NotificationQueues { get; set; }
     public DbSet<PromotionPrice> Promotions { get; set; }
+    public DbSet<PaymentEntity> Payments { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder mb)

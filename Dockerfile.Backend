@@ -1,0 +1,22 @@
+# Estágio de Build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+COPY ["NP_Encomendas_BackEnd/NP_Encomendas_BackEnd.csproj", "NP_Encomendas_BackEnd/"]
+# Se o Backend depende de alguma biblioteca compartilhada, copie aqui
+
+RUN dotnet restore "NP_Encomendas_BackEnd/NP_Encomendas_BackEnd.csproj"
+
+COPY . .
+WORKDIR "/src/NP_Encomendas_BackEnd"
+RUN dotnet publish "NP_Encomendas_BackEnd.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# Estágio Final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app/publish .
+
+ENV ASPNETCORE_HTTP_PORTS=8080
+EXPOSE 8080
+
+ENTRYPOINT ["dotnet", "NP_Encomendas_BackEnd.dll"]

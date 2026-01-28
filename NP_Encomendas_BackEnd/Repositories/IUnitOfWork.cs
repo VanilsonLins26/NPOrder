@@ -8,6 +8,7 @@ public interface IUnitOfWork
     ICartRepository CartRepository { get; }
     IOrderRepository OrderRepository { get; }
     IAddressRepository AddressRepository { get; }
+    IPaymentRepository PaymentRepository { get; }
 
 
 

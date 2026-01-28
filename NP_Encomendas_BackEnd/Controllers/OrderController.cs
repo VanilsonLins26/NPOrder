@@ -31,13 +31,40 @@ public class OrderController : ControllerBase
 
 
 
-    [HttpGet("paged")]
-    [Authorize(Roles = "Client, Admin")]
+    [HttpGet("admin/paged")]
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult<IEnumerable<OrderResponseDTO>>> GetAllOrdersPaged([FromQuery] OrderParameters parameters)
+    {
+
+        var ordersPaged = await _Service.GetAllOrdersPaged(parameters);
+
+        var metadata = new
+        {
+            ordersPaged.TotalCount,
+            ordersPaged.PageSize,
+            ordersPaged.CurrentPage,
+            ordersPaged.TotalPages,
+            ordersPaged.HasNext,
+            ordersPaged.HasPrevious
+        };
+
+        Response.Headers.Append("X-Pagination", System.Text.Json.JsonSerializer.Serialize(metadata));
+
+        var ordersDto = _mapper.Map<IEnumerable<OrderResponseDTO>>(ordersPaged);
+        return Ok(ordersDto);
+
+
+    }
+
+    [HttpGet("client/paged")]
+    [Authorize(Roles = "Client")]
     public async Task<ActionResult<IEnumerable<OrderResponseDTO>>> GetAllOrdersByUser([FromQuery] OrderParameters parameters)
     {
-        var role = User.FindFirstValue(ClaimTypes.Role);
         var userId = GetUserId();
-        var ordersPaged = await _Service.GetAllOrdersByUser(userId, role, parameters);
+        if (userId == null)
+            return BadRequest("Usuário não encontrado");
+
+        var ordersPaged = await _Service.GetAllOrdersByUser(userId, parameters);
 
         var metadata = new
         {
@@ -64,7 +91,7 @@ public class OrderController : ControllerBase
 
         var userId = GetUserId();
 
-        var order = await _Service.GetOrderByIdNoTracking(id);
+        var order = await _Service.GetOrderById(id);
         if (order == null)
             return NotFound("Encomenda não encontrada");
 
@@ -195,6 +222,14 @@ public class OrderController : ControllerBase
         var report = await _Service.GetReportByMonth(parameters, userId);
 
         return Ok(report);
+    }
+
+    [HttpGet("dashboard-stats")]
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult<DashboardStatsResponseDTO>> GetDashboardStats()
+    {
+        var stats = await _Service.GetDashboardStats();
+        return Ok(stats);
     }
 
     private string? GetUserId()

@@ -2,4 +2,7 @@
 
 public class ProductParameters : QueryStringParameters
 {
+    public string? name { get; set; }
+    public decimal? MinPrice { get; set; }
+    public decimal? MaxPrice { get; set; }
 }

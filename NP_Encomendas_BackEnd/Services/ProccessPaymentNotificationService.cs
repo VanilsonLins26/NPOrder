@@ -1,6 +1,8 @@
-﻿using MercadoPago.Client;
+﻿using AutoMapper;
+using MercadoPago.Client;
 using NP_Encomendas_BackEnd.Client;
 using NP_Encomendas_BackEnd.DTOs.MercadoPagoDTOs;
+using NP_Encomendas_BackEnd.DTOs.Request;
 using NP_Encomendas_BackEnd.Models;
 using System.Globalization;
 
@@ -12,13 +14,17 @@ public class ProccessPaymentNotificationService
     private readonly IOrderService _orderService;
     private readonly ILogger<ProccessPaymentNotificationService> _logger;
     private readonly WhatsAppService _whatsAppService;
+    private readonly IPaymentService _paymentService;
+    private readonly IMapper _mapper;
 
-    public ProccessPaymentNotificationService(MercadoPagoService mercadoPagoService, IOrderService orderService, ILogger<ProccessPaymentNotificationService> logger, WhatsAppService whatsAppService)
+    public ProccessPaymentNotificationService(MercadoPagoService mercadoPagoService, IOrderService orderService, ILogger<ProccessPaymentNotificationService> logger, WhatsAppService whatsAppService, IPaymentService paymentService, IMapper mapper)
     {
         MercadoPagoService = mercadoPagoService;
         _orderService = orderService;
         _logger = logger;
         _whatsAppService = whatsAppService;
+        _paymentService = paymentService;
+        _mapper = mapper;
     }
 
     public async Task<ProccessNotificationResponseDTO> ProccessPaymentNotification(string id, string type)
@@ -27,18 +33,22 @@ public class ProccessPaymentNotificationService
         try
         {
             PaymentEntity payment = await MercadoPagoService.GetPaymentStatus(long.Parse(id));
+            var localPayment = await _paymentService.GetPaymentNoTracking(payment.Id);
 
-            var preference = payment.OrderId;
-            string[] parts = preference.Split("_");
-     
+            var updatedPayment = _mapper.Map<PaymentRequestDTO>(payment);
 
-            var userId = long.Parse(parts[0]);
+            var orderId = localPayment.OrderId;
+            updatedPayment.OrderId = orderId;
+            updatedPayment.DateCreated = localPayment.DateCreated;
+
+            await _paymentService.UpdatePayment(payment.Id, updatedPayment);
 
             if("approved".Equals(payment.Status, StringComparison.OrdinalIgnoreCase))
             {
-                await _orderService.ConfirmOrder(int.Parse(payment.OrderId), decimal.Parse(payment.Amount,CultureInfo.InvariantCulture));
-                await _whatsAppService.SendOrderNotificationAsync(payment.OrderId);
-                await _whatsAppService.SendCustomerConfirmationAsync(payment.OrderId);
+
+                await _orderService.ConfirmOrder(orderId, payment.TransactionAmount ?? 0);
+                await _whatsAppService.SendOrderNotificationAsync(orderId);
+                await _whatsAppService.SendCustomerConfirmationAsync(orderId);
             }
 
             return new ProccessNotificationResponseDTO

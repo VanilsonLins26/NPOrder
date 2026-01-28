@@ -12,5 +12,6 @@ public class OrderRequestDTO
     public ICollection<OrderItemRequestDTO> OrderItens { get; set; }
     public DateTime DeliverTime { get; set; }
     public decimal AmountPaid { get; set; }
-  
+    public PaymentEntity? Payment { get; set; }
+
 }

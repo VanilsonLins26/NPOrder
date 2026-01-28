@@ -17,6 +17,7 @@ public class OrderResponseDTO
     public DateTime DeliverTime { get; set; }
     public DateTime OrderTime { get; set; }
     public decimal TotalAmount { get; set; }
+    public PaymentResponseDTO? Payment { get; set; }
     public decimal AmountPaid { get; set; }
     public decimal RemainingAmount => TotalAmount - AmountPaid;
     public bool IsFullyPaid => AmountPaid >= TotalAmount;

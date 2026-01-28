@@ -22,11 +22,11 @@ public class WhatsAppService
         _context = context;
     }
 
-    public async Task SendOrderNotificationAsync(string orderId)
+    public async Task SendOrderNotificationAsync(int orderId)
     {
 
 
-        var order = await _orderService.GetOrderByIdNoTracking(int.Parse(orderId));
+        var order = await _orderService.GetOrderByIdNoTracking(orderId);
 
         var statusName = order.Status switch
         {
@@ -127,10 +127,10 @@ public class WhatsAppService
         await _context.SaveChangesAsync();
     }
 
-    public async Task SendCustomerConfirmationAsync(string orderId)
+    public async Task SendCustomerConfirmationAsync(int orderId)
     {
 
-        var order = await _orderService.GetOrderByIdNoTracking(int.Parse(orderId));
+        var order = await _orderService.GetOrderByIdNoTracking(orderId);
 
         if (order == null) return;
 

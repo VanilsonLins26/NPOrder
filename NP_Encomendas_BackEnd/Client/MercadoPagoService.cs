@@ -4,7 +4,9 @@ using MercadoPago.Error;
 using MercadoPago.Resource.Payment;
 using MercadoPago.Resource.Preference;
 using NP_Encomendas_BackEnd.DTOs.MercadoPagoDTOs;
+using NP_Encomendas_BackEnd.DTOs.Request;
 using NP_Encomendas_BackEnd.Models;
+using NP_Encomendas_BackEnd.Services;
 using System.Text.Json;
 
 namespace NP_Encomendas_BackEnd.Client;
@@ -12,10 +14,12 @@ namespace NP_Encomendas_BackEnd.Client;
 public class MercadoPagoService
 {
     private readonly ILogger<MercadoPagoService> _logger;
+    private readonly IPaymentService _paymentService;
 
-    public MercadoPagoService(ILogger<MercadoPagoService> logger)
+    public MercadoPagoService(ILogger<MercadoPagoService> logger, IPaymentService paymentService)
     {
         _logger = logger;
+        _paymentService = paymentService;
     }
 
     public async Task<CreateResponseDTO> CreatePreference(CreatePreferenceRequestDTO inputData)
@@ -77,17 +81,37 @@ public class MercadoPagoService
                 Items = items,
                 Payer = payer,
                 BackUrls = backUrlsRequest,
-                ExternalReference = inputData.OrderId.ToString(),
+    
                 AutoReturn = "approved"
 
             };
+            var payment = new PaymentRequestDTO
+            {
+                Status = "Pendente",
+                OrderId = inputData.OrderId,
+                DateCreated = GetBrasiliaTime(),
+                TransactionAmount = items.Sum(i => i.UnitPrice * i.Quantity)
+            };
+
+            var result = await _paymentService.CreatePayment(payment);
+            if (result is null)
+                return null;
+
+            preferenceRequest.ExternalReference = result.Id.ToString();
+
             _logger.LogInformation("Criando preferência com urls: Success: {preference.BackUrls.Success}, Failure: {preference.BackUrls.Failure}, Pending: {preference.BackUrls.Pending} ", preferenceRequest.BackUrls.Success, preferenceRequest.BackUrls.Failure, preferenceRequest.BackUrls.Pending);
             Preference preference = await preferenceClient.CreateAsync(preferenceRequest);
+
+            payment.PaymentUrl = preference.InitPoint;
+
+            await _paymentService.UpdatePayment(result.Id, payment);
             
+
             return new CreateResponseDTO
             {
                 PreferenceId = preference.Id,
                 RedirectUrl = preference.InitPoint
+               
             };
         }
         catch (MercadoPagoApiException apiException)
@@ -144,13 +168,34 @@ public class MercadoPagoService
 
         return new PaymentEntity
         {
-            Id = paymentMercadoPago.Id.ToString(),
-            OrderId = paymentMercadoPago.ExternalReference,
+            Id = int.Parse(paymentMercadoPago.ExternalReference),
             Status = status,
-            Amount = paymentMercadoPago.TransactionAmount?.ToString(System.Globalization.CultureInfo.InvariantCulture),
-            Payer = payer,
-            PaymentMethodId = paymentMethods
+            PaymentMethodId = paymentMethods,
+            DateApproved = paymentMercadoPago.DateApproved,
+            NetReceivedAmount = paymentMercadoPago.TransactionDetails.NetReceivedAmount,
+            FeeAmount = paymentMercadoPago.FeeDetails.Sum(f => f.Amount),
+            Installments = paymentMercadoPago.Installments,
+            MoneyReleaseDate = paymentMercadoPago.MoneyReleaseDate,
+            PaymentTypeId = paymentMercadoPago.PaymentTypeId,
+            StatusDetail = paymentMercadoPago.StatusDetail,
+            TransactionAmount = paymentMercadoPago.TransactionAmount
+
         };
+    }
+
+    public DateTime GetBrasiliaTime()
+    {
+        DateTime timeUtc = DateTime.UtcNow;
+        try
+        {
+            TimeZoneInfo kstZone = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
+            return TimeZoneInfo.ConvertTimeFromUtc(timeUtc, kstZone);
+        }
+        catch (TimeZoneNotFoundException)
+        {
+            TimeZoneInfo kstZone = TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo");
+            return TimeZoneInfo.ConvertTimeFromUtc(timeUtc, kstZone);
+        }
     }
 
 }

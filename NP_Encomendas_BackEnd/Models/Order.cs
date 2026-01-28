@@ -18,6 +18,7 @@ public class Order
     public DateTime DeliverTime { get; set; } 
     public DateTime OrderTime { get; set; } = DateTime.Now;
     public decimal TotalAmount { get; set; }
+    public PaymentEntity? Payment { get; set; }
     [Column(TypeName = "decimal(18,2)")]
     public decimal AmountPaid { get; set; }
     public decimal RemainingAmount => TotalAmount - AmountPaid;
