@@ -1,5 +1,6 @@
 using IdentityServerAspNetIdentity;
 using IdentityServerAspNetIdentity.Data;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -21,12 +22,29 @@ try
         .ReadFrom.Configuration(ctx.Configuration));
     builder.Services.AddTransient<IEmailSender, NoOpEmailSender>();
 
+    builder.Services.Configure<ForwardedHeadersOptions>(options =>
+    {
+        options.ForwardedHeaders =
+            ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+
+        options.KnownNetworks.Clear();
+        options.KnownProxies.Clear();
+    });
+
 
     var app = builder
         .ConfigureServices()
         .ConfigurePipeline();
 
-    await SeedData.EnsureSeedData(app);
+    // await SeedData.EnsureSeedData(app);
+
+    app.UseForwardedHeaders();
+
+    app.Use((context, next) =>
+    {
+        context.Request.Scheme = "https";
+        return next();
+    });
 
     app.Run();
 }
