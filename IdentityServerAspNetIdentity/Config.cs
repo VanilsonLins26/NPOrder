@@ -83,21 +83,25 @@ public static class Config
                 ClientName = "Swagger UI da NP_Encomendas_BackEnd",
                 RequireClientSecret = false,
 
-                AllowedGrantTypes = GrantTypes.Code, 
-                RedirectUris = { "https://np-order.vercel.app/" },
-                PostLogoutRedirectUris = { "https://np-order.vercel.app/" },
+                AllowedGrantTypes = GrantTypes.Code,
+                RedirectUris = { "https://np-order.vercel.app/",
+                                 "https://np-order.vercel.app",
+                                 "https://np-order.vercel.app/index.html", 
+                                 "https://np-order.vercel.app/callback" },
+                PostLogoutRedirectUris = { "https://np-order.vercel.app/",
+                                           "https://np-order.vercel.app" },
                 AllowOfflineAccess = true,
 
 
 
-               AllowedCorsOrigins = { "https://np-order.vercel.app/" },
+               AllowedCorsOrigins = { "https://np-order.vercel.app" },
 
                RequirePkce = true,
 
                AllowedScopes = new List<string>
                {
-                IdentityServerConstants.StandardScopes.OpenId,  
-                IdentityServerConstants.StandardScopes.Profile, 
+                IdentityServerConstants.StandardScopes.OpenId,
+                IdentityServerConstants.StandardScopes.Profile,
                 "nporder_api",
                 "roles"
                }

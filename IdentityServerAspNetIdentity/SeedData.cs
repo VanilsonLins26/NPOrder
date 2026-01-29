@@ -23,7 +23,7 @@ public class SeedData
 
 
                 Log.Information("Iniciando Migração do Banco de Dados...");
-                await context.Database.MigrateAsync();
+                //await context.Database.MigrateAsync();
                 Log.Information("Migração concluída.");
 
                 var userMgr = services.GetRequiredService<UserManager<ApplicationUser>>();

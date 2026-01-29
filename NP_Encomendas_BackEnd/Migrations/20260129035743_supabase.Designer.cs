@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NP_Encomendas_BackEnd.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260128171044_supabase")]
+    [Migration("20260129035743_supabase")]
     partial class supabase
     {
         /// <inheritdoc />
