@@ -99,7 +99,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowIdentity",
         policy => policy
-            .WithOrigins("http://localhost:5001", "http://localhost:4200", "https://np-order.vercel.app/")
+            .WithOrigins("https://nporder-identiity-server.onrender.com", "https://np-order.vercel.app")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .WithExposedHeaders("X-Pagination"));
