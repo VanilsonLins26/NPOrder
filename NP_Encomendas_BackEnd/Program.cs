@@ -44,8 +44,8 @@ builder.Services.AddSwaggerGen(c =>
             AuthorizationCode = new OpenApiOAuthFlow
             {
 
-                AuthorizationUrl = new Uri("https://localhost:5001/connect/authorize"),
-                TokenUrl = new Uri("https://localhost:5001/connect/token"),
+                AuthorizationUrl = new Uri("https://nporder-identiity-server.onrender.com/connect/authorize"),
+                TokenUrl = new Uri("https://nporder-identiity-server.onrender.com/connect/token"),
                 Scopes = new Dictionary<string, string>
                 {
                     { "nporder_api", "API do NPOrder" },
@@ -78,7 +78,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
 
-        options.Authority = "https://localhost:5001";
+        options.Authority = "https://nporder-identiity-server.onrender.com";
 
         options.TokenValidationParameters = new TokenValidationParameters
         {

@@ -63,10 +63,10 @@ public static class Config
             ClientSecrets = { new Secret("minha_senha_super_secreta_120127".Sha256()) }, // Pode ser qualquer senha
 
             AllowedGrantTypes = GrantTypes.Code, // Padrão para apps web
-            RedirectUris = { "https://localhost:7023/swagger/oauth2-redirect.html" }, // URL do seu Swagger (NP_Encomendas_BackEnd)
-            PostLogoutRedirectUris = { "https://localhost:7023/swagger/" },
+            RedirectUris = { "https://backend-api-tk7o.onrender.com/swagger/oauth2-redirect.html" }, // URL do seu Swagger (NP_Encomendas_BackEnd)
+            PostLogoutRedirectUris = { "https://backend-api-tk7o.onrender.com/swagger/" },
 
-            AllowedCorsOrigins = { "https://localhost:7023" },
+            AllowedCorsOrigins = { "https://backend-api-tk7o.onrender.com" },
 
             RequirePkce = false,
 
