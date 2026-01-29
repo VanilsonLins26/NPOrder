@@ -60,10 +60,10 @@ public static class Config
         {
             ClientId = "swagger_ui",
             ClientName = "Swagger UI da NP_Encomendas_BackEnd",
-            ClientSecrets = { new Secret("minha_senha_super_secreta_120127".Sha256()) }, // Pode ser qualquer senha
+            ClientSecrets = { new Secret("minha_senha_super_secreta_120127".Sha256()) },
 
-            AllowedGrantTypes = GrantTypes.Code, // Padrão para apps web
-            RedirectUris = { "https://backend-api-tk7o.onrender.com/swagger/oauth2-redirect.html" }, // URL do seu Swagger (NP_Encomendas_BackEnd)
+            AllowedGrantTypes = GrantTypes.Code,
+            RedirectUris = { "https://backend-api-tk7o.onrender.com/swagger/oauth2-redirect.html" },
             PostLogoutRedirectUris = { "https://backend-api-tk7o.onrender.com/swagger/" },
 
             AllowedCorsOrigins = { "https://backend-api-tk7o.onrender.com" },
@@ -74,7 +74,7 @@ public static class Config
             {
                 "openid",
                 "profile",
-                "nporder_api" // O escopo da sua API
+                "nporder_api"
             }
         },
             new Client
@@ -84,17 +84,27 @@ public static class Config
                 RequireClientSecret = false,
 
                 AllowedGrantTypes = GrantTypes.Code,
-                RedirectUris = { "https://np-order.vercel.app/",
-                                 "https://np-order.vercel.app",
-                                 "https://np-order.vercel.app/index.html", 
-                                 "https://np-order.vercel.app/callback" },
-                PostLogoutRedirectUris = { "https://np-order.vercel.app/",
-                                           "https://np-order.vercel.app" },
+               RedirectUris = {
+        "https://np-order.vercel.app/callback",
+        "https://np-order.vercel.app/callback/",
+        "https://np-order.vercel.app/",
+        "http://localhost:4200/callback"
+    },
+
+
+PostLogoutRedirectUris = {
+        "https://np-order.vercel.app",
+        "https://np-order.vercel.app/",
+        "http://localhost:4200"
+    },
                 AllowOfflineAccess = true,
 
 
 
-               AllowedCorsOrigins = { "https://np-order.vercel.app" },
+AllowedCorsOrigins = {
+        "https://np-order.vercel.app",
+        "http://localhost:4200"
+    },
 
                RequirePkce = true,
 
