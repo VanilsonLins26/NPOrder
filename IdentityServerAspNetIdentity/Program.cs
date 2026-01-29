@@ -33,8 +33,8 @@ try
 
 
     var app = builder
-        .ConfigureServices()
-        .ConfigurePipeline();
+        .ConfigureServices();
+
 
     // await SeedData.EnsureSeedData(app);
 
@@ -46,6 +46,7 @@ try
         return next();
     });
 
+    app.ConfigurePipeline();
     app.Run();
 }
 catch (Exception ex) when (ex is not HostAbortedException)
