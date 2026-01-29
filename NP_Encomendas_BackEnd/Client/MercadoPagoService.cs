@@ -69,9 +69,9 @@ public class MercadoPagoService
 
             PreferenceBackUrlsRequest backUrlsRequest = new PreferenceBackUrlsRequest
             {
-                Success = "https://localhost:4200/payment/success",
-                Failure = "https://localhost:4200/payment/failure",
-                Pending = "https://localhost:4200/payment/pending"
+                Success = "https://np-order.vercel.app//payment/success",
+                Failure = "https://np-order.vercel.app//payment/failure",
+                Pending = "https://np-order.vercel.app//payment/pending"
 
             };
 

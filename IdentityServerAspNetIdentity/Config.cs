@@ -84,13 +84,13 @@ public static class Config
                 RequireClientSecret = false,
 
                 AllowedGrantTypes = GrantTypes.Code, 
-                RedirectUris = { "https://localhost:4200" },
-                PostLogoutRedirectUris = { "https://localhost:4200" },
+                RedirectUris = { "https://np-order.vercel.app/" },
+                PostLogoutRedirectUris = { "https://np-order.vercel.app/" },
                 AllowOfflineAccess = true,
 
 
 
-               AllowedCorsOrigins = { "https://localhost:4200" },
+               AllowedCorsOrigins = { "https://np-order.vercel.app/" },
 
                RequirePkce = true,
 
