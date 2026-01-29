@@ -168,9 +168,15 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
      app.MapOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "NPORDER API v1"));
+  
 }
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API NP");
+    c.RoutePrefix = "swagger";
+});
+
 
 app.UseCors("AllowIdentity");
 app.UseHttpsRedirection();
