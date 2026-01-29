@@ -22,7 +22,7 @@ export class OrderService {
     .set('pageSize', pageSize.toString())
 
 
-  return this.http.get<any[]>(`${this.apiUrl}/order/paged`, { 
+  return this.http.get<any[]>(`${this.apiUrl}/order/client/paged`, { 
     params, 
     observe: 'response' 
   });
