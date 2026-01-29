@@ -1,0 +1,162 @@
+<div class="surface-ground px-4 py-5 md:px-6 lg:px-8">
+
+    <div class="text-center mb-5">
+        <div class="text-900 font-bold text-5xl mb-3 brand-font" style="color: var(--padaria-brown);">
+            Cardápio Fresquinho
+        </div>
+        <div class="text-700 text-xl">Escolha suas delícias e receba em casa.</div>
+    </div>
+
+    <div class="surface-ground p-3 border-round-xl mb-5">
+        <div class="grid formgrid p-fluid">
+
+            <div class="col-12 xl:col-6 mb-3 xl:mb-0">
+                <label class="block text-600 font-bold mb-2 text-sm">O que você deseja?</label>
+                <p-iconfield iconPosition="left">
+                    <p-inputicon>
+                        <i class="pi pi-search"></i>
+                    </p-inputicon>
+                    <input pInputText type="text" [(ngModel)]="filterName" (input)="onSearch($event)"
+                        placeholder="Buscar delícias..." />
+                </p-iconfield>
+            </div>
+
+            <div class="col-12 sm:col-6 md:col-4 xl:col-2 mb-3 xl:mb-0">
+                <label class="block text-600 font-bold mb-2 text-sm">Preço Mín.</label>
+                <p-inputNumber [(ngModel)]="minPrice" (onBlur)="onPriceFilter()" mode="currency" currency="BRL"
+                    locale="pt-BR" placeholder="R$ 0,00" styleClass="w-full">
+                </p-inputNumber>
+            </div>
+
+            <div class="col-12 sm:col-6 md:col-4 xl:col-2 mb-3 xl:mb-0">
+                <label class="block text-600 font-bold mb-2 text-sm">Preço Máx.</label>
+                <p-inputNumber [(ngModel)]="maxPrice" (onBlur)="onPriceFilter()" mode="currency" currency="BRL"
+                    locale="pt-BR" placeholder="R$ 0,00" styleClass="w-full">
+                </p-inputNumber>
+            </div>
+
+            <div class="col-12 md:col-4 lg:col-2 flex align-items-end">
+                <button pButton icon="pi pi-filter-slash" label="Limpar" class="p-button-outlined w-full"
+                    pTooltip="Limpar Filtros"
+                    (click)="filterName=''; minPrice=undefined; maxPrice=undefined; loadProducts()">
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <div *ngFor="let product of products" class="col-12 md:col-6 lg:col-3 p-3">
+            <div class="p-3 h-full surface-card shadow-2 border-round hover-effect flex flex-column">
+
+                <div class="relative mb-3 text-center">
+                    <img [src]="product.imageUrl || 'assets/images/logo-padaria.png'" [alt]="product.name"
+                        class="border-round w-full" style="height: 200px; object-fit: cover; max-width: 100%;">
+
+                    <p-tag *ngIf="product.isOnSale" value="OFERTA" severity="danger"
+                        styleClass="absolute font-bold shadow-2" [style.top.px]="10" [style.left.px]="10"></p-tag>
+                </div>
+
+                <div class="flex flex-column justify-content-between flex-grow-1">
+                    <div>
+                        <div class="text-xl font-bold mb-2 text-900">{{ product.name }}</div>
+                        <p class="text-700 line-height-3 m-0 mb-3" style="min-height: 3rem;">
+                            {{ product.description }}
+                        </p>
+                    </div>
+
+                    <div
+                        class="flex align-items-center justify-content-between mt-auto border-top-1 surface-border pt-3">
+
+                        <div class="flex flex-column">
+
+                            <ng-container *ngIf="product.isOnSale; else normalPrice">
+                                <span class="text-sm text-500 line-through">
+                                    {{ product.price | currency:'BRL' }}
+                                </span>
+                                <span class="text-2xl font-bold text-green-600">
+                                    {{ product.finalPrice | currency:'BRL' }}
+                                </span>
+                            </ng-container>
+
+                            <ng-template #normalPrice>
+                                <span class="text-2xl font-bold text-900">
+                                    {{ product.price | currency:'BRL' }}
+                                </span>
+                            </ng-template>
+
+                            <span class="text-sm text-500">{{ product.unitOfMeasure }}</span>
+                        </div>
+
+                        <p-button icon="pi pi-shopping-cart" label="Comprar"
+                            styleClass="p-button-rounded p-button-primary" (onClick)="openBuyModal(product)">
+                        </p-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5 surface-card shadow-1 border-round p-2">
+        <p-paginator (onPageChange)="onPageChange($event)" [first]="(pageNumber - 1) * pageSize" [rows]="pageSize"
+            [totalRecords]="totalRecords" [rowsPerPageOptions]="[6, 12, 24]">
+        </p-paginator>
+    </div>
+</div>
+
+<p-dialog header="Adicionar ao Carrinho" [(visible)]="displayModal" [modal]="true" [style]="{width: '450px'}"
+    [draggable]="false" [resizable]="false">
+
+    <div *ngIf="selectedProduct" class="flex flex-column gap-4">
+
+        <div class="flex align-items-center gap-3 surface-ground p-3 border-round">
+            <img [src]="selectedProduct.imageUrl || 'assets/images/logo-padaria.png'"
+                style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">
+            <div>
+                <span class="font-bold block text-900">{{ selectedProduct.name }}</span>
+
+                <span class="text-sm font-bold"
+                    [ngClass]="{'text-green-600': selectedProduct.isOnSale, 'text-700': !selectedProduct.isOnSale}">
+                    {{ (selectedProduct.finalPrice || selectedProduct.price) | currency:'BRL' }} / {{
+                    selectedProduct.unitOfMeasure }}
+                </span>
+
+                <span *ngIf="selectedProduct.isOnSale" class="ml-2 text-xs text-500 line-through">
+                    {{ selectedProduct.price | currency:'BRL' }}
+                </span>
+            </div>
+        </div>
+
+        <div class="flex flex-column gap-2">
+            <label for="qtd" class="font-semibold text-900">Quantidade</label>
+            <p-inputNumber id="qtd" [(ngModel)]="quantity" [showButtons]="true" buttonLayout="horizontal"
+                inputId="horizontal" spinnerMode="horizontal" [min]="1" [step]="1"
+                decrementButtonClass="p-button-secondary" incrementButtonClass="p-button-primary"
+                incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus"
+                inputStyleClass="w-full text-center font-bold">
+            </p-inputNumber>
+        </div>
+
+        <div class="flex flex-column gap-2">
+            <label for="obs" class="font-semibold text-900">Observações / Sabores</label>
+
+            <textarea id="obs" pInputTextarea [(ngModel)]="comment" rows="3" class="w-full" style="resize: none;"
+                placeholder="Ex: Sem cebola, ponto da carne... (Opcional)">
+            </textarea>
+
+            <div *ngIf="selectedProduct.customizable" class="flex align-items-center text-blue-600 text-sm mt-1">
+                <i class="pi pi-info-circle mr-2"></i>
+                <span>Este produto aceita personalização.</span>
+            </div>
+        </div>
+
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-end gap-2 mt-3">
+            <p-button label="Cancelar" icon="pi pi-times" styleClass="p-button-text p-button-secondary"
+                (onClick)="displayModal=false"></p-button>
+            <p-button label="Adicionar" icon="pi pi-check" styleClass="p-button-primary"
+                (onClick)="confirmAddToCart()"></p-button>
+        </div>
+    </ng-template>
+
+</p-dialog>

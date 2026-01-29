@@ -1,0 +1,22 @@
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--padaria-cream);
+    padding: 1rem;
+}
+
+/* Força o estilo dentro do componente do PrimeNG */
+::ng-deep .welcome-card {
+    width: 100%;
+    max-width: 450px;
+    border-top: 5px solid var(--padaria-gold) !important; /* Detalhe dourado no topo */
+}
+
+.login-logo {
+    height: 120px;
+    width: auto;
+    display: block;
+    margin: 0 auto;
+}

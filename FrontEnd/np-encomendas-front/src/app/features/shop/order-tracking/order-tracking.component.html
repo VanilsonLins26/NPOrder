@@ -1,0 +1,117 @@
+
+<div class="surface-ground min-h-screen p-4 flex justify-content-center">
+
+    <div class="surface-card p-4 shadow-2 border-round w-full lg:w-8" *ngIf="order">
+
+        <div class="flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <div>
+                <h1 class="text-2xl font-bold text-900 m-0 brand-font">Pedido #{{ order.id }}</h1>
+                <span class="text-600">{{ order.orderTime | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <p-tag [value]="getStatusLabel(order.statusName)" severity="info" styleClass="text-base px-3 py-2"></p-tag>
+        </div>
+
+        <p-divider></p-divider>
+
+        <div class="grid">
+            <div class="col-12 md:col-6">
+
+                <div *ngIf="order.deliveryMethod === 2; else pickup">
+                    <div class="text-xl font-bold text-900 mb-3">Entrega</div>
+                    <div *ngIf="order.address" class="surface-ground p-3 border-round">
+                        <span class="block font-bold">{{ order.address.street }}, {{ order.address.number }}</span>
+                        <span class="block text-600">{{ order.address.district }} - {{ order.address.zipCode }}</span>
+                    </div>
+                    <p class="mt-2 text-primary font-bold">
+                        <i class="pi pi-clock mr-2"></i>Agendado para: {{ order.deliverTime | date:'dd/MM/yyyy HH:mm' }}
+                    </p>
+                </div>
+                <ng-template #pickup>
+                    <div>
+                        <div class="text-xl font-bold text-900 mb-3">Retirada na Loja</div>
+
+                        <div class="surface-ground p-3 border-round">
+                            <span class="block font-bold text-900">Nossa Padaria</span>
+                            <span class="block text-600">Rua Doutor José Frota, 32</span>
+                            <span class="block text-500 text-sm mt-1">Mucuripe - Fortaleza/CE</span>
+                        </div>
+
+                        <p class="mt-3 text-primary font-bold flex align-items-center">
+                            <i class="pi pi-clock mr-2"></i>
+                            Agendado para: {{ order.deliverTime | date:'dd/MM/yyyy HH:mm' }}
+                        </p>
+                    </div>
+                </ng-template>
+            </div>
+
+            <div class="col-12 md:col-6">
+                <div class="text-xl font-bold text-900 mb-3">Pagamento</div>
+                <div class="flex justify-content-between mb-2">
+                    <span>Total do Pedido:</span>
+                    <span class="font-bold">{{ order.totalAmount | currency:'BRL' }}</span>
+                </div>
+                <div class="flex justify-content-between mb-2 text-green-600">
+                    <span>Já Pago:</span>
+                    <span>- {{ order.amountPaid | currency:'BRL' }}</span>
+                </div>
+                <p-divider></p-divider>
+                
+                <div *ngIf="!order.isFullyPaid" class="flex justify-content-between text-xl font-bold text-red-500">
+                    <span>Restante a Pagar:</span>
+                    <span>{{ order.remainingAmount | currency:'BRL' }}</span>
+                </div>
+
+                <div *ngIf="order.statusName === 'PendingPayment' && !order.isFullyPaid" class="mt-3">
+                    <p-button 
+                        [label]="(order.payment && order.payment.paymentUrl) ? 'Pagar Agora' : 'Gerar Pagamento'" 
+                        [icon]="(order.payment && order.payment.paymentUrl) ? 'pi pi-check-circle' : 'pi pi-wallet'"
+                        styleClass="w-full"
+                        [styleClass]="(order.payment && order.payment.paymentUrl) ? 'p-button-success w-full' : 'p-button-primary w-full'"
+                        (onClick)="handlePayment()">
+                    </p-button>
+                </div>
+                <div *ngIf="order.isFullyPaid" class="flex justify-content-between text-xl font-bold text-green-500 mt-2 bg-green-50 p-2 border-round">
+                  <span>Situação:</span>
+                      <span class="flex align-items-center">
+             <i class="pi pi-check-circle mr-2"></i>Totalmente Pago
+         </span>
+                </div>
+            </div>
+        </div>
+
+        <p-divider></p-divider>
+
+        <div class="mb-4">
+            <div class="text-xl font-bold text-900 mb-3">Itens</div>
+
+            <div *ngFor="let item of order.orderItens"
+                class="flex justify-content-between align-items-center mb-3 p-2 surface-ground border-round">
+                <div class="flex align-items-center">
+                    <span class="font-bold text-lg mr-3 w-2rem text-center surface-200 border-round">{{ item.quantity
+                        }}x</span>
+                    <div>
+                        <div class="font-bold text-900">{{ item.productName }}</div>
+                        <div class="text-sm text-600">{{ item.price | currency:'BRL' }} un.</div>
+                    </div>
+                </div>
+                <div class="font-bold">
+                    {{ (item.price * item.quantity) | currency:'BRL' }}
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-content-end gap-3 mt-5">
+            <p-button label="Voltar" icon="pi pi-arrow-left" styleClass="p-button-text p-button-secondary"
+                (onClick)="goBack()"></p-button>
+
+            <p-button *ngIf="order.statusName === 'Pendente' || order.statusName === 'Pedido confirmado'"
+                label="Cancelar Pedido" icon="pi pi-times" styleClass="p-button-danger p-button-outlined"
+                [loading]="actionLoading" (onClick)="cancelOrder()"></p-button>
+
+            <p-button *ngIf="order.statusName === 'Saiu para entrega'" label="Confirmar Recebimento"
+                icon="pi pi-check-circle" styleClass="p-button-success" [loading]="actionLoading"
+                (onClick)="confirmReceipt()"></p-button>
+        </div>
+
+    </div>
+</div>

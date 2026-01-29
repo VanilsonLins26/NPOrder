@@ -1,0 +1,122 @@
+
+
+<div class="surface-ground flex justify-content-center min-h-screen p-4">
+    <div class="surface-card p-4 shadow-2 border-round w-full lg:w-6">
+
+        <div class="text-center mb-5">
+            <div class="text-900 text-3xl font-bold brand-font mb-2">Detalhes da Encomenda</div>
+        </div>
+
+        <div class="mb-5">
+            <label class="font-bold block mb-2 text-900">Tipo de Entrega</label>
+            <p-selectButton [options]="deliveryOptions" [(ngModel)]="selectedMethod" optionLabel="label"
+                optionValue="value" styleClass="w-full"></p-selectButton>
+        </div>
+
+        <div class="mb-5">
+            <label class="font-bold block mb-2 text-900">Data e Hora</label>
+            <p-datepicker [(ngModel)]="selectedDate" [showTime]="true" [showIcon]="true" [minDate]="minDate"
+                dateFormat="dd/mm/yy" hourFormat="24" placeholder="Selecione..." class="w-full"
+                [inputStyle]="{'width':'100%'}" [stepMinute]="30">
+            </p-datepicker>
+        </div>
+
+        <div class="mb-5" *ngIf="selectedMethod === 'Delivery'; else pickupInfo">
+            <label class="font-bold block mb-2 text-900">Endereço de Entrega</label>
+
+            <div *ngIf="selectedAddress"
+                class="surface-border border-1 border-round p-3 flex justify-content-between align-items-center bg-gray-50">
+                <div>
+                    <span class="font-bold text-900 block">{{ selectedAddress.street }}, {{ selectedAddress.number
+                        }}</span>
+                    <span class="text-600 text-sm">{{ selectedAddress.district }} - CEP: {{ selectedAddress.zipCode
+                        }}</span>
+                    <p-tag *ngIf="selectedAddress.isDefault" value="Padrão" severity="info" styleClass="mt-2"></p-tag>
+                </div>
+                <p-button label="Trocar" icon="pi pi-refresh" styleClass="p-button-text"
+                    (onClick)="openAddressModal()"></p-button>
+            </div>
+
+            <div *ngIf="userAddresses.length === 0"
+                class="text-center p-4 surface-overlay border-1 border-dashed border-round surface-border">
+                <i class="pi pi-map-marker text-3xl text-600 mb-3"></i>
+                <div class="text-700 font-medium mb-3">Nenhum endereço cadastrado.</div>
+                <p-button label="Adicionar Endereço" icon="pi pi-plus" (onClick)="openAddressModal()"></p-button>
+            </div>
+        </div>
+
+        <ng-template #pickupInfo>
+            <div class="bg-orange-50 border-round p-3 mb-5 border-1 border-orange-200">
+                <div class="font-bold text-900">Retirar na Loja</div>
+                <div class="text-700">Rua Doutor José Frota, 32 - Fortaleza/CE</div>
+            </div>
+        </ng-template>
+
+        <p-divider></p-divider>
+        <p-button label="Confirmar e Pagar" icon="pi pi-check" styleClass="w-full p-button-lg" [loading]="isLoading"
+            (onClick)="submitOrder()"></p-button>
+    </div>
+</div>
+
+<p-dialog header="Endereços de Entrega" [(visible)]="showAddressModal" [modal]="true" [style]="{width: '500px'}"
+    [draggable]="false" [resizable]="false">
+
+    <div *ngIf="!isCreatingAddress">
+        <div class="flex flex-column gap-3 mb-4">
+            <div *ngFor="let addr of userAddresses"
+                class="field-radiobutton address-card border-round p-3 cursor-pointer"
+                [class.border-primary]="selectedAddress?.id === addr.id" (click)="selectAddressFromModal(addr)">
+
+                <p-radioButton name="modalAddr" [value]="addr" [(ngModel)]="selectedAddress"></p-radioButton>
+
+                <label class="ml-3 cursor-pointer w-full">
+                    <span class="font-bold text-900 block">{{ addr.street }}, {{ addr.number }}</span>
+                    <span class="text-600 text-sm">{{ addr.district }}</span>
+                    <p-tag *ngIf="addr.isDefault" value="Principal" severity="success" styleClass="ml-2"></p-tag>
+                </label>
+            </div>
+        </div>
+
+        <div *ngIf="userAddresses.length < 5" class="text-center border-top-1 surface-border pt-3">
+            <p-button label="Cadastrar Novo Endereço" icon="pi pi-plus" styleClass="p-button-outlined w-full"
+                (onClick)="isCreatingAddress = true"></p-button>
+        </div>
+        <div *ngIf="userAddresses.length >= 5" class="text-center text-red-500 text-sm mt-2">
+            Limite de 5 endereços atingido.
+        </div>
+    </div>
+
+    <div *ngIf="isCreatingAddress">
+        <div class="flex flex-column gap-3">
+            <div>
+                <label class="block font-bold mb-1">CEP</label>
+                <input pInputText [(ngModel)]="newAddressForm.zipCode" class="w-full" placeholder="00000-000">
+            </div>
+            <div class="flex gap-2">
+                <div class="flex-1">
+                    <label class="block font-bold mb-1">Rua</label>
+                    <input pInputText [(ngModel)]="newAddressForm.street" class="w-full">
+                </div>
+                <div class="w-4rem">
+                    <label class="block font-bold mb-1">Nº</label>
+                    <input pInputText [(ngModel)]="newAddressForm.number" class="w-full">
+                </div>
+            </div>
+            <div>
+                <label class="block font-bold mb-1">Bairro</label>
+                <input pInputText [(ngModel)]="newAddressForm.district" class="w-full">
+            </div>
+            <div>
+                <label class="block font-bold mb-1">Complemento (Opcional)</label>
+                <input pInputText [(ngModel)]="newAddressForm.complement" class="w-full">
+            </div>
+        </div>
+
+        <div class="flex gap-2 mt-4 justify-content-end">
+            <p-button label="Voltar" icon="pi pi-arrow-left" styleClass="p-button-text p-button-secondary"
+                (onClick)="isCreatingAddress = false"></p-button>
+            <p-button label="Salvar Endereço" icon="pi pi-check" [loading]="isLoading"
+                (onClick)="saveNewAddress()"></p-button>
+        </div>
+    </div>
+</p-dialog>

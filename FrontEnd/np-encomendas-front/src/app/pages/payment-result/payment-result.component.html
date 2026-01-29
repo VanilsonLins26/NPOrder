@@ -1,0 +1,22 @@
+<div class="surface-ground min-h-screen flex align-items-center justify-content-center p-4">
+    <p-card styleClass="result-card shadow-4">
+        
+        <div class="flex flex-column align-items-center">
+            <i [class]="'icon-large ' + icon + ' ' + colorClass"></i>
+            
+            <h2 [class]="'mb-2 ' + colorClass">{{ title }}</h2>
+            
+            <p class="text-600 line-height-3 mb-4">
+                {{ message }}
+            </p>
+
+            <div class="w-full border-top-1 surface-border pt-4">
+                <p-button label="Ver Meus Pedidos" 
+                          [icon]="'pi pi-list'" 
+                          (onClick)="goToOrders()"
+                          styleClass="w-full"></p-button>
+            </div>
+        </div>
+
+    </p-card>
+</div>

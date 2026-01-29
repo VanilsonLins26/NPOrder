@@ -1,0 +1,37 @@
+.navbar {
+    background-color: var(--padaria-brown);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    padding: 0.5rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.brand-logo {
+    height: 70px;
+    width: auto;
+
+}
+
+.nav-links {
+    display: flex;
+    gap: 10px;
+
+    ::ng-deep .p-button-text.text-white {
+        color: var(--padaria-cream) !important;
+        
+        &:hover {
+            background-color: rgba(217, 154, 38, 0.2) !important; 
+            color: var(--padaria-gold) !important;
+        }
+    }
+}

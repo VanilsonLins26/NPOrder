@@ -1,0 +1,141 @@
+<p-toolbar styleClass="bg-white border-none shadow-2 mb-3 sticky top-0 z-5">
+
+    <div class="p-toolbar-group-start" style="display: flex; align-items: center; gap: 10px;">
+
+        <p-button icon="pi pi-bars" styleClass="p-button-text md:hidden mr-2" (onClick)="sidebarVisible = true">
+        </p-button>
+
+        <div class="flex align-items-center cursor-pointer gap-2"
+            (click)="isAdmin ? goToAdminDashboard() : goToCardapio()">
+            <img src="assets/images/logo-padaria.png" style="height: 40px; width: auto; object-fit: contain;">
+            <span class="font-bold text-xl brand-font hidden sm:inline"
+                style="color: var(--padaria-brown); font-size: 1.5rem; white-space: nowrap;">
+                {{ isAdmin ? 'Painel Admin' : 'NP Encomendas' }}
+            </span>
+        </div>
+    </div>
+
+    <div class="p-toolbar-group-center hidden md:flex gap-2">
+
+        <ng-container *ngIf="!isAdmin">
+            <p-button label="Cardápio" icon="pi pi-book" styleClass="p-button-text"
+                [style]="{'color': 'var(--padaria-brown)', 'font-weight': '600'}" (onClick)="goToCardapio()"></p-button>
+            <p-button label="Minhas Encomendas" icon="pi pi-box" styleClass="p-button-text"
+                [style]="{'color': 'var(--padaria-brown)', 'font-weight': '600'}"
+                (onClick)="goToEncomendas()"></p-button>
+        </ng-container>
+
+        <ng-container *ngIf="isAdmin">
+            <p-button label="Dashboard" icon="pi pi-home" styleClass="p-button-text"
+                [style]="{'color': 'var(--primary-color)', 'font-weight': 'bold'}"
+                (onClick)="goToAdminDashboard()"></p-button>
+            <p-button label="Produtos" icon="pi pi-tag" styleClass="p-button-text"
+                [style]="{'color': 'var(--primary-color)', 'font-weight': 'bold'}"
+                (onClick)="goToAdminProducts()"></p-button>
+            <p-button label="Encomendas" icon="pi pi-list" styleClass="p-button-text"
+                [style]="{'color': 'var(--primary-color)', 'font-weight': 'bold'}"
+                (onClick)="goToAdminOrders()"></p-button>
+            <p-button label="Financeiro" icon="pi pi-wallet" styleClass="p-button-text"
+                [style]="{'color': 'var(--primary-color)', 'font-weight': 'bold'}"
+                (onClick)="goToAdminPayments()"></p-button>
+        </ng-container>
+
+    </div>
+
+    <div class="p-toolbar-group-end flex align-items-center gap-2">
+
+        <p-button *ngIf="!isAdmin" styleClass="p-button-rounded p-button-text gap-2" (onClick)="goToCarrinho()">
+
+            <span class="p-overlay-badge inline-flex align-items-center">
+
+                <i class="pi pi-shopping-cart text-xl" style="color: var(--padaria-brown);"></i>
+
+                <p-badge *ngIf="cartCount > 0" [value]="cartCount.toString()" severity="danger" styleClass="text-xs">
+                </p-badge>
+            </span>
+
+            <span class="font-semibold" style="color: var(--padaria-brown);"></span>
+
+        </p-button>
+
+        <div class="hidden md:block" style="width: 1px; height: 24px; background-color: #e0e0e0;"></div>
+
+        <ng-container *ngIf="isAuthenticated; else loginBtn">
+            <div class="hidden md:flex flex-column align-items-end mr-2">
+                <span style="font-weight: 600; color: #333; font-size: 0.9rem;">
+                    Olá, {{ userData?.name?.split(' ')[0] || 'Admin' }}
+                </span>
+            </div>
+
+            <p-button icon="pi pi-power-off" styleClass="p-button-danger p-button-text p-button-sm" pTooltip="Sair"
+                tooltipPosition="bottom" (onClick)="logout()">
+            </p-button>
+        </ng-container>
+
+        <ng-template #loginBtn>
+            <p-button label="Entrar" icon="pi pi-user" styleClass="p-button-primary" (onClick)="login()"></p-button>
+        </ng-template>
+
+    </div>
+</p-toolbar>
+
+<p-drawer [(visible)]="sidebarVisible" position="left" [baseZIndex]="10000">
+    <div class="flex flex-column h-full">
+
+        <div class="flex align-items-center gap-2 mb-5">
+            <img src="assets/images/logo-padaria.png" style="height: 40px;">
+            <span class="font-bold text-xl brand-font" style="color: var(--padaria-brown);">Menu</span>
+        </div>
+
+        <div class="flex flex-column gap-2">
+
+            <ng-container *ngIf="!isAdmin">
+                <p-button label="Cardápio" icon="pi pi-book"
+                    styleClass="p-button-text text-left w-full justify-content-start" (onClick)="goToCardapio()">
+                </p-button>
+
+                <p-button label="Minhas Encomendas" icon="pi pi-box"
+                    styleClass="p-button-text text-left w-full justify-content-start" (onClick)="goToEncomendas()">
+                </p-button>
+
+                <p-button label="Carrinho" icon="pi pi-shopping-cart"
+                    styleClass="p-button-text text-left w-full justify-content-start"
+                    [badge]="cartCount > 0 ? cartCount.toString() : undefined" badgeClass="p-badge-danger ml-auto"
+                    (onClick)="goToCarrinho()">
+                </p-button>
+
+            </ng-container>
+
+            <ng-container *ngIf="isAdmin">
+                <div class="text-500 font-bold mb-2 mt-2 px-3 text-sm uppercase">Administração</div>
+
+                <p-button label="Dashboard" icon="pi pi-home"
+                    styleClass="p-button-text text-left w-full justify-content-start"
+                    (onClick)="goToAdminDashboard()"></p-button>
+                <p-button label="Produtos" icon="pi pi-tag"
+                    styleClass="p-button-text text-left w-full justify-content-start"
+                    (onClick)="goToAdminProducts()"></p-button>
+                <p-button label="Encomendas" icon="pi pi-list"
+                    styleClass="p-button-text text-left w-full justify-content-start"
+                    (onClick)="goToAdminOrders()"></p-button>
+                <p-button label="Financeiro" icon="pi pi-wallet"
+                    styleClass="p-button-text text-left w-full justify-content-start"
+                    (onClick)="goToAdminPayments()"></p-button>
+            </ng-container>
+
+        </div>
+
+        <div class="mt-auto pt-3 border-top-1 surface-border">
+            <div *ngIf="isAuthenticated" class="mb-3 pl-2 font-bold text-700">
+                <i class="pi pi-user mr-2"></i> {{ userData?.name || 'Usuário' }}
+            </div>
+
+            <p-button *ngIf="isAuthenticated" label="Sair do Sistema" icon="pi pi-power-off"
+                styleClass="p-button-danger p-button-outlined w-full" (onClick)="logout()"></p-button>
+
+            <p-button *ngIf="!isAuthenticated" label="Fazer Login" icon="pi pi-user"
+                styleClass="p-button-primary w-full" (onClick)="login()"></p-button>
+        </div>
+
+    </div>
+</p-drawer>

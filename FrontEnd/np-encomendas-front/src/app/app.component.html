@@ -1,0 +1,13 @@
+<app-navbar></app-navbar>
+
+<p-toast position="top-center" 
+         [baseZIndex]="5000"
+         [style]="{ width: '400px', 'max-width': '90vw' }">
+</p-toast>
+
+<div *ngIf="isLoading" class="flex flex-column align-items-center justify-content-center min-h-screen surface-ground">
+    <p-progressSpinner ariaLabel="loading"></p-progressSpinner>
+    <p class="mt-3 text-600 font-semibold">Verificando acesso...</p>
+</div>
+
+<router-outlet *ngIf="!isLoading"></router-outlet>

@@ -1,0 +1,387 @@
+@import "primeicons/primeicons.css";
+
+:root {
+    --padaria-brown: #4A3221;
+    --padaria-gold: #D99A26;
+    --padaria-cream: #F9F6F0;
+    --padaria-white: #ffffff;
+    --text-color: #333333;
+}
+
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--padaria-cream);
+    color: var(--text-color);
+}
+
+
+h1,
+h2,
+h3,
+.brand-font {
+    font-family: 'Dancing Script', cursive;
+    color: var(--padaria-brown);
+}
+
+
+.p-button.p-button-primary {
+    background: var(--padaria-brown) !important;
+    border: 1px solid var(--padaria-brown) !important;
+
+    &:hover {
+        background: var(--padaria-gold) !important;
+        border-color: var(--padaria-gold) !important;
+    }
+}
+
+.p-card {
+    box-shadow: 0 4px 8px rgba(74, 50, 33, 0.1) !important;
+    border-radius: 12px !important;
+}
+
+.payment-option-card {
+    background-color: var(--padaria-white);
+    border: 1px solid #dee2e6;
+    transition: all 0.2s ease-in-out;
+}
+
+
+.payment-option-card:hover {
+    background-color: var(--padaria-cream) !important;
+    border-color: var(--padaria-brown) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 50, 33, 0.15);
+}
+
+
+.payment-option-card.border-primary {
+    background-color: #fff;
+    border-color: var(--padaria-brown) !important;
+    border-width: 2px !important;
+}
+
+.address-card {
+    background-color: var(--padaria-white);
+    border: 1px solid #dee2e6;
+    /* Borda padrão suave */
+    transition: all 0.2s ease-in-out;
+}
+
+.address-card:hover {
+    background-color: var(--padaria-cream) !important;
+    border-color: var(--padaria-brown) !important;
+    box-shadow: 0 2px 8px rgba(74, 50, 33, 0.1);
+}
+
+
+.address-card.border-primary {
+    border-color: var(--padaria-brown) !important;
+    border-width: 2px !important;
+    background-color: #fff;
+}
+
+
+@media screen and (max-width: 960px) {
+
+    ::ng-deep .p-datatable.p-datatable-responsive-stack .p-datatable-tbody>tr>td {
+        display: flex !important;
+        justify-content: space-between !important;
+        /* Título na esq, Conteúdo na dir */
+        align-items: center !important;
+        width: 100% !important;
+        padding: 0.8rem 0.5rem !important;
+        border: none !important;
+        border-bottom: 1px solid #f3f3f3 !important;
+    }
+
+
+    ::ng-deep .p-datatable.p-datatable-responsive-stack .p-datatable-tbody>tr>td .p-column-title {
+        min-width: 30%;
+        font-weight: 700;
+        color: #555;
+        text-align: left;
+    }
+
+    ::ng-deep .p-datatable.p-datatable-responsive-stack .p-datatable-tbody>tr {
+        border: 1px solid #e5e7eb !important;
+        margin-bottom: 1rem !important;
+        display: block !important;
+        border-radius: 8px;
+        background: #fff;
+    }
+
+    .product-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .image-wrapper {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f3f4f6;
+    }
+
+
+    @media screen and (max-width: 960px) {
+
+        ::ng-deep .p-datatable thead {
+            display: none !important;
+        }
+
+
+        ::ng-deep .p-datatable .p-datatable-tbody>tr.product-row {
+            display: grid !important;
+
+            grid-template-columns: 70px 1fr auto;
+            grid-template-rows: auto auto;
+            gap: 10px;
+
+            background: #fff;
+            border: 1px solid #e5e7eb !important;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+
+        ::ng-deep .p-datatable .p-datatable-tbody>tr>td.col-img {
+            grid-column: 1;
+            grid-row: 1;
+            display: block !important;
+            padding: 0 !important;
+            border: none !important;
+        }
+
+        .image-wrapper {
+            width: 60px;
+            height: 60px;
+        }
+
+
+
+        ::ng-deep .p-datatable .p-datatable-tbody>tr>td.col-name {
+            grid-column: 2;
+            grid-row: 1;
+            display: flex !important;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 !important;
+            border: none !important;
+            text-align: left !important;
+        }
+
+
+        ::ng-deep .p-datatable .p-datatable-tbody>tr>td.col-price {
+            grid-column: 3;
+            grid-row: 1;
+            display: flex !important;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-end;
+            padding: 0 !important;
+            border: none !important;
+        }
+
+
+        ::ng-deep .p-datatable .p-datatable-tbody>tr>td.col-status {
+            grid-column: 1 / span 2;
+            grid-row: 2;
+            display: flex !important;
+            align-items: center;
+            padding-top: 10px !important;
+            border: none !important;
+            border-top: 1px dashed #eee !important;
+        }
+
+
+        ::ng-deep .p-datatable .p-datatable-tbody>tr>td.col-actions {
+            grid-column: 3;
+            grid-row: 2;
+            display: flex !important;
+            justify-content: flex-end;
+            padding-top: 10px !important;
+            border: none !important;
+            border-top: 1px dashed #eee !important;
+        }
+
+
+        ::ng-deep .p-datatable .p-datatable-tbody>tr>td.col-name {
+            grid-column: 2;
+            grid-row: 1;
+            display: flex !important;
+            flex-direction: column;
+            justify-content: center;
+
+
+            width: 100% !important;
+
+            padding: 0 !important;
+            border: none !important;
+            text-align: left !important;
+        }
+
+        ::ng-deep .p-datatable thead {
+            display: none !important;
+        }
+
+        ::ng-deep .p-datatable .p-datatable-tbody>tr.payment-row {
+            display: grid !important;
+            grid-template-columns: 1fr auto;
+            grid-template-rows: auto auto auto auto;
+            gap: 8px;
+
+            background: #fff;
+            border: 1px solid #e5e7eb !important;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+
+        ::ng-deep .p-datatable .p-datatable-tbody>tr>td {
+            border: none !important;
+            padding: 0 !important;
+            display: block !important;
+        }
+
+        .col-client {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+
+        .col-value {
+            grid-column: 2;
+            grid-row: 1;
+            text-align: right;
+        }
+
+        .col-id {
+            grid-column: 1;
+            grid-row: 2;
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .col-date {
+            grid-column: 1;
+            grid-row: 3;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .col-method {
+            grid-column: 1 / span 2;
+            grid-row: 4;
+            margin-bottom: 8px;
+            display: flex !important;
+            align-items: center;
+        }
+
+
+        .col-status {
+            grid-column: 1;
+            grid-row: 5;
+        }
+
+        .col-actions {
+            grid-column: 2;
+            grid-row: 5;
+            text-align: right;
+        }
+
+
+        .p-column-title {
+            display: none;
+        }
+
+        ::ng-deep .p-datatable .p-datatable-tbody>tr.group-header-row {
+            display: block !important;
+            background: transparent !important;
+            border: none !important;
+            padding: 1rem 0 0.5rem 0 !important;
+        }
+
+        ::ng-deep .p-datatable .p-datatable-tbody>tr.group-header-row td {
+            display: block !important;
+            padding: 0 !important;
+            border: none !important;
+        }
+
+
+        ::ng-deep .p-datatable .p-datatable-tbody>tr.order-row {
+            display: grid !important;
+
+            grid-template-columns: 1fr auto;
+            grid-template-rows: auto auto auto;
+            gap: 10px;
+
+            background: #fff;
+            border: 1px solid #e5e7eb !important;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        ::ng-deep .p-datatable .p-datatable-tbody>tr>td {
+            border: none !important;
+            padding: 0 !important;
+            display: block !important;
+        }
+
+
+        .col-client {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        .col-time {
+            grid-column: 2;
+            grid-row: 1;
+            text-align: right;
+        }
+
+        .col-method {
+            grid-column: 1;
+            grid-row: 2;
+            margin-top: 5px;
+            color: #555;
+        }
+
+        .col-total {
+            grid-column: 2;
+            grid-row: 2;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .col-status {
+            grid-column: 1;
+            grid-row: 3;
+            align-self: end;
+            margin-top: 10px;
+        }
+
+        
+
+       
+    }
+
+
+
+}

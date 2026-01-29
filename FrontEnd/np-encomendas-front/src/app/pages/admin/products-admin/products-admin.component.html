@@ -1,0 +1,221 @@
+<div class="card p-4">
+    <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+
+
+    <div class="flex flex-column md:flex-row align-items-center justify-content-between mb-4 gap-3">
+        <h2 class="m-0 text-2xl font-bold text-900 brand-font">Gerenciar Produtos</h2>
+
+        <button pButton pRipple label="Novo Produto" icon="pi pi-plus" class="p-button-success"
+            (click)="openNew()"></button>
+    </div>
+
+    <div class="surface-ground p-3 border-round-xl mb-4">
+        <div class="grid formgrid p-fluid">
+
+            <div class="col-12 md:col-10 mb-3 md:mb-0">
+                <label class="block text-600 font-bold mb-2 text-sm">Buscar Produto</label>
+                <p-iconfield iconPosition="left">
+                    <p-inputicon>
+                        <i class="pi pi-search"></i>
+                    </p-inputicon>
+                    <input pInputText type="text" [(ngModel)]="filterName" (input)="onSearch($event)"
+                        placeholder="Nome do produto..." />
+                </p-iconfield>
+            </div>
+
+            <div class="col-12 md:col-2 flex align-items-end">
+                <button pButton icon="pi pi-filter-slash" label="Limpar" class="p-button-outlined w-full"
+                    (click)="cleanSearch()"> </button>
+            </div>
+        </div>
+    </div>
+
+    <p-table [value]="products" [lazy]="true" (onLazyLoad)="loadProducts($event)" [totalRecords]="totalRecords"
+        [loading]="loading" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[5, 10, 20]" responsiveLayout="stack"
+        breakpoint="960px" styleClass="p-datatable-sm" rowHover="true">
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th class="text-center" style="width: 10%">Img</th>
+                <th class="text-left" style="width: 25%">Nome</th>
+                <th class="text-center" style="width: 15%">Preço</th>
+                <th class="text-center hidden md:table-cell" style="width: 10%">Unidade</th>
+                <th class="text-center hidden md:table-cell" style="width: 10%">Custom</th>
+                <th class="text-center" style="width: 10%">Status</th>
+                <th class="text-center" style="width: 15%">Ações</th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-product>
+            <tr class="product-row">
+
+                <td class="col-img text-center">
+                    <div class="image-wrapper shadow-2 mx-auto md:mx-0">
+                        <img [src]="product.imageUrl" *ngIf="product.imageUrl" class="product-img" />
+                        <i class="pi pi-image text-2xl text-gray-400" *ngIf="!product.imageUrl"></i>
+                    </div>
+                </td>
+
+                <td class="col-name text-left">
+
+
+                    <div class="flex justify-content-between w-full">
+
+                        <span class="product-name font-bold mr-2">{{product.name}}</span>
+
+                        <div class="md:hidden flex flex-column align-items-end" style="min-width: fit-content;">
+
+                            <span class="text-500 text-sm font-semibold white-space-nowrap">
+                                {{product.unitOfMeasure}}
+                            </span>
+
+                            <p-tag *ngIf="product.customizable" value="Customizável" severity="info"
+                                icon="pi pi-check-circle" styleClass="text-xs py-0 px-2 mt-1">
+                            </p-tag>
+                        </div>
+
+                    </div>
+
+                </td>
+
+                <td class="col-price text-center">
+                    <div *ngIf="product.isOnSale; else normalPrice">
+                        <span class="text-500 line-through text-xs block md:inline mr-2">{{ product.price |
+                            currency:'BRL' }}</span>
+                        <span class="text-green-600 font-bold">{{ product.finalPrice | currency:'BRL' }}</span>
+                    </div>
+                    <ng-template #normalPrice>
+                        <span class="font-bold">{{ product.price | currency:'BRL' }}</span>
+                    </ng-template>
+                </td>
+
+                <td class="hidden md:table-cell text-center">
+                    {{product.unitOfMeasure}}
+                </td>
+
+                <td class="hidden md:table-cell text-center">
+                    <i class="pi"
+                        [ngClass]="{'pi-check-circle text-green-500': product.customizable, 'pi-times-circle text-gray-300': !product.customizable}"></i>
+                </td>
+
+                <td class="col-status text-center">
+                    <span class="md:hidden text-sm font-bold text-500 mr-2">Ativo:</span>
+                    <p-toggleSwitch [(ngModel)]="product.active" (onChange)="onStatusChange(product)"></p-toggleSwitch>
+                </td>
+
+                <td class="col-actions text-center">
+                    <div class="flex justify-content-center gap-2">
+                        <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-success"
+                            (click)="editProduct(product)"></button>
+                        <button pButton icon="pi pi-tag" class="p-button-rounded p-button-text p-button-warning"
+                            (click)="openPromoDialog(product)"></button>
+                        <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger"
+                            (click)="deleteProduct(product)"></button>
+                    </div>
+                </td>
+
+            </tr>
+        </ng-template>
+    </p-table>
+
+    <p-dialog [(visible)]="productDialog" [style]="{width: '500px'}" header="Detalhes do Produto" [modal]="true"
+        styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <div class="flex flex-column gap-3 mt-2">
+
+                <div
+                    class="flex flex-column align-items-center justify-content-center p-3 border-2 border-dashed surface-border border-round surface-50">
+                    <div *ngIf="imagePreview || product.imageUrl; else noImage"
+                        class="mb-3 border-round overflow-hidden shadow-2" style="width: 120px; height: 120px;">
+                        <img [src]="imagePreview || product.imageUrl" class="w-full h-full" style="object-fit: cover;">
+                    </div>
+                    <ng-template #noImage>
+                        <i class="pi pi-image text-4xl text-gray-300 mb-3"></i>
+                    </ng-template>
+                    <p-fileUpload mode="basic" chooseLabel="Escolher Imagem" chooseIcon="pi pi-upload" accept="image/*"
+                        maxFileSize="1000000" (onSelect)="onFileSelect($event)" [auto]="false"
+                        styleClass="p-button-outlined p-button-secondary w-auto">
+                    </p-fileUpload>
+                </div>
+
+                <div class="field">
+                    <label for="name" class="font-bold block mb-2">Nome</label>
+                    <input type="text" pInputText id="name" [(ngModel)]="product.name" required class="w-full" />
+                    <small class="p-error block mt-1" *ngIf="submitted && !product.name">Obrigatório.</small>
+                </div>
+
+                <div class="formgrid grid">
+                    <div class="field col-6">
+                        <label for="price" class="font-bold block mb-2">Preço</label>
+                        <p-inputNumber id="price" [(ngModel)]="product.price" mode="currency" currency="BRL"
+                            locale="pt-BR" [required]="true" styleClass="w-full"
+                            inputStyleClass="w-full"></p-inputNumber>
+                        <small class="p-error block mt-1" *ngIf="submitted && !product.price">Obrigatório.</small>
+                    </div>
+                    <div class="field col-6">
+                        <label for="unit" class="font-bold block mb-2">Unidade</label>
+                        <p-select id="unit" [options]="units" [(ngModel)]="product.unitOfMeasure"
+                            placeholder="Selecione..." [required]="true" styleClass="w-full" appendTo="body">
+                        </p-select>
+                        <small class="p-error block mt-1"
+                            *ngIf="submitted && !product.unitOfMeasure">Obrigatório.</small>
+                    </div>
+                </div>
+
+                <div class="field flex align-items-center gap-2 mt-2">
+                    <p-checkbox [(ngModel)]="product.customizable" [binary]="true" inputId="custom"></p-checkbox>
+                    <label for="custom" class="m-0 cursor-pointer select-none">
+                        Produto Customizável? (Cliente escolhe sabores)
+                    </label>
+                </div>
+
+                <div class="field">
+                    <label for="description" class="font-bold block mb-2">Descrição</label>
+                    <textarea id="description" pInputTextarea [(ngModel)]="product.description" required rows="3"
+                        class="w-full"></textarea>
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+                (click)="hideDialog()"></button>
+            <button pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-primary"
+                (click)="saveProduct()"></button>
+        </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="promoDialog" [style]="{width: '400px'}" header="Criar Promoção" [modal]="true"
+        styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <div class="flex flex-column gap-3 mt-2">
+                <div class="field">
+                    <label class="font-bold block mb-2">Preço Promocional</label>
+                    <p-inputNumber [(ngModel)]="newPromo.promotionalPrice" mode="currency" currency="BRL" locale="pt-BR"
+                        placeholder="Novo valor" styleClass="w-full" inputStyleClass="w-full"></p-inputNumber>
+                    <small class="p-error block mt-1" *ngIf="submittedPromo && !newPromo.promotionalPrice">Informe o
+                        valor.</small>
+                </div>
+
+                <div class="field">
+                    <label class="font-bold block mb-2">Início</label>
+                    <p-datepicker [(ngModel)]="newPromo.initialDate" [showTime]="true" dateFormat="dd/mm/yy"
+                        appendTo="body" inputStyleClass="w-full">
+                    </p-datepicker>
+                </div>
+
+                <div class="field">
+                    <label class="font-bold block mb-2">Fim</label>
+                    <p-datepicker [(ngModel)]="newPromo.finalDate" [showTime]="true" dateFormat="dd/mm/yy"
+                        appendTo="body" inputStyleClass="w-full">
+                    </p-datepicker>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <button pButton pRipple label="Cancelar" class="p-button-text" (click)="promoDialog = false"></button>
+            <button pButton pRipple label="Criar Promoção" class="p-button-warning" (click)="savePromotion()"></button>
+        </ng-template>
+    </p-dialog>
+</div>

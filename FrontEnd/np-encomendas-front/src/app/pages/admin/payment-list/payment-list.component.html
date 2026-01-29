@@ -1,0 +1,228 @@
+<div class="card p-4">
+    <div class="flex flex-column md:flex-row align-items-center justify-content-between mb-4">
+        <h2 class="m-0 text-2xl font-bold text-900 brand-font">Gestão Financeira</h2>
+    </div>
+
+    <div class="surface-ground p-3 border-round-xl mb-4">
+        <div class="grid formgrid p-fluid">
+            
+            <div class="col-12 md:col-3 mb-3 md:mb-0">
+                <label class="block text-600 font-bold mb-2 text-sm">Período</label>
+                <p-datepicker [(ngModel)]="filterDates" 
+                              selectionMode="range" 
+                              [readonlyInput]="true" 
+                              dateFormat="dd/mm/yy"
+                              placeholder="Selecione as datas"
+                              [showButtonBar]="true"
+                              (onSelect)="applyFilters()"
+                              (onClear)="applyFilters()">
+                </p-datepicker>
+            </div>
+
+            <div class="col-12 md:col-3 mb-3 md:mb-0">
+                <label class="block text-600 font-bold mb-2 text-sm">Status</label>
+                <p-select [options]="statusOptions" 
+                          [(ngModel)]="status" 
+                          optionLabel="label"
+                          optionValue="value"
+                          placeholder="Todos" 
+                          [showClear]="true"
+                          (onChange)="applyFilters()">
+                    
+                    <ng-template #selectedItem let-selected>
+                        <div class="flex align-items-center gap-2" *ngIf="selected">
+                            <p-tag [value]="selected.label" [severity]="selected.severity"></p-tag>
+                        </div>
+                    </ng-template>
+
+                    <ng-template #item let-item>
+                        <div class="flex align-items-center gap-2">
+                            <p-tag [value]="item.label" [severity]="item.severity"></p-tag>
+                        </div>
+                    </ng-template>
+                </p-select>
+            </div>
+
+            <div class="col-12 md:col-4 mb-3 md:mb-0">
+                <label class="block text-600 font-bold mb-2 text-sm">Buscar</label>
+                <p-iconfield iconPosition="left">
+                    <p-inputicon styleClass="pi pi-search" />
+                    <input pInputText type="text" 
+                           [(ngModel)]="searchText" 
+                           (input)="applyFilters()" 
+                           placeholder="Nome do cliente ou ID..." />
+                </p-iconfield>
+            </div>
+
+            <div class="col-12 md:col-2 flex align-items-end">
+                <button pButton icon="pi pi-filter-slash" 
+                        label="Limpar" 
+                        class="p-button-outlined w-full" 
+                        (click)="clearFilters()">
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <p-table [value]="payments" 
+             [lazy]="true" 
+             (onLazyLoad)="loadPayments($event)" 
+             [totalRecords]="totalRecords"
+             [rows]="pageSize" 
+             [paginator]="true" 
+             [loading]="loading" 
+             [rowHover]="true" 
+             styleClass="p-datatable-striped"
+             responsiveLayout="stack" 
+             breakpoint="960px">
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th class="text-center" style="width: 5%">ID</th>
+                <th class="text-left" style="width: 25%">Cliente / Pedido</th>
+                <th class="text-center" style="width: 15%">Data</th>
+                <th class="text-center" style="width: 15%">Método</th>
+                <th class="text-right" style="width: 15%">Valor</th>
+                <th class="text-center" style="width: 10%">Status</th>
+                <th class="text-center" style="width: 15%">Ações</th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-payment>
+            <tr class="payment-row">
+                
+                <td class="col-id text-center">
+                    <span class="p-column-title font-bold md:hidden">ID</span>
+                    <span class="text-500">#{{ payment.id }}</span>
+                </td>
+
+                <td class="col-client text-left">
+                    <div class="font-bold text-lg md:text-base">{{ payment.order?.userName }}</div>
+                    <div class="text-sm text-500">Pedido #{{ payment.orderId }}</div>
+                </td>
+
+                <td class="col-date text-center">
+                    <span class="p-column-title font-bold md:hidden">Data</span>
+                    {{ payment.date | date:'dd/MM/yyyy HH:mm' }}
+                </td>
+
+                <td class="col-method text-center">
+                    <div class="flex align-items-center justify-content-center gap-2">
+                        <i class="pi pi-credit-card" *ngIf="payment.paymentTypeId === 'credit_card'"></i>
+                        <i class="pi pi-bolt" *ngIf="payment.paymentTypeId === 'bank_transfer' || payment.paymentMethodId === 'pix'"></i>
+                        <i class="pi pi-wallet" *ngIf="payment.paymentTypeId === 'account_money'"></i>
+                        <i class="pi pi-file" *ngIf="payment.paymentTypeId === 'ticket'"></i>
+                        <span class="capitalize">{{ translatePaymentMethod(payment.paymentTypeId, payment.paymentMethodId) }}</span>
+                    </div>
+                </td>
+
+                <td class="col-value text-right">
+                    <span class="font-bold text-900 text-xl md:text-base">
+                        {{ payment.transactionAmount | currency:'BRL' }}
+                    </span>
+                </td>
+
+                <td class="col-status text-center">
+                    <p-tag [value]="translateStatus(payment.status)" [severity]="getSeverity(payment.status)"
+                        styleClass="w-full md:w-auto"></p-tag>
+                </td>
+
+                <td class="col-actions text-center">
+                    <div class="flex gap-2 w-full justify-content-end md:justify-content-center">
+                        <button pButton icon="pi pi-eye" label="Ver Detalhes"
+                            class="p-button-outlined p-button-info p-button-sm w-full md:hidden" 
+                            (click)="showDetails(payment)">
+                        </button>
+                        <button pButton icon="pi pi-eye"
+                            class="p-button-rounded p-button-text p-button-info hidden md:inline-flex"
+                            pTooltip="Ver Detalhes" tooltipPosition="bottom" 
+                            (click)="showDetails(payment)">
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="7" class="text-center p-4">Nenhum pagamento encontrado.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="displayDialog" ...>
+    ...
+</p-dialog>
+
+<p-dialog [(visible)]="displayDialog" [modal]="true" [style]="{width: '500px'}" header="Detalhes da Transação"
+    styleClass="p-fluid">
+
+    <div *ngIf="selectedPayment" class="flex flex-column gap-3">
+
+        <div class="surface-100 p-3 border-round text-center">
+            <span class="text-600 text-sm">Status Atual</span>
+            <div class="mt-2">
+                <p-tag [value]="translateStatus(selectedPayment.status) | uppercase"
+                    [severity]="getSeverity(selectedPayment.status)" styleClass="text-lg px-4 py-2"></p-tag>
+            </div>
+
+            <div class="text-sm text-500 mt-2 font-italic" *ngIf="selectedPayment.statusDetail">
+                Motivo: {{ translateStatusDetail(selectedPayment.statusDetail) }}
+            </div>
+        </div>
+
+        <div class="surface-card border-1 border-200 border-round p-3 shadow-1">
+            <div class="text-lg font-bold text-900 mb-3 border-bottom-1 border-300 pb-2">Resumo Financeiro</div>
+
+            <div class="flex justify-content-between mb-2">
+                <span class="text-600">Valor Bruto:</span>
+                <span class="font-bold text-900">{{ selectedPayment.transactionAmount | currency:'BRL' }}</span>
+            </div>
+
+            <div class="flex justify-content-between mb-2 text-red-500">
+                <span>Taxas (MP):</span>
+                <span>- {{ selectedPayment.feeAmount | currency:'BRL' }}</span>
+            </div>
+
+            <div
+                class="flex justify-content-between text-xl font-bold text-green-700 mt-3 pt-2 border-top-1 border-200">
+                <span>Líquido:</span>
+                <span>{{ selectedPayment.netReceivedAmount | currency:'BRL' }}</span>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="col-6">
+                <label class="text-500 text-sm">Método</label>
+
+                <div class="font-medium uppercase">
+                    {{ translatePaymentMethod(selectedPayment.paymentTypeId, selectedPayment.paymentMethodId) }}
+                </div>
+
+                <div class="text-sm text-600" *ngIf="selectedPayment.installments > 1">
+                    {{ selectedPayment.installments }}x parcelas
+                </div>
+            </div>
+            <div class="col-6">
+                <label class="text-500 text-sm">Data Liberação ($)</label>
+                <div class="font-bold text-blue-600">
+                    {{ selectedPayment.moneyReleaseDate ? (selectedPayment.moneyReleaseDate | date:'dd/MM/yyyy') :
+                    'Pendente' }}
+                </div>
+            </div>
+        </div>
+
+        <div class="surface-50 p-3 border-round mt-2">
+            <div class="text-sm text-500 mb-1">Dados do Pedido</div>
+            <div class="font-bold">{{ selectedPayment.order.userName }}</div>
+            <div class="text-sm">Entrega prevista: {{ selectedPayment.order.deliverTime | date:'dd/MM/yyyy HH:mm' }}
+            </div>
+        </div>
+
+    </div>
+
+    <ng-template pTemplate="footer">
+        <button pButton label="Fechar" icon="pi pi-times" class="p-button-text" (click)="displayDialog=false"></button>
+    </ng-template>
+</p-dialog>

@@ -1,0 +1,70 @@
+
+
+<div class="surface-ground flex align-items-center justify-content-center min-h-screen p-4">
+    
+    <div class="surface-card p-4 shadow-2 border-round w-full lg:w-6" *ngIf="!isLoading; else loading">
+        
+        <div class="text-center mb-5">
+            <div class="text-900 text-3xl font-bold brand-font mb-2">Quase lá!</div>
+            <span class="text-600 font-medium">Escolha como deseja realizar o pagamento</span>
+        </div>
+
+        <div class="flex flex-column gap-3">
+            
+            <div class="field-radiobutton payment-option-card border-round p-3 cursor-pointer mb-3"
+                 [class.border-primary]="selectedOption === 100"
+                 (click)="selectedOption = 100">
+                <p-radioButton name="payment" [value]="100" [(ngModel)]="selectedOption" inputId="opt100"></p-radioButton>
+                <label for="opt100" class="ml-3 cursor-pointer w-full">
+                    <div class="font-bold text-900 mb-1">Pagamento Integral (100%)</div>
+                    <div class="text-700 text-sm">Pague o valor total agora e garanta sua reserva completa.</div>
+                    <div class="text-xl text-primary font-bold mt-2">
+                        {{ orderTotal | currency:'BRL' }}
+                    </div>
+                </label>
+            </div>
+
+           <div class="field-radiobutton payment-option-card border-round p-3 cursor-pointer"
+                 [class.border-primary]="selectedOption === 50"
+                 (click)="selectedOption = 50">
+                <p-radioButton name="payment" [value]="50" [(ngModel)]="selectedOption" inputId="opt50"></p-radioButton>
+                <label for="opt50" class="ml-3 cursor-pointer w-full">
+                    <div class="font-bold text-900 mb-1">Sinal de Entrada (50%)</div>
+                    <div class="text-700 text-sm">Pague metade agora para reservar a data. O restante deve ser pago na entrega.</div>
+                    <div class="text-xl text-primary font-bold mt-2">
+                        {{ (orderTotal / 2) | currency:'BRL' }}
+                    </div>
+                </label>
+            </div>
+
+        </div>
+
+        <p-divider></p-divider>
+
+        <div class="bg-blue-50 text-blue-700 p-3 border-round mb-4 text-sm line-height-3">
+            <i class="pi pi-info-circle mr-2"></i>
+            <strong>Informações Importantes:</strong>
+            <ul class="pl-3 m-0 mt-2">
+                <li>Você será redirecionado para o ambiente seguro do <strong>Mercado Pago</strong>.</li>
+                <li>Sua reserva só será confirmada após a aprovação do pagamento.</li>
+            </ul>
+        </div>
+
+        <p-button label="Ir para o Pagamento" 
+                  icon="pi pi-external-link" 
+                  styleClass="w-full p-button-lg" 
+                  [loading]="isProcessingPayment"
+                  (onClick)="goToMercadoPago()">
+        </p-button>
+        
+        <div class="text-center mt-3">
+             <a routerLink="/cardapio" class="text-sm text-500 no-underline hover:text-primary cursor-pointer">Voltar ao cardápio</a>
+        </div>
+
+    </div>
+
+    <ng-template #loading>
+        <p-progressSpinner></p-progressSpinner>
+    </ng-template>
+
+</div>
