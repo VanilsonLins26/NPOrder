@@ -48,7 +48,7 @@ export const appConfig: ApplicationConfig = {
         redirectUrl: window.location.origin + '/callback',
         postLogoutRedirectUri: window.location.origin,
         clientId: 'angular_client', 
-        scope: 'openid profile nporder_api ',
+        scope: 'openid profile nporder_api offline_access',
         responseType: 'code',
         silentRenew: true,
         useRefreshToken: true,

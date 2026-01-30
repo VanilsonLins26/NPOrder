@@ -113,7 +113,8 @@ AllowedCorsOrigins = {
                 IdentityServerConstants.StandardScopes.OpenId,
                 IdentityServerConstants.StandardScopes.Profile,
                 "nporder_api",
-                "roles"
+                "roles",
+                IdentityServerConstants.StandardScopes.OfflineAccess
                }
 
             }
