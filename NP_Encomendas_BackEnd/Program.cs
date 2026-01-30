@@ -1,6 +1,7 @@
 using MercadoPago.Client;
 using MercadoPago.Config;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -169,6 +170,17 @@ builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
+app.Use((context, next) =>
+{
+    context.Request.Scheme = "https";
+    return next();
+});
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -181,6 +193,8 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "API NP");
     c.RoutePrefix = "swagger";
 });
+
+
 
 
 app.UseCors("AllowIdentity");
