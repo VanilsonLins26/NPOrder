@@ -35,12 +35,7 @@ export class NavbarComponent implements OnInit {
       this.isAuthenticated = isAuthenticated;
 
 
-      if (isAuthenticated) {
-
-        this.cartService.getCart().subscribe({
-          error: (err) => console.error('Erro ao buscar carrinho inicial', err)
-        });
-      }
+      
     });
 
 
@@ -59,11 +54,19 @@ export class NavbarComponent implements OnInit {
           this.isAdmin = false;
         }
       }
+
+
     });
 
     this.cartService.cartCount$.subscribe(count => {
       this.cartCount = count;
     });
+
+    if (this.isAuthenticated && !this.isAdmin) {
+            this.cartService.getCart().subscribe({
+                error: (err) => console.error('Admin ou erro: Carrinho ignorado', err)
+            });
+        }
   }
 
 
