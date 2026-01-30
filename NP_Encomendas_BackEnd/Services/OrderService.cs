@@ -198,37 +198,41 @@ public class OrderService : IOrderService
         return order;
     }
 
-    public async Task<OrderResponseDTO> ReadyForPickup(Order order)
+    public async Task<OrderResponseDTO> ReadyForPickup(int orderId)
     {
+        var order = await GetOrderByIdNoTracking(orderId);
+
         if (order.Status != Status.Confirmed)
             return null;
 
         order.Status = Status.ReadyForPickup;
-        _uof.OrderRepository.Update(order);
+        _uof.OrderRepository.Update(_mapper.Map<Order>(order));
         await _uof.CommitAsync();
 
         return _mapper.Map<OrderResponseDTO>(order);
     }
 
-    public async Task<OrderResponseDTO> OutForDelivery(Order order)
+    public async Task<OrderResponseDTO> OutForDelivery(int orderId)
     {
+        var order = await GetOrderByIdNoTracking(orderId);
         // if (order.Status != Status.ReadyForPickup)
         // return null;
 
         order.Status = Status.OutForDelivery;
-        _uof.OrderRepository.Update(order);
+        _uof.OrderRepository.Update(_mapper.Map<Order>(order));
         await _uof.CommitAsync();
 
         return _mapper.Map<OrderResponseDTO>(order);
     }
 
-    public async Task<OrderResponseDTO> Delivered(Order order)
+    public async Task<OrderResponseDTO> Delivered(int orderId)
     {
+        var order = await GetOrderByIdNoTracking(orderId);
         //if (order.Status != Status.OutForDelivery)
         //return null;
 
         order.Status = Status.Delivered;
-        _uof.OrderRepository.Update(order);
+        _uof.OrderRepository.Update(_mapper.Map<Order>(order));
         await _uof.CommitAsync();
 
         return _mapper.Map<OrderResponseDTO>(order);

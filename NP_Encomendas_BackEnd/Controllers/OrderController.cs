@@ -143,13 +143,8 @@ public class OrderController : ControllerBase
     [HttpPost("{orderId:int}/readyforpickup")]
     public async Task<ActionResult<OrderResponseDTO>> ReadyForPickup(int orderId)
     {
-        var userId = GetUserId();
-        var order = await _Service.OrderPermisson(orderId, userId);
 
-        if (order is null)
-            return BadRequest("Você não tem permissões sobre essa encomenda, ou não existe");
-
-        var updatedOrder = await _Service.ReadyForPickup(order);
+        var updatedOrder = await _Service.ReadyForPickup(orderId);
 
         if (updatedOrder is null)
             return BadRequest("Você só pode mudar, se estiver em 'Pedido confirmado'!");
@@ -164,13 +159,8 @@ public class OrderController : ControllerBase
     [HttpPost("{orderId:int}/outfordelivery")]
     public async Task<ActionResult<OrderResponseDTO>> OutForDelivery(int orderId)
     {
-        var userId = GetUserId();
-        var order = await _Service.OrderPermisson(orderId, userId);
 
-        if (order is null)
-            return BadRequest("Você não tem permissões sobre essa encomenda, ou não existe");
-
-        var updatedOrder = await _Service.OutForDelivery(order);
+        var updatedOrder = await _Service.OutForDelivery(orderId);
 
         if (updatedOrder is null)
             return BadRequest("Você só pode mudar , se estiver em 'Pronto para retirada'!");
@@ -185,13 +175,9 @@ public class OrderController : ControllerBase
     [HttpPost("{orderId:int}/delivered")]
     public async Task<ActionResult<OrderResponseDTO>> Delivered(int orderId)
     {
-        var userId = GetUserId();
-        var order = await _Service.OrderPermisson(orderId, userId);
 
-        if (order is null)
-            return BadRequest("Você não tem permissões sobre essa encomenda, ou não existe");
 
-        var updatedOrder = await _Service.Delivered(order);
+        var updatedOrder = await _Service.Delivered(orderId);
 
         if (updatedOrder is null)
             return BadRequest("Você só pode mudar , se estiver em 'Saiu para entrega'!");

@@ -15,9 +15,9 @@ public interface IOrderService
     Task<DashboardStatsResponseDTO> GetDashboardStats();
     Task<OrderResponseDTO> ConfirmOrder(int orderId, decimal amountPaid);
     Task<Order> OrderPermisson(int orderId, string userId);
-    Task<OrderResponseDTO> ReadyForPickup(Order order);
-    Task<OrderResponseDTO> OutForDelivery(Order order);
-    Task<OrderResponseDTO> Delivered(Order order);
-    Task<OrderResponseDTO> CancelOrder(Order order);
+    Task<OrderResponseDTO> ReadyForPickup(int orderId);
+    Task<OrderResponseDTO> OutForDelivery(int orderId);
+    Task<OrderResponseDTO> Delivered(int orderId);
+    Task<OrderResponseDTO> CancelOrder(Order orderId);
     Task<ReportOrdersResponseDTO> GetReportByMonth(OrdersFilterMonthAndYear parameters, string userId);
 }
