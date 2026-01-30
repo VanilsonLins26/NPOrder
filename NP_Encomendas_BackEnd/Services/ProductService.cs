@@ -96,12 +96,12 @@ public class ProductService : IProductService
         {
             return null;
         }
-        var activePromo = product.Promotions.Where(p => p.InitialDate <= DateTime.UtcNow && p.FinalDate >= DateTime.UtcNow).
+        var activePromo = product.Promotions?.Where(p => p.InitialDate <= DateTime.UtcNow && p.FinalDate >= DateTime.UtcNow).
                                              OrderBy(p => p.PromotionalPrice).FirstOrDefault();
         var productDto =  _mapper.Map<ProductResponseDto>(product);
         productDto.FinalPrice = activePromo != null ? activePromo.PromotionalPrice : product.Price;
         productDto.IsOnSale = activePromo != null;
-        productDto.PromotionEndTime = activePromo.FinalDate;
+        productDto.PromotionEndTime = activePromo != null ? activePromo.FinalDate: null;
 
 
         return productDto;
