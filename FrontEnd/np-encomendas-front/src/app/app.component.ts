@@ -33,42 +33,13 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
 
-    this.oidcSecurityService.checkAuth().subscribe(({ isAuthenticated, userData, accessToken }) => {
-
-      console.log('App iniciou. Está logado?', isAuthenticated);
-
-      if (isAuthenticated) {
-        console.log('Token salvo com sucesso:', accessToken);
-        console.log('Dados do usuário:', userData);
-        this.navigateBasedOnRole(userData);
-      } else {
-        console.log('Usuário não está logado.');
-        this.isLoading = false;
-      }
+    this.oidcSecurityService.checkAuth().subscribe(({ isAuthenticated, userData }) => {
+        console.log('App CheckAuth:', isAuthenticated, userData);
+        this.isLoading = false; 
     });
 
     
   }
   
- navigateBasedOnRole(userData: any) {
-    const roles = userData.role || userData['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
 
-    let isAdmin = false;
-
-    if (Array.isArray(roles)) {
-      isAdmin = roles.includes('Admin');
-    } else {
-      isAdmin = roles === 'Admin';
-    }
-
-    const currentUrl = this.router.url;
-
-    if (isAdmin && (currentUrl === '/' || currentUrl.includes('code='))) {
-      this.router.navigate(['/admin/produtos']).then(() => {
-        this.isLoading = false;
-      });
-    } else {
-      this.isLoading = false;
-    }
-  }
 }
