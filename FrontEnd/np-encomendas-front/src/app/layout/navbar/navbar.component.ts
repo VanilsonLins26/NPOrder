@@ -31,45 +31,36 @@ export class NavbarComponent implements OnInit {
       this.cartCount = count;
     });
 
+
     this.oidcSecurityService.isAuthenticated$.subscribe(({ isAuthenticated }) => {
       this.isAuthenticated = isAuthenticated;
 
-
-      
     });
 
 
     this.oidcSecurityService.userData$.subscribe((dados) => {
-
       if (dados) {
         this.userData = dados.userData || dados;
         const roles = this.userData?.role;
         console.log('Navbar recebeu:', this.userData);
 
+
         if (roles) {
-          this.isAdmin = Array.isArray(roles)
-            ? roles.includes('Admin')
-            : roles === 'Admin';
+          this.isAdmin = Array.isArray(roles) ? roles.includes('Admin') : roles === 'Admin';
         } else {
           this.isAdmin = false;
         }
-      }
 
 
-    });
-
-    this.cartService.cartCount$.subscribe(count => {
-      this.cartCount = count;
-    });
-
-    if (this.isAuthenticated && !this.isAdmin) {
-            this.cartService.getCart().subscribe({
-                error: (err) => console.error('Admin ou erro: Carrinho ignorado', err)
-            });
+        if (this.isAuthenticated && !this.isAdmin) {
+             console.log("Cliente detectado: Buscando carrinho...");
+             this.cartService.getCart().subscribe({
+                 error: (err) => console.error('Erro silencioso no carrinho:', err)
+             });
         }
+      }
+    });
   }
-
-
 
   login() {
     this.oidcSecurityService.authorize();
@@ -80,6 +71,7 @@ export class NavbarComponent implements OnInit {
     this.isAdmin = false;
     this.isAuthenticated = false;
     this.sidebarVisible = false;
+    this.cartCount = 0; 
     this.router.navigate(['/']);
   }
 
