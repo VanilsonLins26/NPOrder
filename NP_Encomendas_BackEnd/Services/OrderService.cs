@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.EntityFrameworkCore;
+using NP_Encomendas_BackEnd.Client;
 using NP_Encomendas_BackEnd.DTOs.Request;
 using NP_Encomendas_BackEnd.DTOs.Response;
 using NP_Encomendas_BackEnd.Helpers;
@@ -139,13 +140,13 @@ public class OrderService : IOrderService
             var order = new Order
             {
                 ClientId = userInfo.UserId,
-                DeliverTime = dto.DeliveryTime,
+                DeliverTime = dto.DeliveryTime.AddHours(-3),
                 Status = Status.PendingPayment,
                 UserName = userInfo.Name,
                 Phone = userInfo.Phone,
                 AddressId = dto.DeliveryMethod == DeliveryMethod.Delivery ? dto.AddressId : null,
-                DeliveryMethod = dto.DeliveryMethod
-
+                DeliveryMethod = dto.DeliveryMethod,
+                OrderTime = GetBrasiliaTime()
 
             };
 
@@ -346,6 +347,21 @@ public class OrderService : IOrderService
 
         return order;
 
+    }
+
+    public DateTime GetBrasiliaTime()
+    {
+        DateTime timeUtc = DateTime.UtcNow;
+        try
+        {
+            TimeZoneInfo kstZone = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
+            return TimeZoneInfo.ConvertTimeFromUtc(timeUtc, kstZone);
+        }
+        catch (TimeZoneNotFoundException)
+        {
+            TimeZoneInfo kstZone = TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo");
+            return TimeZoneInfo.ConvertTimeFromUtc(timeUtc, kstZone);
+        }
     }
 
 
