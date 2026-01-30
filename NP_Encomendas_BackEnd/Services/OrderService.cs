@@ -51,6 +51,7 @@ public class OrderService : IOrderService
             Status.ReadyForPickup,
             Status.OutForDelivery
                 ];
+            descending = false; 
         }
         else if (parameters.ViewModel == OrderViewModel.History)
         {
