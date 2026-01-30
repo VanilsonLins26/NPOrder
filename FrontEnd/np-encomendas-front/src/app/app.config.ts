@@ -36,13 +36,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch(), withInterceptors([authInterceptor()])),
     
     provideAnimationsAsync(),
-    
-    providePrimeNG({
-        theme: {
-            preset: Aura,
-            options: { darkModeSelector: false || 'none' }
-        }
-    }),
 
 
     provideAuth({
@@ -72,7 +65,7 @@ export const appConfig: ApplicationConfig = {
             preset: Aura,
             options: { darkModeSelector: false || 'none' }
         },
-        // ADICIONE ISTO AQUI DENTRO:
+
         translation: {
           accept: 'Sim',
           reject: 'Não',
