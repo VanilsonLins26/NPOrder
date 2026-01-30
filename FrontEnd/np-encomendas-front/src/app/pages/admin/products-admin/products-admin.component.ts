@@ -29,12 +29,12 @@ import { InputIconModule } from 'primeng/inputicon';
   imports: [
     CommonModule, FormsModule, TableModule, ButtonModule, ToolbarModule,
     InputTextModule, InputTextModule, DialogModule, ConfirmDialogModule,
-    ToastModule, InputNumberModule, FileUploadModule, TagModule,CheckboxModule,
-    DatePickerModule, ToggleSwitch, TooltipModule, SelectModule,IconFieldModule,
+    ToastModule, InputNumberModule, FileUploadModule, TagModule, CheckboxModule,
+    DatePickerModule, ToggleSwitch, TooltipModule, SelectModule, IconFieldModule,
     InputIconModule, InputTextModule
 
   ],
-  providers: [ ConfirmationService],
+  providers: [ConfirmationService],
   templateUrl: './products-admin.component.html',
   styleUrl: './products-admin.component.scss'
 })
@@ -72,12 +72,13 @@ export class ProductsAdminComponent {
     private productService: ProductService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService
-  ) { 
+  ) {
     this.searchSubject.pipe(debounceTime(500), distinctUntilChanged())
-          .subscribe(val => {
-              this.filterName = val;
-              this.loadProducts({ first: 0, rows: this.pageSize }); 
-          });}
+      .subscribe(val => {
+        this.filterName = val;
+        this.loadProducts({ first: 0, rows: this.pageSize });
+      });
+  }
 
   onFileSelect(event: any) {
     const file = event.files[0];
@@ -91,13 +92,13 @@ export class ProductsAdminComponent {
   }
 
   onSearch(event: any) {
-      this.searchSubject.next(event.target.value);
+    this.searchSubject.next(event.target.value);
   }
 
   cleanSearch() {
-    this.filterName = ''; 
+    this.filterName = '';
     this.loadProducts({ first: 0, rows: 10 });
-}
+  }
 
 
   loadProducts(event: TableLazyLoadEvent) {
@@ -107,7 +108,7 @@ export class ProductsAdminComponent {
     const pageNumber = (event.first! / event.rows!) + 1;
     const pageSize = event.rows!;
 
-    if (event.rows) this.pageSize = event.rows; 
+    if (event.rows) this.pageSize = event.rows;
 
     this.productService.getProducts(pageNumber, this.pageSize, this.filterName).subscribe({
       next: (response) => {
@@ -125,48 +126,47 @@ export class ProductsAdminComponent {
   onStatusChange(product: Product) {
     this.productService.toggleStatus(product.id!, product.active!).subscribe({
       next: () => {
-        this.messageService.add({ 
-            severity: 'success', 
-            summary: 'Sucesso', 
-            detail: `Produto ${product.active ? 'Ativado' : 'Desativado'}!` 
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: `Produto ${product.active ? 'Ativado' : 'Desativado'}!`
         });
       },
       error: () => {
-        // Reverte visualmente se der erro no back
-        product.active = !product.active; 
+
+        product.active = !product.active;
         this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possível alterar o status' });
       }
     });
   }
 
   openPromoDialog(product: Product) {
-      this.newPromo = this.getEmptyPromo();
-      this.newPromo.productId = product.id!;
-      this.submittedPromo = false;
-      this.promoDialog = true;
+    this.newPromo = this.getEmptyPromo();
+    this.newPromo.productId = product.id!;
+    this.submittedPromo = false;
+    this.promoDialog = true;
   }
 
   savePromotion() {
-      this.submittedPromo = true;
+    this.submittedPromo = true;
 
-      if (this.newPromo.promotionalPrice && this.newPromo.initialDate && this.newPromo.finalDate) {
-          // Validação básica de data
-          if(this.newPromo.initialDate >= this.newPromo.finalDate) {
-              this.messageService.add({ severity: 'warn', summary: 'Atenção', detail: 'Data final deve ser maior que a inicial.' });
-              return;
-          }
-
-          this.productService.createPromotion(this.newPromo).subscribe({
-              next: () => {
-                  this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Promoção Criada!' });
-                  this.promoDialog = false;
-                  if (this.lastLazyLoadEvent) {
-                this.loadProducts(this.lastLazyLoadEvent); 
-            }
-              },
-              error: () => this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar promoção.' })
-          });
+    if (this.newPromo.promotionalPrice && this.newPromo.initialDate && this.newPromo.finalDate) {
+      if (this.newPromo.initialDate >= this.newPromo.finalDate) {
+        this.messageService.add({ severity: 'warn', summary: 'Atenção', detail: 'Data final deve ser maior que a inicial.' });
+        return;
       }
+
+      this.productService.createPromotion(this.newPromo).subscribe({
+        next: () => {
+          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Promoção Criada!' });
+          this.promoDialog = false;
+          if (this.lastLazyLoadEvent) {
+            this.loadProducts(this.lastLazyLoadEvent);
+          }
+        },
+        error: () => this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar promoção.' })
+      });
+    }
   }
 
   openNew() {
@@ -181,7 +181,7 @@ export class ProductsAdminComponent {
     this.imagePreview = null;
     this.product = { ...product };
     this.productDialog = true;
-  
+
   }
 
   deleteProduct(product: Product) {
@@ -193,8 +193,8 @@ export class ProductsAdminComponent {
         this.productService.delete(product.id!).subscribe({
           next: () => {
             this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Produto excluído' });
-              if (this.lastLazyLoadEvent) {
-                this.loadProducts(this.lastLazyLoadEvent); 
+            if (this.lastLazyLoadEvent) {
+              this.loadProducts(this.lastLazyLoadEvent);
             }
 
           },
@@ -216,7 +216,9 @@ export class ProductsAdminComponent {
           next: () => {
             this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Produto Atualizado' });
             this.hideDialog();
-            this.loadProducts({ first: 0, rows: 10 });
+            if (this.lastLazyLoadEvent) {
+              this.loadProducts(this.lastLazyLoadEvent);
+            }
           },
           error: () => this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao atualizar' })
         });
@@ -253,16 +255,16 @@ export class ProductsAdminComponent {
   }
 
   getEmptyPromo(): Promotion {
-      return {
-          productId: 0,
-          promotionalPrice: 0,
-          initialDate: new Date(),
-          finalDate: new Date()
-      };
+    return {
+      productId: 0,
+      promotionalPrice: 0,
+      initialDate: new Date(),
+      finalDate: new Date()
+    };
   }
 
   selecionarTexto(event: any) {
-  const input = event.target as HTMLInputElement;
-  input?.select?.();
-}
+    const input = event.target as HTMLInputElement;
+    input?.select?.();
+  }
 }

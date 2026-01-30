@@ -46,7 +46,11 @@ export class AppComponent implements OnInit {
         this.isLoading = false;
       }
     });
+
+    
   }
+
+  
 
   private navigateBasedOnRole(userData: any) {
     const roles = userData.role || userData['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];

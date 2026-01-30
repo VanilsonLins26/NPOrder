@@ -148,7 +148,7 @@
                 <div class="formgrid grid">
                     <div class="field col-6">
                         <label for="price" class="font-bold block mb-2">Preço</label>
-                        <p-inputNumber id="price" [(ngModel)]="product.price" mode="currency" currency="BRL"
+                        <p-inputNumber id="price" [(ngModel)]="product.price" (onFocus)="selecionarTexto($event)" mode="currency" currency="BRL"
                             locale="pt-BR" [required]="true" styleClass="w-full"
                             inputStyleClass="w-full"></p-inputNumber>
                         <small class="p-error block mt-1" *ngIf="submitted && !product.price">Obrigatório.</small>
