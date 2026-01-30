@@ -42,6 +42,7 @@ export class OrdersAdminComponent {
   filterText: string = '';
   filterDates: Date[] | undefined;
   selectedStatusFilter: string | undefined;
+  lastLazyLoadEvent: any;
 
   viewOptions = [
     { label: 'Em Produção', value: 1 },      
@@ -60,6 +61,7 @@ export class OrdersAdminComponent {
   ) { }
 
  loadOrders(event: TableLazyLoadEvent) {
+  this.lastLazyLoadEvent = event;
   this.loading = true;
   
   const pageNumber = (event.first! / event.rows!) + 1;
@@ -165,7 +167,12 @@ cleanAndApplyFilters() {
         break;
       case 'cancel':
         this.confirmCancel();
+
+        if (this.lastLazyLoadEvent) {
+                this.loadOrders(this.lastLazyLoadEvent);
+            }
         return;
+        
     }
 
     if (obs$) {
@@ -182,6 +189,7 @@ cleanAndApplyFilters() {
                 this.orders.splice(index, 1);
                 this.totalRecords--; 
                 this.orderDialog = false;
+                
              } else {
                 this.orders[index] = updatedOrder;
              }

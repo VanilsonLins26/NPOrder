@@ -91,6 +91,11 @@ public class ProductService : IProductService
     public async Task<ProductResponseDto> GetAsync(int id)
     {
         var product = await _uof.ProductRepository.GetAsync(p => p.Id == id, p => p.Promotions);
+
+        if (product == null)
+        {
+            return null;
+        }
         var activePromo = product.Promotions.Where(p => p.InitialDate <= DateTime.UtcNow && p.FinalDate >= DateTime.UtcNow).
                                              OrderBy(p => p.PromotionalPrice).FirstOrDefault();
         var productDto =  _mapper.Map<ProductResponseDto>(product);

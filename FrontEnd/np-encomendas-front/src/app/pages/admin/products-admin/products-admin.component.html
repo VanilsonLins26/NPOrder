@@ -192,7 +192,7 @@
             <div class="flex flex-column gap-3 mt-2">
                 <div class="field">
                     <label class="font-bold block mb-2">Preço Promocional</label>
-                    <p-inputNumber [(ngModel)]="newPromo.promotionalPrice" mode="currency" currency="BRL" locale="pt-BR"
+                    <p-inputNumber [(ngModel)]="newPromo.promotionalPrice" (onFocus)="selecionarTexto($event)"  mode="currency" currency="BRL" locale="pt-BR"
                         placeholder="Novo valor" styleClass="w-full" inputStyleClass="w-full"></p-inputNumber>
                     <small class="p-error block mt-1" *ngIf="submittedPromo && !newPromo.promotionalPrice">Informe o
                         valor.</small>

@@ -57,6 +57,7 @@ export class ProductsAdminComponent {
   promoDialog: boolean = false;
   newPromo: Promotion = this.getEmptyPromo();
   submittedPromo: boolean = false;
+  lastLazyLoadEvent: any;
 
   units = [
     { label: 'Unidade (Un)', value: 'Un' },
@@ -100,6 +101,7 @@ export class ProductsAdminComponent {
 
 
   loadProducts(event: TableLazyLoadEvent) {
+    this.lastLazyLoadEvent = event;
     this.loading = true;
 
     const pageNumber = (event.first! / event.rows!) + 1;
@@ -158,6 +160,9 @@ export class ProductsAdminComponent {
               next: () => {
                   this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Promoção Criada!' });
                   this.promoDialog = false;
+                  if (this.lastLazyLoadEvent) {
+                this.loadProducts(this.lastLazyLoadEvent); 
+            }
               },
               error: () => this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar promoção.' })
           });
@@ -176,6 +181,7 @@ export class ProductsAdminComponent {
     this.imagePreview = null;
     this.product = { ...product };
     this.productDialog = true;
+  
   }
 
   deleteProduct(product: Product) {
@@ -187,7 +193,10 @@ export class ProductsAdminComponent {
         this.productService.delete(product.id!).subscribe({
           next: () => {
             this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Produto excluído' });
-            this.loadProducts({ first: 0, rows: 10 });
+              if (this.lastLazyLoadEvent) {
+                this.loadProducts(this.lastLazyLoadEvent); 
+            }
+
           },
           error: () => {
             this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possível excluir' });
@@ -251,4 +260,9 @@ export class ProductsAdminComponent {
           finalDate: new Date()
       };
   }
+
+  selecionarTexto(event: any) {
+  const input = event.target as HTMLInputElement;
+  input?.select?.();
+}
 }
