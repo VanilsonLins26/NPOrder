@@ -215,4 +215,102 @@ public class WhatsAppService
 
         response.EnsureSuccessStatusCode();
     }
+
+    public async Task SendReadyForPickupNotificationAsync(int orderId)
+    {
+        var order = await _orderService.GetOrderByIdNoTracking(orderId);
+        if (order == null) return;
+
+        var customerPhone = FormatPhoneForWhatsapp(order.Phone);
+        var sb = new StringBuilder();
+
+        sb.AppendLine($"👋 Olá, *{order.UserName}*!");
+        sb.AppendLine("Temos uma ótima notícia! 😃");
+        sb.AppendLine("──────────────────");
+        sb.AppendLine("🏪 *SEU PEDIDO ESTÁ PRONTO!*");
+        sb.AppendLine($"🔢 Pedido: #{order.Id}");
+        sb.AppendLine("");
+        sb.AppendLine("Seu pedido já foi separado e está aguardando retirada na nossa loja.");
+        sb.AppendLine("");
+        sb.AppendLine("📍 *Pode vir buscar quando quiser!*");
+
+        if (!order.IsFullyPaid)
+        {
+            sb.AppendLine("");
+            sb.AppendLine($"⚠️ *Lembrete:* Há um valor restante de {order.RemainingAmount:C} a ser pago na retirada.");
+        }
+
+        await EnqueueMessageAsync(customerPhone, sb.ToString());
+    }
+
+    public async Task SendOutForDeliveryNotificationAsync(int orderId)
+    {
+        var order = await _orderService.GetOrderByIdNoTracking(orderId);
+        if (order == null) return;
+
+        var customerPhone = FormatPhoneForWhatsapp(order.Phone);
+        var sb = new StringBuilder();
+
+        sb.AppendLine($"👋 Olá, *{order.UserName}*!");
+        sb.AppendLine("──────────────────");
+        sb.AppendLine("🛵 *SAIU PARA ENTREGA!*");
+        sb.AppendLine($"🔢 Pedido: #{order.Id}");
+        sb.AppendLine("");
+        sb.AppendLine("Nosso entregador acabou de sair com o seu pedido.");
+        sb.AppendLine("Por favor, fique atento à campainha ou ao telefone.");
+        sb.AppendLine("");
+        sb.AppendLine($"📍 Destino: {order.Address?.Street}, {order.Address?.Number}");
+
+        if (!order.IsFullyPaid)
+        {
+            sb.AppendLine("");
+            sb.AppendLine($"⚠️ *Valor a pagar na entrega: {order.RemainingAmount:C}*");
+        }
+
+        await EnqueueMessageAsync(customerPhone, sb.ToString());
+    }
+
+    public async Task SendDeliveredNotificationAsync(int orderId)
+    {
+        var order = await _orderService.GetOrderByIdNoTracking(orderId);
+        if (order == null) return;
+
+        var customerPhone = FormatPhoneForWhatsapp(order.Phone);
+        var sb = new StringBuilder();
+
+        sb.AppendLine($"✅ *PEDIDO ENTREGUE!*");
+        sb.AppendLine("──────────────────");
+        sb.AppendLine($"Olá, *{order.UserName}*.");
+        sb.AppendLine($"O pedido #{order.Id} foi concluído com sucesso.");
+        sb.AppendLine("");
+        sb.AppendLine("Esperamos que você goste! 😋");
+        sb.AppendLine("Muito obrigado pela preferência e até a próxima!");
+
+        await EnqueueMessageAsync(customerPhone, sb.ToString());
+    }
+
+    private string FormatPhoneForWhatsapp(string phone)
+    {
+        var cleanPhone = new string(phone.Where(char.IsDigit).ToArray());
+        if (!cleanPhone.StartsWith("55"))
+        {
+            return "55" + cleanPhone;
+        }
+        return cleanPhone;
+    }
+
+    private async Task EnqueueMessageAsync(string phone, string message)
+    {
+        var queueItem = new NotificationQueue
+        {
+            Phone = phone,
+            Message = message,
+            CreatedAt = DateTime.UtcNow,
+            Sent = false,
+            Attempts = 0
+        };
+
+        _context.NotificationQueues.Add(queueItem);
+        await _context.SaveChangesAsync();
+    }
 }

@@ -18,15 +18,17 @@ public class OrderController : ControllerBase
     private readonly IOrderService _Service;
     private readonly IAddressService _addressService;
     private readonly ILogger<OrderController> _logger;
+    private readonly WhatsAppService _wppService;
     private readonly IMapper _mapper;
 
 
-    public OrderController(IOrderService service, ILogger<OrderController> logger, WhatsAppService whatsAppService, IAddressService addressService, IMapper mapper)
+    public OrderController(IOrderService service, ILogger<OrderController> logger, WhatsAppService whatsAppService, IAddressService addressService, IMapper mapper, WhatsAppService wppService)
     {
         _Service = service;
         _logger = logger;
         _addressService = addressService;
         _mapper = mapper;
+        _wppService = wppService;
     }
 
 
@@ -152,6 +154,8 @@ public class OrderController : ControllerBase
         if (updatedOrder is null)
             return BadRequest("Você só pode mudar, se estiver em 'Pedido confirmado'!");
 
+        await _wppService.SendReadyForPickupNotificationAsync(orderId);
+
         return Ok(updatedOrder);
 
     }
@@ -171,6 +175,8 @@ public class OrderController : ControllerBase
         if (updatedOrder is null)
             return BadRequest("Você só pode mudar , se estiver em 'Pronto para retirada'!");
 
+        await _wppService.SendOutForDeliveryNotificationAsync(orderId);
+
         return Ok(updatedOrder);
 
     }
@@ -189,6 +195,8 @@ public class OrderController : ControllerBase
 
         if (updatedOrder is null)
             return BadRequest("Você só pode mudar , se estiver em 'Saiu para entrega'!");
+
+        await _wppService.SendDeliveredNotificationAsync(orderId);
 
         return Ok(updatedOrder);
 
