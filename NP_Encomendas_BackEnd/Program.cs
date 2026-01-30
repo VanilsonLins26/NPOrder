@@ -10,9 +10,10 @@ using NP_Encomendas_BackEnd.DTOs.Mapping;
 using NP_Encomendas_BackEnd.Repositories;
 using NP_Encomendas_BackEnd.Services;
 using NP_Encomendas_BackEnd.Services.Background;
-using System;
 using Polly;
 using Polly.Extensions.Http;
+using System;
+using System.Globalization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -139,6 +140,10 @@ static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
         .WaitAndRetryAsync(3, retryAttempt =>
             TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 }
+
+var cultureInfo = new CultureInfo("pt-BR");
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
