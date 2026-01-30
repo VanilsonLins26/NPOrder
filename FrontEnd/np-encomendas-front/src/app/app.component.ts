@@ -49,10 +49,8 @@ export class AppComponent implements OnInit {
 
     
   }
-
   
-
-  private navigateBasedOnRole(userData: any) {
+ navigateBasedOnRole(userData: any) {
     const roles = userData.role || userData['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
 
     let isAdmin = false;
@@ -66,7 +64,7 @@ export class AppComponent implements OnInit {
     const currentUrl = this.router.url;
 
     if (isAdmin && (currentUrl === '/' || currentUrl.includes('code='))) {
-      this.router.navigate(['/admin/products']).then(() => {
+      this.router.navigate(['/admin/produtos']).then(() => {
         this.isLoading = false;
       });
     } else {

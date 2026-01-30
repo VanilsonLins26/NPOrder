@@ -7,20 +7,20 @@ export const rootRedirectGuard = () => {
   const oidcSecurityService = inject(OidcSecurityService);
   const router = inject(Router);
 
-  return oidcSecurityService.userData$.pipe(
+  return oidcSecurityService.checkAuth().pipe(
     take(1),
-    map((dados) => {
+    map(({ isAuthenticated, userData }) => {
+      
+      if (!isAuthenticated) {
+        return true; 
+      }
+
+
+      const roles = userData?.role || userData?.['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
       let isAdmin = false;
 
-      if (dados) {
-        const userData = dados.userData || dados;
-        const roles = userData?.role;
-
-        if (roles) {
-          isAdmin = Array.isArray(roles) 
-            ? roles.includes('Admin') 
-            : roles === 'Admin';
-        }
+      if (roles) {
+        isAdmin = Array.isArray(roles) ? roles.includes('Admin') : roles === 'Admin';
       }
 
       if (isAdmin) {
