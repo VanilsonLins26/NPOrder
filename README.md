@@ -31,9 +31,9 @@
 ## 🛠️ Tecnologias Utilizadas
 
 ### Frontend (Client & Admin)
-* **Framework:** Angular 19 (Standalone Components, Signals, Control Flow).
-* **UI/UX:** PrimeNG (Tema Aura) + TailwindCSS.
-* **Autenticação:** `angular-auth-oidc-client` (PKCE Flow).
+* **Framework:** Angular 19.
+* **UI/UX:** PrimeNG.
+* **Autenticação:** `angular-auth-oidc-client`.
 * **Gestão de Estado:** Services reativos com RxJS e Signals.
 
 ### Backend (API)
@@ -73,21 +73,21 @@
 
 | Cardápio Principal | Detalhes do Produto |
 |:---:|:---:|
-| <img src="assets/cardapio.jpg" width="400" alt="Cardapio"> | <img src="assets/modal-produto.jpg" width="400" alt="Modal Produto"> |
+| <img src="assets/cardapio.png" width="400" alt="Cardapio"> | <img src="assets/modal-produto.png" width="400" alt="Modal Produto"> |
 
 | Carrinho de Compras | Checkout & Endereço |
 |:---:|:---:|
-| <img src="assets/carrinho.png" width="400" alt="Carrinho"> | <img src="assets/checkout.png" width="400" alt="Checkout"> |
+| <img src="assets/carrinho.png" width="400" alt="Carrinho"> | <img src="assets/checkout-endereco.png" width="400" alt="Checkout"> |
 
 | Pagamento | Confirmação e Detalhes |
 |:---:|:---:|
-| <img src="assets/pagamento.png" width="400" alt="Pagamento"> | <img src="assets/pedido-detalhes.png" width="400" alt="Detalhes"> |
+| <img src="assets/pagamento.png" width="400" alt="Pagamento"> | <img src="assets/detalhes-pedido.png" width="400" alt="Detalhes"> |
 
 ### 📊 Painel Administrativo
 
 | Login & Dashboard | Gestão de Produtos |
 |:---:|:---:|
-| <img src="assets/dashboard.png" width="400" alt="Dashboard"> | <img src="assets/produtos.png" width="400" alt="Produtos"> |
+| <img src="assets/admin-dashboard.png" width="400" alt="Dashboard"> | <img src="assets/admin-produtos.png" width="400" alt="Produtos"> |
 
 | Lista de Encomendas | Detalhes da Encomenda |
 |:---:|:---:|
@@ -101,7 +101,7 @@
 
 | Histórico de Pedidos (Web) | Notificações em Tempo Real (WhatsApp) |
 |:---:|:---:|
-| <img src="assets/meus-pedidos.png" width="400" alt="Meus Pedidos"> | <img src="assets/wpp-nova.jpg" width="250" alt="Wpp Nova"> <img src="assets/wpp-status.jpg" width="250" alt="Wpp Status"> |
+| <img src="assets/meus-pedidos.png" width="400" alt="Meus Pedidos"> | <img src="assets/wpp-novo-pedido.jpg" width="250" alt="Wpp Nova"> <img src="assets/wpp-status.jpg" width="250" alt="Wpp Status"> |
 
 ## 🧪 Como Testar o Projeto
 
