@@ -8,18 +8,18 @@ import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
 import { AbstractSecurityStorage, authInterceptor, OidcSecurityService, provideAuth } from 'angular-auth-oidc-client';
 
-export class LocalStorageService implements AbstractSecurityStorage {
+export class SessionStorageService implements AbstractSecurityStorage {
     read(key: string) {
-        return localStorage.getItem(key);
+        return sessionStorage.getItem(key);
     }
     write(key: string, value: any) {
-        localStorage.setItem(key, value);
+        sessionStorage.setItem(key, value);
     }
     remove(key: string) {
-        localStorage.removeItem(key);
+        sessionStorage.removeItem(key);
     }
     clear() {
-        localStorage.clear();
+        sessionStorage.clear();
     }
     
 }
@@ -53,7 +53,7 @@ export const appConfig: ApplicationConfig = {
       },
     }),
 
-    { provide: AbstractSecurityStorage, useClass: LocalStorageService },
+    { provide: AbstractSecurityStorage, useClass: SessionStorageService },
 
     provideAppInitializer(() => {
         const authService = inject(OidcSecurityService);
