@@ -13,7 +13,7 @@
 
 > Um sistema robusto para gestão de encomendas personalizadas (Confeitaria/Padaria), integrando **E-commerce para o cliente** e **Dashboard Administrativo** para gestão da produção em tempo real.
 
-[Ver Demo Online](https://np-order.vercel.app/) • [Documentação da API](https://backend-api-tk7o.onrender.com/swagger) • [Reportar Bug](https://github.com/SEU_USUARIO/SEU_REPO/issues)
+[Ver Demo Online](https://np-order.vercel.app/) • [Documentação da API](https://backend-api-tk7o.onrender.com/swagger)
 
 </div>
 
