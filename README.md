@@ -13,7 +13,7 @@
 
 > Um sistema robusto para gestão de encomendas personalizadas (Confeitaria/Padaria), integrando **E-commerce para o cliente** e **Dashboard Administrativo** para gestão da produção em tempo real.
 
-[Ver Demo Online](https://np-order.vercel.app/) • [Documentação da API](https://backend-api-tk7o.onrender.com/swagger) • [Reportar Bug](https://github.com/SEU_USUARIO/SEU_REPO/issues)
+[Ver Demo Online](https://np-order.vercel.app/) • [Documentação da API](https://backend-api-tk7o.onrender.com/swagger)
 
 </div>
 
@@ -31,9 +31,9 @@
 ## 🛠️ Tecnologias Utilizadas
 
 ### Frontend (Client & Admin)
-* **Framework:** Angular 19 (Standalone Components, Signals, Control Flow).
-* **UI/UX:** PrimeNG (Tema Aura) + TailwindCSS.
-* **Autenticação:** `angular-auth-oidc-client` (PKCE Flow).
+* **Framework:** Angular 19.
+* **UI/UX:** PrimeNG.
+* **Autenticação:** `angular-auth-oidc-client`.
 * **Gestão de Estado:** Services reativos com RxJS e Signals.
 
 ### Backend (API)
@@ -69,28 +69,39 @@
 
 ## 📸 Screenshots
 
-### 📱 Experiência do Cliente
+### 📱 Fluxo do Cliente (Compra)
 
-| Personalização de Item | Carrinho de Compras |
+| Cardápio Principal | Detalhes do Produto |
 |:---:|:---:|
-| <img src="assets/modal-produto.jpg" width="400" alt="Modal Produto"> | <img src="assets/carrinho.png" width="400" alt="Carrinho"> |
+| <img src="assets/cardapio.png" width="400" alt="Cardapio"> | <img src="assets/modal-produto.png" width="400" alt="Modal Produto"> |
 
-| Checkout e Endereço | Pagamento |
+| Carrinho de Compras | Checkout & Endereço |
 |:---:|:---:|
-| <img src="assets/checkout-endereco.png" width="400" alt="Endereço"> | <img src="assets/pagamento.png" width="400" alt="Pagamento"> |
+| <img src="assets/carrinho.png" width="400" alt="Carrinho"> | <img src="assets/checkout-endereco.png" width="400" alt="Checkout"> |
+
+| Pagamento | Confirmação e Detalhes |
+|:---:|:---:|
+| <img src="assets/pagamento.png" width="400" alt="Pagamento"> | <img src="assets/detalhes-pedido.png" width="400" alt="Detalhes"> |
 
 ### 📊 Painel Administrativo
 
-| Dashboard Financeiro | Gerenciamento de Produtos |
+| Login & Dashboard | Gestão de Produtos |
 |:---:|:---:|
 | <img src="assets/admin-dashboard.png" width="400" alt="Dashboard"> | <img src="assets/admin-produtos.png" width="400" alt="Produtos"> |
+
+| Lista de Encomendas | Detalhes da Encomenda |
+|:---:|:---:|
+| <img src="assets/admin-encomendas.png" width="400" alt="Encomendas"> | <img src="assets/admin-encomenda-modal.png" width="400" alt="Modal Encomenda"> |
+
+| Controle Financeiro | Detalhe da Transação |
+|:---:|:---:|
+| <img src="assets/admin-financeiro.png" width="400" alt="Financeiro"> | <img src="assets/admin-transacao.png" width="400" alt="Transacao"> |
 
 ### 📦 Acompanhamento e Notificações (WhatsApp)
 
 | Histórico de Pedidos (Web) | Notificações em Tempo Real (WhatsApp) |
 |:---:|:---:|
-| <img src="assets/meus-pedidos.png" width="400" alt="Meus Pedidos"> | <img src="assets/wpp-novo-pedido.jpg" width="250" alt="Wpp Novo Pedido"> <img src="assets/wpp-status.jpg" width="250" alt="Wpp Status"> |
----
+| <img src="assets/meus-pedidos.png" width="400" alt="Meus Pedidos"> | <img src="assets/wpp-novo-pedido.jpg" width="250" alt="Wpp Nova"> <img src="assets/wpp-status.jpg" width="250" alt="Wpp Status"> |
 
 ## 🧪 Como Testar o Projeto
 
