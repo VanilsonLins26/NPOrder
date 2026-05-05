@@ -33,12 +33,25 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
 
+    this.acordarServicoWhatsApp();
     this.oidcSecurityService.checkAuth().subscribe(({ isAuthenticated, userData }) => {
         console.log('App CheckAuth:', isAuthenticated, userData);
         this.isLoading = false; 
     });
 
     
+  }
+
+  private acordarServicoWhatsApp(): void {
+    const evolutionApiUrl = 'https://evolution-api-v2-3-4-lx50.onrender.com';
+
+    fetch(evolutionApiUrl, { mode: 'no-cors' })
+      .then(() => {
+        console.log('Ping de despertar enviado para a Evolution API (WhatsApp)!');
+      })
+      .catch((error) => {
+        console.error('Erro ao enviar o ping de despertar:', error);
+      });
   }
   
 
