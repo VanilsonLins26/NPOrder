@@ -4,5 +4,16 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/ping-api",
+      "schedule": "*/14 11-21 * * 1-5"
+    },
+    {
+      "path": "/api/ping-identity",
+      "schedule": "*/14 11-21 * * 1-5"
+    }
+
   ]
 }
