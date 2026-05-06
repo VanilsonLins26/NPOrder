@@ -1,8 +1,18 @@
 {
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/((?!api/).*)",
       "destination": "/index.html"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/ping-api",
+      "schedule": "55 10 * * 1-5"
+    },
+    {
+      "path": "/api/ping-identity",
+      "schedule": "55 10 * * 1-5"
     }
   ]
 }
