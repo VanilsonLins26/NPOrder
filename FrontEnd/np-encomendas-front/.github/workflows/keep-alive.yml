@@ -1,0 +1,16 @@
+name: Ping Render Servers
+
+on:
+  schedule:
+    - cron: '*/14 11-21 * * 1-5'
+  workflow_dispatch: 
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Acordar API Principal
+        run: curl -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/124.0.0.0 Safari/537.36" -s https://backend-api-tk7o.onrender.com/api/ping > /dev/null
+
+      - name: Acordar Identity Server
+        run: curl -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/124.0.0.0 Safari/537.36" -s https://nporder-identiity-server.onrender.com > /dev/null
