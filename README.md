@@ -110,18 +110,21 @@ Este projeto está hospedado em ambiente de produção utilizando serviços em n
 2. **IdentityServer** (Serviço de Login)
 3. **Evolution API** (Envio de WhatsApp)
 
-> ⚠️ **Aviso Importante (Cold Start):**
-> Como os serviços de backend utilizam o **Plano Gratuito do Render**, os servidores entram em **modo de suspensão** após períodos de inatividade.
+> 💡 **Performance e Status dos Servidores (Keep-Alive):**
+> Para garantir a melhor experiência, implementamos uma rotina automatizada de *Cron Jobs*. A API Principal e o IdentityServer permanecem **100% acordados e sem lentidão de inicialização** de **segunda a quinta-feira**, cobrindo o horário operacional da padaria.
+> 
+> A **Evolution API** foi configurada para despertar de forma totalmente automática assim que o frontend recebe um acesso.
 >
-> Ao acessar pela primeira vez, pode haver uma **lentidão de até 50 segundos** enquanto as APIs "acordam". Por favor, aguarde o carregamento ou recarregue a página caso o login falhe na primeira tentativa.
+> ⚠️ **Acessos noturnos ou aos finais de semana:** Se você estiver testando o projeto fora do horário comercial programado, as instâncias gratuitas do Render estarão em modo de suspensão. O primeiro carregamento pode levar cerca de **50 segundos** enquanto as APIs realizam o *cold start*. Após esse tempo, o sistema operará com velocidade normal.
 
-### Passo a Passo para Teste:
+### Acessando a Aplicação
 
-1. **Acordar o Serviço de WhatsApp (Opcional):**
-   Acesse o link abaixo apenas para garantir que o servidor de mensagens inicie:
-   👉 [evolution-api-v2-3-4-lx50.onrender.com](https://evolution-api-v2-3-4-lx50.onrender.com)
+Não é necessário iniciar nenhum serviço manualmente. Basta acessar o link abaixo, aguardar o carregamento inicial e navegar pelas funcionalidades:
 
-2. **Acessar a Aplicação:**
-   Acesse o sistema completo através do link abaixo e navegue pelas funcionalidades:
-   🚀 [https://np-order.vercel.app](https://np-order.vercel.app)
+🚀 **[Acessar A Nossa Padaria (np-order.vercel.app)](https://np-order.vercel.app/)**
+
+#### 🔑 Credenciais de Teste (Administrador)
+Para acessar o Dashboard e testar as funcionalidades exclusivas de gestão (Backoffice), utilize os dados abaixo na tela de login:
+* **E-mail:** `admin@teste.com`
+* **Senha:** `Admin123`
 
