@@ -85,6 +85,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             NameClaimType = "name",
+            RoleClaimType = "https://np-order/roles"
         };
 
         options.Audience = "nporder_api";

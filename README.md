@@ -7,7 +7,7 @@
 ![.NET](https://img.shields.io/badge/.NET-9-512bd4?style=for-the-badge&logo=dotnet&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![IdentityServer](https://img.shields.io/badge/IdentityServer-Auth-orange?style=for-the-badge&logo=openid&logoColor=white)
+![Auth0](https://img.shields.io/badge/Auth0-EB5424?style=for-the-badge&logo=auth0&logoColor=white)
 
 <br />
 
@@ -40,7 +40,7 @@
 * **Framework:** .NET 9 (C#).
 * **ORM:** Entity Framework Core.
 * **Banco de Dados:** PostgreSQL.
-* **Auth:** IdentityServer customizado para gestão de usuários, Claims e Roles.
+* **Auth:** Integração em nuvem com Auth0 (SSO, Autenticação Social via Google, gestão de Claims e Roles).
 * **Arquitetura:** Repository Pattern, DTOs, Clean Code.
 
 ### DevOps & Integrações
@@ -105,13 +105,13 @@
 
 ## 🧪 Como Testar o Projeto
 
-Este projeto está hospedado em ambiente de produção utilizando serviços em nuvem. O backend foi arquitetado em microsserviços e distribuído em 3 instâncias no **Render**:
-1. **API Principal** (.NET 9)
-2. **IdentityServer** (Serviço de Login)
+Este projeto está hospedado em ambiente de produção utilizando serviços em nuvem. A arquitetura de serviços engloba:
+1. **API Principal** (.NET 9) rodando no Render
+2. **Auth0** (Gerenciamento de Identidade em Nuvem)
 3. **Evolution API** (Envio de WhatsApp)
 
 > 💡 **Performance e Status dos Servidores (Keep-Alive):**
-> Para garantir a melhor experiência, implementamos uma rotina automatizada de *Cron Jobs*. A API Principal e o IdentityServer permanecem **100% acordados e sem lentidão de inicialização** de **segunda a quinta-feira**, cobrindo o horário operacional da padaria.
+> Para garantir a melhor experiência, implementamos uma rotina automatizada de *Cron Jobs*. A API Principal permanece **100% acordada e sem lentidão de inicialização** de **segunda a quinta-feira**, cobrindo o horário operacional da padaria.
 > 
 > A **Evolution API** foi configurada para despertar de forma totalmente automática assim que o frontend recebe um acesso.
 >
@@ -124,7 +124,7 @@ Não é necessário iniciar nenhum serviço manualmente. Basta acessar o link ab
 🚀 **[Acessar A Nossa Padaria (np-order.vercel.app)](https://np-order.vercel.app/)**
 
 #### 🔑 Credenciais de Teste (Administrador)
-Para acessar o Dashboard e testar as funcionalidades exclusivas de gestão (Backoffice), utilize os dados abaixo na tela de login:
+Para acessar o Dashboard e testar as funcionalidades exclusivas de gestão (Backoffice), você pode realizar o login com o seu **Google** ou usar a conta administrativa de testes abaixo:
 * **E-mail:** `admin@teste.com`
 * **Senha:** `Admin123`
 
