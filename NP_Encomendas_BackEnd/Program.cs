@@ -46,8 +46,8 @@ builder.Services.AddSwaggerGen(c =>
             AuthorizationCode = new OpenApiOAuthFlow
             {
 
-                AuthorizationUrl = new Uri("https://nporder-identiity-server.onrender.com/connect/authorize"),
-                TokenUrl = new Uri("https://nporder-identiity-server.onrender.com/connect/token"),
+                AuthorizationUrl = new Uri("https://iorder.us.auth0.com/authorize"),
+                TokenUrl = new Uri("https://iorder.us.auth0.com/oauth/token"),
                 Scopes = new Dictionary<string, string>
                 {
                     { "nporder_api", "API do NPOrder" },
@@ -80,15 +80,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
 
-        options.Authority = "https://nporder-identiity-server.onrender.com";
-
+        options.Authority = "https://iorder.us.auth0.com/";
+        
         options.TokenValidationParameters = new TokenValidationParameters
         {
             NameClaimType = "name",
         };
 
         options.Audience = "nporder_api";
-
 
         options.RequireHttpsMetadata = false;
 
@@ -101,7 +100,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowIdentity",
         policy => policy
-            .WithOrigins("https://nporder-identiity-server.onrender.com", "https://np-order.vercel.app")
+            .WithOrigins("https://iorder.us.auth0.com/", "https://np-order.vercel.app")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .WithExposedHeaders("X-Pagination"));

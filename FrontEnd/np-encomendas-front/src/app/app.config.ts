@@ -40,16 +40,19 @@ export const appConfig: ApplicationConfig = {
 
     provideAuth({
       config: {
-        authority: 'https://nporder-identiity-server.onrender.com', 
+        authority: 'https://iorder.us.auth0.com', 
         redirectUrl: window.location.origin + '/callback',
         postLogoutRedirectUri: window.location.origin,
-        clientId: 'angular_client', 
-        scope: 'openid profile nporder_api offline_access',
+        clientId: 'Ws5utKSvnPmm6wNo7DRzBgUIA9p2IE8S', 
+        scope: 'openid profile email offline_access',
         responseType: 'code',
         silentRenew: true,
         useRefreshToken: true,
         renewTimeBeforeTokenExpiresInSeconds: 30,
-        secureRoutes: ['https://backend-api-tk7o.onrender.com/']
+        secureRoutes: ['https://backend-api-tk7o.onrender.com/'],
+        customParamsAuthRequest: {
+          audience: 'nporder_api'
+        }
       },
     }),
 
