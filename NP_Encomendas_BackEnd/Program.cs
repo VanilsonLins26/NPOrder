@@ -50,7 +50,7 @@ builder.Services.AddSwaggerGen(c =>
                 TokenUrl = new Uri("https://iorder.us.auth0.com/oauth/token"),
                 Scopes = new Dictionary<string, string>
                 {
-                    { "nporder_api", "API do NPOrder" },
+                    { "https://api.nporder.com", "API do NPOrder" },
                     { "openid", "OpenID" },
                     { "profile", "Profile" }
                 }
@@ -71,7 +71,7 @@ builder.Services.AddSwaggerGen(c =>
                 Name = "oauth2",
                 In = ParameterLocation.Header
             },
-            new List<string> { "nporder_api" }
+            new List<string> { "https://api.nporder.com" }
         }
     });
 });
@@ -88,7 +88,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             RoleClaimType = "https://np-order/roles"
         };
 
-        options.Audience = "nporder_api";
+        options.Audience = "https://api.nporder.com";
 
         options.RequireHttpsMetadata = false;
 

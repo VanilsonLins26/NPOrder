@@ -43,7 +43,7 @@ export const appConfig: ApplicationConfig = {
         authority: 'https://iorder.us.auth0.com', 
         redirectUrl: window.location.origin + '/callback',
         postLogoutRedirectUri: window.location.origin,
-        clientId: 'Ws5utKSvnPmm6wNo7DRzBgUIA9p2IE8S', 
+        clientId: 'GKi27hpRmTwhCFwHx1S01tj4CI2cqawB', 
         scope: 'openid profile email offline_access',
         responseType: 'code',
         silentRenew: true,
@@ -51,7 +51,7 @@ export const appConfig: ApplicationConfig = {
         renewTimeBeforeTokenExpiresInSeconds: 30,
         secureRoutes: ['https://backend-api-tk7o.onrender.com/'],
         customParamsAuthRequest: {
-          audience: 'nporder_api'
+          audience: 'https://api.nporder.com'
         }
       },
     }),
