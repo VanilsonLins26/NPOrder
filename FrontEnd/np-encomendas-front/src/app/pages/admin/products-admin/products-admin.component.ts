@@ -16,7 +16,6 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { TagModule } from 'primeng/tag';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DatePickerModule } from 'primeng/datepicker';
-import { ToggleSwitch } from 'primeng/toggleswitch';
 import { TooltipModule } from 'primeng/tooltip';
 import { SelectModule } from 'primeng/select';
 import { AppComponent } from '../../../app.component';
@@ -28,11 +27,10 @@ import { InputIconModule } from 'primeng/inputicon';
   selector: 'app-products-admin',
   imports: [
     CommonModule, FormsModule, TableModule, ButtonModule, ToolbarModule,
-    InputTextModule, InputTextModule, DialogModule, ConfirmDialogModule,
+    InputTextModule, DialogModule, ConfirmDialogModule,
     ToastModule, InputNumberModule, FileUploadModule, TagModule, CheckboxModule,
-    DatePickerModule, ToggleSwitch, TooltipModule, SelectModule, IconFieldModule,
-    InputIconModule, InputTextModule
-
+    DatePickerModule, TooltipModule, SelectModule, IconFieldModule,
+    InputIconModule
   ],
   providers: [ConfirmationService],
   templateUrl: './products-admin.component.html',

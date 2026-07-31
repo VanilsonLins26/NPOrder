@@ -14,6 +14,7 @@ import { ChartModule } from 'primeng/chart';
 export class DashboardAdminComponent implements OnInit {
   private dashboardService = inject(DashboardService);
 
+  today: Date = new Date();
   stats: DashboardStats | null = null;
   
   barData: any;
