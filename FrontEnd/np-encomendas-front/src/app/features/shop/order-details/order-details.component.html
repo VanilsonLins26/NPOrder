@@ -1,122 +1,232 @@
+<!-- ======================================================
+     DETALHES DA ENCOMENDA — Stepper + Form Premium
+     ====================================================== -->
+<div class="details-page">
 
-
-<div class="surface-ground flex justify-content-center min-h-screen p-4">
-    <div class="surface-card p-4 shadow-2 border-round w-full lg:w-6">
-
-        <div class="text-center mb-5">
-            <div class="text-900 text-3xl font-bold brand-font mb-2">Detalhes da Encomenda</div>
-        </div>
-
-        <div class="mb-5">
-            <label class="font-bold block mb-2 text-900">Tipo de Entrega</label>
-            <p-selectButton [options]="deliveryOptions" [(ngModel)]="selectedMethod" optionLabel="label"
-                optionValue="value" styleClass="w-full"></p-selectButton>
-        </div>
-
-        <div class="mb-5">
-            <label class="font-bold block mb-2 text-900">Data e Hora</label>
-            <p-datepicker [(ngModel)]="selectedDate" [showTime]="true" [showIcon]="true" [minDate]="minDate"
-                dateFormat="dd/mm/yy" hourFormat="24" placeholder="Selecione..." class="w-full"
-                [inputStyle]="{'width':'100%'}" [stepMinute]="30">
-            </p-datepicker>
-        </div>
-
-        <div class="mb-5" *ngIf="selectedMethod === 'Delivery'; else pickupInfo">
-            <label class="font-bold block mb-2 text-900">Endereço de Entrega</label>
-
-            <div *ngIf="selectedAddress"
-                class="surface-border border-1 border-round p-3 flex justify-content-between align-items-center bg-gray-50">
-                <div>
-                    <span class="font-bold text-900 block">{{ selectedAddress.street }}, {{ selectedAddress.number
-                        }}</span>
-                    <span class="text-600 text-sm">{{ selectedAddress.district }} - CEP: {{ selectedAddress.zipCode
-                        }}</span>
-                    <p-tag *ngIf="selectedAddress.isDefault" value="Padrão" severity="info" styleClass="mt-2"></p-tag>
-                </div>
-                <p-button label="Trocar" icon="pi pi-refresh" styleClass="p-button-text"
-                    (onClick)="openAddressModal()"></p-button>
-            </div>
-
-            <div *ngIf="userAddresses.length === 0"
-                class="text-center p-4 surface-overlay border-1 border-dashed border-round surface-border">
-                <i class="pi pi-map-marker text-3xl text-600 mb-3"></i>
-                <div class="text-700 font-medium mb-3">Nenhum endereço cadastrado.</div>
-                <p-button label="Adicionar Endereço" icon="pi pi-plus" (onClick)="openAddressModal()"></p-button>
-            </div>
-        </div>
-
-        <ng-template #pickupInfo>
-            <div class="bg-orange-50 border-round p-3 mb-5 border-1 border-orange-200">
-                <div class="font-bold text-900">Retirar na Loja</div>
-                <div class="text-700">Rua Doutor José Frota, 32 - Fortaleza/CE</div>
-            </div>
-        </ng-template>
-
-        <p-divider></p-divider>
-        <p-button label="Confirmar e Pagar" icon="pi pi-check" styleClass="w-full p-button-lg" [loading]="isLoading"
-            (onClick)="submitOrder()"></p-button>
+  <!-- ── HEADER ── -->
+  <div class="details-header animate-fadeInDown">
+    <div class="details-header__icon">
+      <i class="pi pi-box"></i>
     </div>
+    <div>
+      <h1 class="details-header__title">Detalhes da Encomenda</h1>
+      <p class="details-header__subtitle">Preencha as informações abaixo para finalizar seu pedido</p>
+    </div>
+  </div>
+
+  <!-- ── STEPPER INDICATOR ── -->
+  <div class="details-stepper animate-fadeInDown delay-1">
+    <div class="stepper-item" [class.stepper-item--done]="true">
+      <div class="stepper-item__circle"><i class="pi pi-check"></i></div>
+      <span class="stepper-item__label">Entrega</span>
+    </div>
+    <div class="stepper-connector"></div>
+    <div class="stepper-item" [class.stepper-item--done]="!!selectedDate">
+      <div class="stepper-item__circle">
+        <i [class]="selectedDate ? 'pi pi-check' : 'pi pi-calendar'"></i>
+      </div>
+      <span class="stepper-item__label">Data</span>
+    </div>
+    <div class="stepper-connector"></div>
+    <div class="stepper-item" [class.stepper-item--done]="selectedMethod === 'Pickup' || !!selectedAddress">
+      <div class="stepper-item__circle">
+        <i [class]="(selectedMethod === 'Pickup' || selectedAddress) ? 'pi pi-check' : 'pi pi-map-marker'"></i>
+      </div>
+      <span class="stepper-item__label">Endereço</span>
+    </div>
+    <div class="stepper-connector"></div>
+    <div class="stepper-item">
+      <div class="stepper-item__circle"><i class="pi pi-wallet"></i></div>
+      <span class="stepper-item__label">Pagar</span>
+    </div>
+  </div>
+
+  <!-- ── FORM CARD ── -->
+  <div class="details-card animate-fadeInUp delay-2">
+
+    <!-- Tipo de Entrega -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-icon"><i class="pi pi-truck"></i></div>
+        <span class="section-title">Tipo de Entrega</span>
+      </div>
+      <p-selectButton
+        [options]="deliveryOptions"
+        [(ngModel)]="selectedMethod"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="w-full details-select-btn">
+      </p-selectButton>
+    </div>
+
+    <div class="form-divider"></div>
+
+    <!-- Data e Hora -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-icon"><i class="pi pi-calendar"></i></div>
+        <span class="section-title">Data e Hora de Entrega</span>
+      </div>
+      <p-datepicker
+        [(ngModel)]="selectedDate"
+        [showTime]="true"
+        [showIcon]="true"
+        [minDate]="minDate"
+        dateFormat="dd/mm/yy"
+        hourFormat="24"
+        placeholder="Selecione a data e hora..."
+        class="w-full"
+        [inputStyle]="{'width':'100%'}"
+        [stepMinute]="30">
+      </p-datepicker>
+    </div>
+
+    <div class="form-divider"></div>
+
+    <!-- Endereço / Retirada -->
+    <div class="form-section">
+      <div *ngIf="selectedMethod === 'Delivery'; else pickupSection">
+        <div class="section-header">
+          <div class="section-icon"><i class="pi pi-map-marker"></i></div>
+          <span class="section-title">Endereço de Entrega</span>
+        </div>
+
+        <!-- Endereço selecionado -->
+        <div *ngIf="selectedAddress" class="selected-address">
+          <div class="selected-address__info">
+            <i class="pi pi-map-marker selected-address__pin"></i>
+            <div>
+              <span class="selected-address__street">{{ selectedAddress.street }}, {{ selectedAddress.number }}</span>
+              <span class="selected-address__district">{{ selectedAddress.district }} · CEP: {{ selectedAddress.zipCode }}</span>
+            </div>
+            <p-tag *ngIf="selectedAddress.isDefault" value="Padrão" severity="info" styleClass="ml-auto"></p-tag>
+          </div>
+          <button class="selected-address__change" (click)="openAddressModal()">
+            <i class="pi pi-pencil"></i> Trocar
+          </button>
+        </div>
+
+        <!-- Nenhum endereço -->
+        <div *ngIf="userAddresses.length === 0" class="no-address">
+          <i class="pi pi-map-marker no-address__icon"></i>
+          <p class="no-address__text">Nenhum endereço cadastrado ainda.</p>
+          <button class="no-address__btn" (click)="openAddressModal()">
+            <i class="pi pi-plus"></i> Adicionar Endereço
+          </button>
+        </div>
+      </div>
+
+      <ng-template #pickupSection>
+        <div class="section-header">
+          <div class="section-icon"><i class="pi pi-shop"></i></div>
+          <span class="section-title">Retirada na Loja</span>
+        </div>
+        <div class="pickup-info">
+          <div class="pickup-info__icon">
+            <i class="pi pi-map-marker"></i>
+          </div>
+          <div>
+            <span class="pickup-info__name">Nossa Padaria</span>
+            <span class="pickup-info__address">Rua Doutor José Frota, 32 · Mucuripe · Fortaleza/CE</span>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="form-divider"></div>
+
+    <!-- Info Mercado Pago -->
+    <div class="details-info-banner animate-fadeInUp delay-3">
+      <i class="pi pi-shield details-info-banner__icon"></i>
+      <div>
+        <strong>Pagamento 100% Seguro</strong>
+        <p>Você será redirecionado para o ambiente seguro do <strong>Mercado Pago</strong> após confirmar.</p>
+      </div>
+    </div>
+
+    <!-- CTA Button -->
+    <button class="details-cta btn-shimmer"
+            [class.details-cta--loading]="isLoading"
+            (click)="submitOrder()"
+            id="btn-confirmar-pagar">
+      <i class="pi pi-check-circle"></i>
+      {{ isLoading ? 'Processando...' : 'Confirmar e Pagar' }}
+    </button>
+
+  </div>
 </div>
 
-<p-dialog header="Endereços de Entrega" [(visible)]="showAddressModal" [modal]="true" [style]="{width: '500px'}"
-    [draggable]="false" [resizable]="false">
+<!-- ======================================================
+     DIALOG DE ENDEREÇOS
+     ====================================================== -->
+<p-dialog
+  header="Endereços de Entrega"
+  [(visible)]="showAddressModal"
+  [modal]="true"
+  [style]="{width: '520px', maxWidth: '95vw'}"
+  [draggable]="false"
+  [resizable]="false">
 
-    <div *ngIf="!isCreatingAddress">
-        <div class="flex flex-column gap-3 mb-4">
-            <div *ngFor="let addr of userAddresses"
-                class="field-radiobutton address-card border-round p-3 cursor-pointer"
-                [class.border-primary]="selectedAddress?.id === addr.id" (click)="selectAddressFromModal(addr)">
+  <div *ngIf="!isCreatingAddress">
+    <div class="modal-addresses">
+      <div *ngFor="let addr of userAddresses"
+           class="modal-address-item"
+           [class.modal-address-item--selected]="selectedAddress?.id === addr.id"
+           (click)="selectAddressFromModal(addr)">
 
-                <p-radioButton name="modalAddr" [value]="addr" [(ngModel)]="selectedAddress"></p-radioButton>
+        <p-radioButton name="modalAddr" [value]="addr" [(ngModel)]="selectedAddress"></p-radioButton>
 
-                <label class="ml-3 cursor-pointer w-full">
-                    <span class="font-bold text-900 block">{{ addr.street }}, {{ addr.number }}</span>
-                    <span class="text-600 text-sm">{{ addr.district }}</span>
-                    <p-tag *ngIf="addr.isDefault" value="Principal" severity="success" styleClass="ml-2"></p-tag>
-                </label>
-            </div>
+        <div class="modal-address-item__info">
+          <span class="modal-address-item__street">{{ addr.street }}, {{ addr.number }}</span>
+          <span class="modal-address-item__district">{{ addr.district }}</span>
         </div>
-
-        <div *ngIf="userAddresses.length < 5" class="text-center border-top-1 surface-border pt-3">
-            <p-button label="Cadastrar Novo Endereço" icon="pi pi-plus" styleClass="p-button-outlined w-full"
-                (onClick)="isCreatingAddress = true"></p-button>
-        </div>
-        <div *ngIf="userAddresses.length >= 5" class="text-center text-red-500 text-sm mt-2">
-            Limite de 5 endereços atingido.
-        </div>
+        <p-tag *ngIf="addr.isDefault" value="Principal" severity="success"></p-tag>
+      </div>
     </div>
 
-    <div *ngIf="isCreatingAddress">
-        <div class="flex flex-column gap-3">
-            <div>
-                <label class="block font-bold mb-1">CEP</label>
-                <input pInputText [(ngModel)]="newAddressForm.zipCode" class="w-full" placeholder="00000-000">
-            </div>
-            <div class="flex gap-2">
-                <div class="flex-1">
-                    <label class="block font-bold mb-1">Rua</label>
-                    <input pInputText [(ngModel)]="newAddressForm.street" class="w-full">
-                </div>
-                <div class="w-4rem">
-                    <label class="block font-bold mb-1">Nº</label>
-                    <input pInputText [(ngModel)]="newAddressForm.number" class="w-full">
-                </div>
-            </div>
-            <div>
-                <label class="block font-bold mb-1">Bairro</label>
-                <input pInputText [(ngModel)]="newAddressForm.district" class="w-full">
-            </div>
-            <div>
-                <label class="block font-bold mb-1">Complemento (Opcional)</label>
-                <input pInputText [(ngModel)]="newAddressForm.complement" class="w-full">
-            </div>
-        </div>
-
-        <div class="flex gap-2 mt-4 justify-content-end">
-            <p-button label="Voltar" icon="pi pi-arrow-left" styleClass="p-button-text p-button-secondary"
-                (onClick)="isCreatingAddress = false"></p-button>
-            <p-button label="Salvar Endereço" icon="pi pi-check" [loading]="isLoading"
-                (onClick)="saveNewAddress()"></p-button>
-        </div>
+    <div *ngIf="userAddresses.length < 5" class="modal-add-address">
+      <button class="modal-add-btn" (click)="isCreatingAddress = true">
+        <i class="pi pi-plus"></i>
+        Cadastrar Novo Endereço
+      </button>
     </div>
+
+    <div *ngIf="userAddresses.length >= 5" class="modal-limit-msg">
+      <i class="pi pi-info-circle"></i> Limite de 5 endereços atingido.
+    </div>
+  </div>
+
+  <div *ngIf="isCreatingAddress" class="modal-form">
+    <div class="modal-form__field">
+      <label>CEP</label>
+      <input pInputText [(ngModel)]="newAddressForm.zipCode" class="w-full" placeholder="00000-000">
+    </div>
+    <div class="modal-form__row">
+      <div class="modal-form__field flex-1">
+        <label>Rua</label>
+        <input pInputText [(ngModel)]="newAddressForm.street" class="w-full">
+      </div>
+      <div class="modal-form__field" style="width: 90px;">
+        <label>Nº</label>
+        <input pInputText [(ngModel)]="newAddressForm.number" class="w-full">
+      </div>
+    </div>
+    <div class="modal-form__field">
+      <label>Bairro</label>
+      <input pInputText [(ngModel)]="newAddressForm.district" class="w-full">
+    </div>
+    <div class="modal-form__field">
+      <label>Complemento <span style="color:#9CA3AF;">(Opcional)</span></label>
+      <input pInputText [(ngModel)]="newAddressForm.complement" class="w-full">
+    </div>
+
+    <div class="modal-form__actions">
+      <button class="modal-btn modal-btn--secondary" (click)="isCreatingAddress = false">
+        <i class="pi pi-arrow-left"></i> Voltar
+      </button>
+      <button class="modal-btn modal-btn--primary" [class.loading]="isLoading" (click)="saveNewAddress()">
+        <i class="pi pi-check"></i> Salvar Endereço
+      </button>
+    </div>
+  </div>
 </p-dialog>

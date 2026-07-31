@@ -1,86 +1,141 @@
+<div class="admin-page">
 
-<div class="surface-ground min-h-screen p-4">
-    
-    <div class="text-3xl font-bold text-900 mb-4 brand-font">Dashboard</div>
+  <!-- ── Page Header ──────────────────────────────────────────── -->
+  <header class="admin-page-header animate-fadeInDown">
+    <div class="admin-page-header__left">
+      <h1 class="admin-page-header__title">Dashboard</h1>
+      <p class="admin-page-header__subtitle">Visão geral do negócio</p>
+    </div>
+    <div class="admin-page-header__right">
+      <span class="admin-page-header__date-badge">
+        <i class="pi pi-calendar mr-2"></i>
+        {{ today | date:'EEEE, dd \'de\' MMMM':'':'pt-BR' }}
+      </span>
+    </div>
+  </header>
 
-    <div class="grid" *ngIf="stats">
-        
-        <div class="col-12 md:col-6 lg:col-3">
-            <div class="surface-card shadow-2 p-3 border-round">
-                <div class="flex justify-content-between mb-3">
-                    <div>
-                        <span class="block text-500 font-medium mb-3">Faturamento Total</span>
-                        <div class="text-900 font-medium text-xl">{{ stats.totalRevenue | currency:'BRL' }}</div>
-                    </div>
-                    <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width:2.5rem;height:2.5rem">
-                        <i class="pi pi-dollar text-blue-500 text-xl"></i>
-                    </div>
-                </div>
-                <span class="text-green-500 font-medium">+15% </span>
-                <span class="text-500">desde o mês passado</span>
-            </div>
+  <!-- ── Loading State ─────────────────────────────────────────── -->
+  <div class="admin-loading" *ngIf="!stats">
+    <div class="admin-loading__spinner">
+      <i class="pi pi-spin pi-spinner" style="font-size: 2.5rem; color: var(--padaria-gold)"></i>
+      <p class="admin-loading__text">Carregando dados...</p>
+    </div>
+  </div>
+
+  <!-- ── KPI Cards ─────────────────────────────────────────────── -->
+  <div class="kpi-grid" *ngIf="stats">
+
+    <!-- Faturamento Total -->
+    <div class="kpi-card kpi-card--blue animate-fadeInUp delay-1 hover-lift">
+      <div class="kpi-card__accent-bar kpi-card__accent-bar--blue"></div>
+      <div class="kpi-card__body">
+        <div class="kpi-card__top-row">
+          <div class="kpi-card__icon kpi-card__icon--blue">
+            <i class="pi pi-dollar"></i>
+          </div>
+          <span class="kpi-card__trend kpi-card__trend--up">
+            <i class="pi pi-arrow-up"></i> +15%
+          </span>
         </div>
-
-        <div class="col-12 md:col-6 lg:col-3">
-            <div class="surface-card shadow-2 p-3 border-round">
-                <div class="flex justify-content-between mb-3">
-                    <div>
-                        <span class="block text-500 font-medium mb-3">Pedidos Realizados</span>
-                        <div class="text-900 font-medium text-xl">{{ stats.totalOrders }}</div>
-                    </div>
-                    <div class="flex align-items-center justify-content-center bg-orange-100 border-round" style="width:2.5rem;height:2.5rem">
-                        <i class="pi pi-shopping-bag text-orange-500 text-xl"></i>
-                    </div>
-                </div>
-                <span class="text-green-500 font-medium">+5% </span>
-                <span class="text-500">novos pedidos hoje</span>
-            </div>
-        </div>
-
-        <div class="col-12 md:col-6 lg:col-3">
-            <div class="surface-card shadow-2 p-3 border-round">
-                <div class="flex justify-content-between mb-3">
-                    <div>
-                        <span class="block text-500 font-medium mb-3">Pendentes</span>
-                        <div class="text-900 font-medium text-xl">{{ stats.pendingOrders }}</div>
-                    </div>
-                    <div class="flex align-items-center justify-content-center bg-yellow-100 border-round" style="width:2.5rem;height:2.5rem">
-                        <i class="pi pi-clock text-yellow-500 text-xl"></i>
-                    </div>
-                </div>
-                <span class="text-500">Aguardando ação</span>
-            </div>
-        </div>
-
-        <div class="col-12 md:col-6 lg:col-3">
-            <div class="surface-card shadow-2 p-3 border-round">
-                <div class="flex justify-content-between mb-3">
-                    <div>
-                        <span class="block text-500 font-medium mb-3">Produtos</span>
-                        <div class="text-900 font-medium text-xl">{{ stats.totalProducts }}</div>
-                    </div>
-                    <div class="flex align-items-center justify-content-center bg-cyan-100 border-round" style="width:2.5rem;height:2.5rem">
-                        <i class="pi pi-tag text-cyan-500 text-xl"></i>
-                    </div>
-                </div>
-                <span class="text-500">Itens no cardápio</span>
-            </div>
-        </div>
+        <span class="kpi-card__label">Faturamento Total</span>
+        <div class="kpi-card__value">{{ stats.totalRevenue | currency:'BRL' }}</div>
+        <p class="kpi-card__footnote">desde o mês passado</p>
+      </div>
     </div>
 
-    <div class="grid mt-4" *ngIf="stats">
-        
-        <div class="col-12 lg:col-8">
-            <div class="surface-card shadow-2 p-4 border-round h-full">
-                <h5 class="text-lg font-bold text-900 mb-3">Faturamento Mensal</h5>
-                <p-chart type="bar" [data]="barData" [options]="barOptions" height="300px"></p-chart>
-            </div>
+    <!-- Pedidos Realizados -->
+    <div class="kpi-card kpi-card--orange animate-fadeInUp delay-2 hover-lift">
+      <div class="kpi-card__accent-bar kpi-card__accent-bar--orange"></div>
+      <div class="kpi-card__body">
+        <div class="kpi-card__top-row">
+          <div class="kpi-card__icon kpi-card__icon--orange">
+            <i class="pi pi-shopping-bag"></i>
+          </div>
+          <span class="kpi-card__trend kpi-card__trend--up">
+            <i class="pi pi-arrow-up"></i> +5%
+          </span>
         </div>
-
-        <div class="col-12 lg:col-4">
-            <div class="surface-card shadow-2 p-4 border-round h-full flex flex-column align-items-center">
-                <h5 class="text-lg font-bold text-900 mb-3 align-self-start">Status dos Pedidos</h5>
-                <p-chart type="doughnut" [data]="pieData" [options]="pieOptions" height="250px" width="250px"></p-chart>
-            </div>
-        </div>
+        <span class="kpi-card__label">Pedidos Realizados</span>
+        <div class="kpi-card__value">{{ stats.totalOrders }}</div>
+        <p class="kpi-card__footnote">novos pedidos hoje</p>
+      </div>
     </div>
+
+    <!-- Pendentes -->
+    <div class="kpi-card kpi-card--yellow animate-fadeInUp delay-3 hover-lift">
+      <div class="kpi-card__accent-bar kpi-card__accent-bar--yellow"></div>
+      <div class="kpi-card__body">
+        <div class="kpi-card__top-row">
+          <div class="kpi-card__icon kpi-card__icon--yellow">
+            <i class="pi pi-clock"></i>
+          </div>
+          <span class="kpi-card__trend kpi-card__trend--warn">
+            <i class="pi pi-exclamation-triangle"></i> Atenção
+          </span>
+        </div>
+        <span class="kpi-card__label">Pedidos Pendentes</span>
+        <div class="kpi-card__value">{{ stats.pendingOrders }}</div>
+        <p class="kpi-card__footnote">aguardando ação</p>
+      </div>
+    </div>
+
+    <!-- Produtos -->
+    <div class="kpi-card kpi-card--teal animate-fadeInUp delay-4 hover-lift">
+      <div class="kpi-card__accent-bar kpi-card__accent-bar--teal"></div>
+      <div class="kpi-card__body">
+        <div class="kpi-card__top-row">
+          <div class="kpi-card__icon kpi-card__icon--teal">
+            <i class="pi pi-tag"></i>
+          </div>
+          <span class="kpi-card__trend kpi-card__trend--neutral">
+            <i class="pi pi-info-circle"></i> Cardápio
+          </span>
+        </div>
+        <span class="kpi-card__label">Produtos</span>
+        <div class="kpi-card__value">{{ stats.totalProducts }}</div>
+        <p class="kpi-card__footnote">itens no cardápio</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Charts Section ────────────────────────────────────────── -->
+  <div class="charts-grid" *ngIf="stats">
+
+    <!-- Bar Chart -->
+    <div class="chart-card animate-fadeInUp delay-4">
+      <div class="chart-card__top-stripe chart-card__top-stripe--brand"></div>
+      <div class="chart-card__header">
+        <div>
+          <h3 class="chart-card__title">Faturamento Mensal</h3>
+          <p class="chart-card__subtitle">Receita consolidada por mês</p>
+        </div>
+        <div class="chart-card__badge">
+          <i class="pi pi-chart-bar mr-1"></i> Barras
+        </div>
+      </div>
+      <div class="chart-card__body">
+        <p-chart type="bar" [data]="barData" [options]="barOptions" height="300px"></p-chart>
+      </div>
+    </div>
+
+    <!-- Doughnut Chart -->
+    <div class="chart-card animate-fadeInUp delay-5">
+      <div class="chart-card__top-stripe chart-card__top-stripe--gold"></div>
+      <div class="chart-card__header">
+        <div>
+          <h3 class="chart-card__title">Status dos Pedidos</h3>
+          <p class="chart-card__subtitle">Distribuição atual</p>
+        </div>
+        <div class="chart-card__badge chart-card__badge--gold">
+          <i class="pi pi-chart-pie mr-1"></i> Pizza
+        </div>
+      </div>
+      <div class="chart-card__body chart-card__body--centered">
+        <p-chart type="doughnut" [data]="pieData" [options]="pieOptions" height="260px" width="260px"></p-chart>
+      </div>
+    </div>
+
+  </div>
+
+</div>

@@ -1,117 +1,214 @@
+<!-- ======================================================
+     DETALHES DO PEDIDO — Timeline + Layout Premium
+     ====================================================== -->
+<p-toast></p-toast>
 
-<div class="surface-ground min-h-screen p-4 flex justify-content-center">
+<div class="tracking-page" *ngIf="order; else loadingTpl">
 
-    <div class="surface-card p-4 shadow-2 border-round w-full lg:w-8" *ngIf="order">
+  <!-- ── BACK BUTTON ── -->
+  <button class="tracking-back animate-fadeInDown" (click)="goBack()" id="btn-voltar-tracking">
+    <i class="pi pi-arrow-left"></i>
+    <span>Voltar</span>
+  </button>
 
-        <div class="flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-            <div>
-                <h1 class="text-2xl font-bold text-900 m-0 brand-font">Pedido #{{ order.id }}</h1>
-                <span class="text-600">{{ order.orderTime | date:'dd/MM/yyyy HH:mm' }}</span>
-            </div>
-            <p-tag [value]="getStatusLabel(order.statusName)" severity="info" styleClass="text-base px-3 py-2"></p-tag>
-        </div>
-
-        <p-divider></p-divider>
-
-        <div class="grid">
-            <div class="col-12 md:col-6">
-
-                <div *ngIf="order.deliveryMethod === 2; else pickup">
-                    <div class="text-xl font-bold text-900 mb-3">Entrega</div>
-                    <div *ngIf="order.address" class="surface-ground p-3 border-round">
-                        <span class="block font-bold">{{ order.address.street }}, {{ order.address.number }}</span>
-                        <span class="block text-600">{{ order.address.district }} - {{ order.address.zipCode }}</span>
-                    </div>
-                    <p class="mt-2 text-primary font-bold">
-                        <i class="pi pi-clock mr-2"></i>Agendado para: {{ order.deliverTime | date:'dd/MM/yyyy HH:mm' }}
-                    </p>
-                </div>
-                <ng-template #pickup>
-                    <div>
-                        <div class="text-xl font-bold text-900 mb-3">Retirada na Loja</div>
-
-                        <div class="surface-ground p-3 border-round">
-                            <span class="block font-bold text-900">Nossa Padaria</span>
-                            <span class="block text-600">Rua Doutor José Frota, 32</span>
-                            <span class="block text-500 text-sm mt-1">Mucuripe - Fortaleza/CE</span>
-                        </div>
-
-                        <p class="mt-3 text-primary font-bold flex align-items-center">
-                            <i class="pi pi-clock mr-2"></i>
-                            Agendado para: {{ order.deliverTime | date:'dd/MM/yyyy HH:mm' }}
-                        </p>
-                    </div>
-                </ng-template>
-            </div>
-
-            <div class="col-12 md:col-6">
-                <div class="text-xl font-bold text-900 mb-3">Pagamento</div>
-                <div class="flex justify-content-between mb-2">
-                    <span>Total do Pedido:</span>
-                    <span class="font-bold">{{ order.totalAmount | currency:'BRL' }}</span>
-                </div>
-                <div class="flex justify-content-between mb-2 text-green-600">
-                    <span>Já Pago:</span>
-                    <span>- {{ order.amountPaid | currency:'BRL' }}</span>
-                </div>
-                <p-divider></p-divider>
-                
-                <div *ngIf="!order.isFullyPaid" class="flex justify-content-between text-xl font-bold text-red-500">
-                    <span>Restante a Pagar:</span>
-                    <span>{{ order.remainingAmount | currency:'BRL' }}</span>
-                </div>
-
-                <div *ngIf="order.statusName === 'PendingPayment' && !order.isFullyPaid" class="mt-3">
-                    <p-button 
-                        [label]="(order.payment && order.payment.paymentUrl) ? 'Pagar Agora' : 'Gerar Pagamento'" 
-                        [icon]="(order.payment && order.payment.paymentUrl) ? 'pi pi-check-circle' : 'pi pi-wallet'"
-                        styleClass="w-full"
-                        [styleClass]="(order.payment && order.payment.paymentUrl) ? 'p-button-success w-full' : 'p-button-primary w-full'"
-                        (onClick)="handlePayment()">
-                    </p-button>
-                </div>
-                <div *ngIf="order.isFullyPaid" class="flex justify-content-between text-xl font-bold text-green-500 mt-2 bg-green-50 p-2 border-round">
-                  <span>Situação:</span>
-                      <span class="flex align-items-center">
-             <i class="pi pi-check-circle mr-2"></i>Totalmente Pago
-         </span>
-                </div>
-            </div>
-        </div>
-
-        <p-divider></p-divider>
-
-        <div class="mb-4">
-            <div class="text-xl font-bold text-900 mb-3">Itens</div>
-
-            <div *ngFor="let item of order.orderItens"
-                class="flex justify-content-between align-items-center mb-3 p-2 surface-ground border-round">
-                <div class="flex align-items-center">
-                    <span class="font-bold text-lg mr-3 w-2rem text-center surface-200 border-round">{{ item.quantity
-                        }}x</span>
-                    <div>
-                        <div class="font-bold text-900">{{ item.productName }}</div>
-                        <div class="text-sm text-600">{{ item.price | currency:'BRL' }} un.</div>
-                    </div>
-                </div>
-                <div class="font-bold">
-                    {{ (item.price * item.quantity) | currency:'BRL' }}
-                </div>
-            </div>
-        </div>
-
-        <div class="flex justify-content-end gap-3 mt-5">
-            <p-button label="Voltar" icon="pi pi-arrow-left" styleClass="p-button-text p-button-secondary"
-                (onClick)="goBack()"></p-button>
-
-            <p-button *ngIf="order.statusName === 'Pendente' || order.statusName === 'Pedido confirmado'"
-                label="Cancelar Pedido" icon="pi pi-times" styleClass="p-button-danger p-button-outlined"
-                [loading]="actionLoading" (onClick)="cancelOrder()"></p-button>
-
-            <p-button *ngIf="order.statusName === 'Saiu para entrega'" label="Confirmar Recebimento"
-                icon="pi pi-check-circle" styleClass="p-button-success" [loading]="actionLoading"
-                (onClick)="confirmReceipt()"></p-button>
-        </div>
-
+  <!-- ── PAGE HEADER ── -->
+  <div class="tracking-header animate-fadeInDown">
+    <div class="tracking-header__left">
+      <h1 class="tracking-header__title">Pedido <span class="tracking-header__id">#{{ order.id }}</span></h1>
+      <span class="tracking-header__date">
+        <i class="pi pi-calendar"></i>
+        {{ order.orderTime | date:'dd/MM/yyyy \à\s HH:mm' }}
+      </span>
     </div>
+    <span class="status-badge" [ngClass]="getStatusBadgeClass(order.statusName)">
+      <i [class]="'pi ' + getStatusIcon(order.statusName)"></i>
+      {{ getStatusLabel(order.statusName) }}
+    </span>
+  </div>
+
+  <div class="tracking-grid">
+
+    <!-- ══════════════════════════════════════════
+         COLUNA ESQUERDA — Timeline + Info
+         ══════════════════════════════════════════ -->
+    <div class="tracking-main">
+
+      <!-- ── TIMELINE DE PROGRESSO ── -->
+      <div class="tracking-card animate-fadeInUp delay-1">
+        <div class="section-header">
+          <div class="section-icon"><i class="pi pi-map"></i></div>
+          <span class="section-title">Progresso do Pedido</span>
+        </div>
+
+        <div class="order-timeline">
+          <div *ngFor="let step of getOrderSteps(); let last = last"
+               class="timeline-step"
+               [class.timeline-step--done]="step.done"
+               [class.timeline-step--active]="step.active"
+               [class.timeline-step--last]="last">
+
+            <div class="timeline-step__indicator">
+              <div class="timeline-step__dot">
+                <i [class]="'pi ' + (step.done ? 'pi-check' : step.icon)"></i>
+              </div>
+              <div class="timeline-step__line" *ngIf="!last"></div>
+            </div>
+
+            <div class="timeline-step__content">
+              <span class="timeline-step__label">{{ step.label }}</span>
+              <span class="timeline-step__desc">{{ step.desc }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ENTREGA / RETIRADA ── -->
+      <div class="tracking-card animate-fadeInUp delay-2">
+        <div *ngIf="order.deliveryMethod === 2; else pickup">
+          <div class="section-header">
+            <div class="section-icon"><i class="pi pi-truck"></i></div>
+            <span class="section-title">Endereço de Entrega</span>
+          </div>
+          <div *ngIf="order.address" class="tracking-address">
+            <i class="pi pi-map-marker tracking-address__pin"></i>
+            <div>
+              <span class="tracking-address__street">{{ order.address.street }}, {{ order.address.number }}</span>
+              <span class="tracking-address__district">{{ order.address.district }} · CEP {{ order.address.zipCode }}</span>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #pickup>
+          <div class="section-header">
+            <div class="section-icon"><i class="pi pi-shop"></i></div>
+            <span class="section-title">Retirada na Loja</span>
+          </div>
+          <div class="tracking-address">
+            <i class="pi pi-map-marker tracking-address__pin"></i>
+            <div>
+              <span class="tracking-address__street">Nossa Padaria — Rua Doutor José Frota, 32</span>
+              <span class="tracking-address__district">Mucuripe · Fortaleza/CE</span>
+            </div>
+          </div>
+        </ng-template>
+
+        <!-- Horário agendado -->
+        <div class="tracking-schedule">
+          <i class="pi pi-clock"></i>
+          <span>Agendado para <strong>{{ order.deliverTime | date:'dd/MM/yyyy' }}</strong> às <strong>{{ order.deliverTime | date:'HH:mm' }}</strong></span>
+        </div>
+      </div>
+
+      <!-- ── ITENS DO PEDIDO ── -->
+      <div class="tracking-card animate-fadeInUp delay-3">
+        <div class="section-header">
+          <div class="section-icon"><i class="pi pi-shopping-bag"></i></div>
+          <span class="section-title">Itens do Pedido</span>
+        </div>
+
+        <div class="order-items">
+          <div *ngFor="let item of order.orderItens" class="order-item">
+            <div class="order-item__qty">{{ item.quantity }}×</div>
+            <div class="order-item__info">
+              <span class="order-item__name">{{ item.productName }}</span>
+              <span class="order-item__unit">{{ item.price | currency:'BRL' }} / un.</span>
+            </div>
+            <div class="order-item__total">{{ (item.price * item.quantity) | currency:'BRL' }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         COLUNA DIREITA — Pagamento + Ações
+         ══════════════════════════════════════════ -->
+    <div class="tracking-sidebar">
+
+      <!-- ── RESUMO DE PAGAMENTO ── -->
+      <div class="tracking-card tracking-payment animate-fadeInUp delay-2">
+        <div class="section-header">
+          <div class="section-icon"><i class="pi pi-wallet"></i></div>
+          <span class="section-title">Pagamento</span>
+        </div>
+
+        <div class="payment-row">
+          <span class="payment-row__label">Total do Pedido</span>
+          <span class="payment-row__value">{{ order.totalAmount | currency:'BRL' }}</span>
+        </div>
+
+        <div class="payment-row payment-row--paid">
+          <span class="payment-row__label">
+            <i class="pi pi-check-circle"></i> Já Pago
+          </span>
+          <span class="payment-row__value payment-row__value--green">
+            - {{ order.amountPaid | currency:'BRL' }}
+          </span>
+        </div>
+
+        <!-- Barra de progresso do pagamento -->
+        <div class="payment-progress" *ngIf="order.totalAmount > 0">
+          <div class="payment-progress__bar">
+            <div class="payment-progress__fill"
+                 [style.width.%]="(order.amountPaid / order.totalAmount) * 100"></div>
+          </div>
+          <span class="payment-progress__label">
+            {{ ((order.amountPaid / order.totalAmount) * 100) | number:'1.0-0' }}% pago
+          </span>
+        </div>
+
+        <div class="payment-divider"></div>
+
+        <div *ngIf="!order.isFullyPaid" class="payment-row payment-row--remaining">
+          <span class="payment-row__label">Restante a Pagar</span>
+          <span class="payment-row__value payment-row__value--red">{{ order.remainingAmount | currency:'BRL' }}</span>
+        </div>
+
+        <!-- Totalmente pago -->
+        <div *ngIf="order.isFullyPaid" class="payment-done animate-scaleIn">
+          <i class="pi pi-verified payment-done__icon"></i>
+          <span>Totalmente Pago!</span>
+        </div>
+
+        <!-- Botão de pagamento -->
+        <div *ngIf="order.statusName === 'PendingPayment' && !order.isFullyPaid" class="mt-3">
+          <button class="btn-pay btn-shimmer" (click)="handlePayment()" id="btn-pagar-agora">
+            <i [class]="'pi ' + ((order.payment && order.payment.paymentUrl) ? 'pi-external-link' : 'pi-wallet')"></i>
+            {{ (order.payment && order.payment.paymentUrl) ? 'Pagar Agora' : 'Gerar Pagamento' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- ── AÇÕES ── -->
+      <div class="tracking-actions animate-fadeInUp delay-3">
+        <button *ngIf="order.statusName === 'Pendente' || order.statusName === 'Pedido confirmado'"
+                class="action-btn action-btn--danger"
+                [class.action-btn--loading]="actionLoading"
+                (click)="cancelOrder()"
+                id="btn-cancelar-pedido">
+          <i class="pi pi-times-circle"></i>
+          <span>{{ actionLoading ? 'Cancelando...' : 'Cancelar Pedido' }}</span>
+        </button>
+
+        <button *ngIf="order.statusName === 'Saiu para entrega'"
+                class="action-btn action-btn--success"
+                [class.action-btn--loading]="actionLoading"
+                (click)="confirmReceipt()"
+                id="btn-confirmar-recebimento">
+          <i class="pi pi-check-circle"></i>
+          <span>{{ actionLoading ? 'Confirmando...' : 'Confirmar Recebimento' }}</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
 </div>
+
+<!-- ── LOADING STATE ── -->
+<ng-template #loadingTpl>
+  <div class="tracking-loading">
+    <div class="tracking-loading__spinner">
+      <i class="pi pi-spin pi-spinner"></i>
+    </div>
+    <p>Carregando pedido...</p>
+  </div>
+</ng-template>

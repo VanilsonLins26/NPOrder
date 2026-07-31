@@ -1,0 +1,224 @@
+/* ============================================================
+   RESULTADO DO PAGAMENTO — Animação Premium
+   ============================================================ */
+
+:host {
+    display: block;
+}
+
+.result-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.5s ease;
+
+    &--success {
+        background: linear-gradient(160deg, #ECFDF5 0%, #D1FAE5 50%, #F0FDF4 100%);
+    }
+
+    &--failure {
+        background: linear-gradient(160deg, #FFF1F2 0%, #FFE4E6 50%, #FEF2F2 100%);
+    }
+
+    &--pending {
+        background: linear-gradient(160deg, #FFFBEB 0%, #FEF3C7 50%, #FFFDE7 100%);
+    }
+}
+
+/* ── Confetti ── */
+.confetti-piece {
+    position: fixed;
+    width: 10px;
+    height: 14px;
+    border-radius: 2px;
+    animation: confettiFall linear forwards;
+    z-index: 0;
+
+    &--1  { left: 10%; top: -20px; background: #D99A26; animation-duration: 3.2s; animation-delay: 0.1s; width: 8px; }
+    &--2  { left: 25%; top: -20px; background: #4A3221; animation-duration: 2.8s; animation-delay: 0.4s; border-radius: 50%; }
+    &--3  { left: 40%; top: -20px; background: #D99A26; animation-duration: 3.5s; animation-delay: 0s;   width: 12px; height: 8px; }
+    &--4  { left: 55%; top: -20px; background: #059669; animation-duration: 2.6s; animation-delay: 0.7s; }
+    &--5  { left: 70%; top: -20px; background: #4A3221; animation-duration: 3.1s; animation-delay: 0.2s; transform: rotate(45deg); }
+    &--6  { left: 82%; top: -20px; background: #D99A26; animation-duration: 2.9s; animation-delay: 0.5s; border-radius: 50%; width: 8px; height: 8px; }
+    &--7  { left: 18%; top: -20px; background: #10b981; animation-duration: 3.4s; animation-delay: 0.3s; width: 6px; }
+    &--8  { left: 65%; top: -20px; background: #F59E0B; animation-duration: 2.7s; animation-delay: 0.8s; height: 10px; }
+}
+
+/* ── Card ── */
+.result-card {
+    background: white;
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid rgba(0,0,0,0.05);
+    padding: 2.5rem 2rem;
+    max-width: 460px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Icon ── */
+.result-icon {
+    position: relative;
+    width: 90px; height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+
+    &__ring {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 3px solid transparent;
+        animation: none;
+    }
+
+    i {
+        font-size: 2.6rem;
+        position: relative;
+        z-index: 1;
+        animation: checkmarkPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        animation-delay: 0.2s;
+    }
+
+    &--success {
+        background: linear-gradient(135deg, #D1FAE5, #ECFDF5);
+        border: 3px solid #A7F3D0;
+        border-radius: 50%;
+        animation: pulseSuccess 2.5s infinite;
+
+        i { color: #059669; }
+        .result-icon__ring { border-color: rgba(16, 185, 129, 0.3); }
+    }
+
+    &--failure {
+        background: linear-gradient(135deg, #FEE2E2, #FFF1F2);
+        border: 3px solid #FECACA;
+        border-radius: 50%;
+
+        i { color: #DC2626; animation-name: shake; }
+    }
+
+    &--pending {
+        background: linear-gradient(135deg, #FEF3C7, #FFFBEB);
+        border: 3px solid #FDE68A;
+        border-radius: 50%;
+        animation: pulseGlow 2s infinite;
+
+        i { color: #D97706; }
+    }
+}
+
+/* ── Title ── */
+.result-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2.2rem;
+    margin: 0 0 0.75rem;
+    line-height: 1.1;
+
+    &--success { color: #065F46; }
+    &--failure  { color: #991B1B; }
+    &--pending  { color: #92400E; }
+}
+
+/* ── Message ── */
+.result-message {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+    margin: 0 0 1.5rem;
+    max-width: 360px;
+}
+
+/* ── Payment ID ── */
+.result-payment-id {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: #F3F4F6;
+    border-radius: var(--border-radius-sm);
+    padding: 6px 14px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.78rem;
+    color: #6B7280;
+    margin-bottom: 1.5rem;
+
+    i { font-size: 0.75rem; color: #9CA3AF; }
+
+    strong { color: var(--padaria-brown); }
+}
+
+/* ── CTA ── */
+.result-cta {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+    border-radius: var(--border-radius-md);
+    padding: 14px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition-md);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+    margin-bottom: 0.875rem;
+
+    &--success {
+        background: var(--gradient-success);
+        color: white;
+
+        &:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(16,185,129,0.35); }
+    }
+
+    &--failure {
+        background: var(--gradient-brand);
+        color: white;
+
+        &:hover { background: var(--gradient-gold); box-shadow: var(--shadow-gold); transform: translateY(-1px); }
+    }
+
+    &--pending {
+        background: var(--gradient-warning);
+        color: white;
+
+        &:hover { opacity: 0.9; transform: translateY(-1px); }
+    }
+}
+
+/* ── Secondary ── */
+.result-secondary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8rem;
+    transition: color 0.2s ease;
+
+    &:hover { color: var(--padaria-brown); }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .result-card { padding: 2rem 1.25rem; }
+    .result-title { font-size: 1.8rem; }
+    .result-icon { width: 76px; height: 76px; }
+    .result-icon i { font-size: 2.2rem; }
+}

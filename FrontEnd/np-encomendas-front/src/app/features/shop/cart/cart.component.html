@@ -1,123 +1,150 @@
+<!-- ======================================================
+     CARRINHO — Premium Card Layout
+     ====================================================== -->
+<div class="cart-page">
 
-
-<div class="surface-ground px-4 py-5 md:px-6 lg:px-8 min-h-screen">
-    
-    <div class="text-900 font-bold text-4xl mb-4 brand-font" style="color: var(--padaria-brown);">
-        <i class="pi pi-shopping-cart text-4xl mr-2"></i> Seu Carrinho
+  <!-- ── HEADER ── -->
+  <div class="cart-header animate-fadeInDown">
+    <div class="cart-header__left">
+      <div class="cart-header__icon">
+        <i class="pi pi-shopping-cart"></i>
+      </div>
+      <div>
+        <h1 class="cart-header__title">Seu Carrinho</h1>
+        <p class="cart-header__subtitle" *ngIf="cart?.cartItems?.length">
+          {{ cart!.cartItems.length }} ite{{ cart!.cartItems.length !== 1 ? 'ns' : 'm' }} selecionado{{ cart!.cartItems.length !== 1 ? 's' : '' }}
+        </p>
+      </div>
     </div>
+    <a routerLink="/cardapio" class="cart-header__back" id="btn-continuar-comprando-topo">
+      <i class="pi pi-arrow-left"></i>
+      <span class="hidden sm:inline">Continuar Comprando</span>
+    </a>
+  </div>
 
-    <div *ngIf="!cart?.cartItems?.length" class="surface-card p-5 shadow-2 border-round text-center">
-        <div class="text-900 font-bold text-2xl mb-3">Seu carrinho está vazio 😔</div>
-        <p class="text-700 mb-4">Que tal adicionar algumas delícias?</p>
-        <p-button label="Ver Cardápio" icon="pi pi-arrow-left" [routerLink]="['/cardapio']"></p-button>
+  <!-- ── EMPTY STATE ── -->
+  <div *ngIf="!cart?.cartItems?.length" class="cart-empty animate-scaleIn">
+    <div class="cart-empty__icon animate-float">
+      <i class="pi pi-shopping-bag"></i>
     </div>
+    <h2 class="cart-empty__title">Seu carrinho está vazio</h2>
+    <p class="cart-empty__message">
+      Que tal adicionar algumas delícias fresquinhas? 😋
+    </p>
+    <a routerLink="/cardapio" class="cart-empty__cta" id="btn-ver-cardapio-empty-cart">
+      <i class="pi pi-book"></i>
+      Ver Cardápio
+    </a>
+  </div>
 
-    <div *ngIf="cart?.cartItems?.length" class="grid">
-        
-        <div class="col-12 lg:col-8">
-            <div class="surface-card shadow-2 border-round p-3">
-                <p-table [value]="cart!.cartItems" responsiveLayout="stack" [breakpoint]="'768px'">
-                    <ng-template pTemplate="header">
-                        <tr>
-                            <th>Produto</th>
-                            <th>Preço</th>
-                            <th>Qtd</th>
-                            <th>Subtotal</th>
-                            <th></th>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-item>
-                        <tr>
-                            <td>
-                                <div class="flex align-items-center gap-3">
-                                    <img [src]="item.product.imageUrl || 'assets/images/logo-padaria.png'" 
-                                         style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px;">
-                                    <div>
-                                        <span class="font-bold block text-900">{{ item.product.name }}</span>
-                                        <span class="text-sm text-500" *ngIf="item.comment">
-                                            Obs: {{ item.comment }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </td>
-                            
-                            <td>
-                                <span class="p-column-title font-bold">Preço</span>
-                                {{ item.unityPrice | currency:'BRL' }}
-                            </td>
-                            
-                            <td>
-                                <span class="p-column-title font-bold">Qtd</span>
-                                <p-inputNumber [(ngModel)]="item.quantity" 
-                                               [showButtons]="true" 
-                                               buttonLayout="horizontal" 
-                                               inputId="horizontal"
-                                               [min]="1"
-                                               [step]="1"
-                                               inputStyleClass="w-3rem text-center"
-                                               decrementButtonClass="p-button-text p-button-secondary" 
-                                               incrementButtonClass="p-button-text p-button-secondary" 
-                                               incrementButtonIcon="pi pi-plus" 
-                                               decrementButtonIcon="pi pi-minus"
-                                               (onInput)="updateQuantity(item, $event.value || 1)">
-                                </p-inputNumber>
-                            </td>
+  <!-- ── CART CONTENT ── -->
+  <div *ngIf="cart?.cartItems?.length" class="cart-layout">
 
-                            <td class="font-bold text-900">
-                                <span class="p-column-title font-bold">Total</span>
-                                {{ item.totalPrice | currency:'BRL' }}
-                            </td>
+    <!-- ── ITEMS LIST ── -->
+    <div class="cart-items animate-fadeInUp delay-1">
 
-                            <td>
-                                <p-button icon="pi pi-trash" 
-                                          styleClass="p-button-rounded p-button-danger p-button-text" 
-                                          (onClick)="removeItem(item.product.id)">
-                                </p-button>
-                            </td>
-                        </tr>
-                    </ng-template>
-                </p-table>
+      <div *ngFor="let item of cart!.cartItems; let i = index"
+           class="cart-item animate-fadeInUp"
+           [ngClass]="'delay-' + (i < 5 ? i+1 : 5)"
+           [id]="'cart-item-' + item.product.id">
 
-                <div class="flex justify-content-end mt-3">
-                    <p-button label="Limpar Carrinho" 
-                              icon="pi pi-trash" 
-                              styleClass="p-button-text p-button-danger p-button-sm" 
-                              (onClick)="clearCart()">
-                    </p-button>
-                </div>
-            </div>
+        <!-- Product image -->
+        <div class="cart-item__image-wrap">
+          <img [src]="item.product.imageUrl || 'assets/images/logo-padaria.png'"
+               [alt]="item.product.name"
+               class="cart-item__image">
         </div>
 
-        <div class="col-12 lg:col-4">
-            <div class="surface-card shadow-2 border-round p-4 sticky top-0" style="top: 20px;">
-                <div class="text-900 font-bold text-2xl mb-3">Resumo</div>
-                
-                <div class="flex justify-content-between mb-3">
-                    <span class="text-700">Subtotal</span>
-                    <span class="text-900">{{ cart!.total | currency:'BRL' }}</span>
-                </div>
-                
-                <div class="border-top-1 surface-border my-3"></div>
-                
-                <div class="flex justify-content-between mb-4">
-                    <span class="text-900 font-bold text-xl">Total</span>
-                    <span class="text-900 font-bold text-xl" style="color: var(--padaria-brown);">
-                        {{ cart!.total | currency:'BRL' }}
-                    </span>
-                </div>
-
-                <p-button label="Finalizar Pedido" 
-                          icon="pi pi-check" 
-                          styleClass="w-full p-button-lg" 
-                          (onClick)="checkout()">
-                </p-button>
-                
-                <p-button label="Continuar Comprando" 
-                          styleClass="w-full mt-3 p-button-outlined p-button-secondary" 
-                          [routerLink]="['/cardapio']">
-                </p-button>
-            </div>
+        <!-- Info -->
+        <div class="cart-item__info">
+          <span class="cart-item__name">{{ item.product.name }}</span>
+          <span class="cart-item__price">{{ item.unityPrice | currency:'BRL' }} / un.</span>
+          <span *ngIf="item.comment" class="cart-item__obs">
+            <i class="pi pi-comment"></i> {{ item.comment }}
+          </span>
         </div>
 
+        <!-- Quantity control -->
+        <div class="cart-item__qty">
+          <p-inputNumber
+            [(ngModel)]="item.quantity"
+            [showButtons]="true"
+            buttonLayout="horizontal"
+            inputId="horizontal"
+            [min]="1"
+            [step]="1"
+            inputStyleClass="cart-qty-input"
+            decrementButtonClass="p-button-text cart-qty-btn"
+            incrementButtonClass="p-button-text cart-qty-btn"
+            incrementButtonIcon="pi pi-plus"
+            decrementButtonIcon="pi pi-minus"
+            (onInput)="updateQuantity(item, $event.value || 1)">
+          </p-inputNumber>
+        </div>
+
+        <!-- Subtotal -->
+        <div class="cart-item__subtotal">
+          <span class="cart-item__subtotal-label">Subtotal</span>
+          <span class="cart-item__subtotal-value">{{ item.totalPrice | currency:'BRL' }}</span>
+        </div>
+
+        <!-- Remove -->
+        <button class="cart-item__remove"
+                (click)="removeItem(item.product.id)"
+                [attr.aria-label]="'Remover ' + item.product.name">
+          <i class="pi pi-trash"></i>
+        </button>
+      </div>
+
+      <!-- Clear cart -->
+      <div class="cart-items__footer">
+        <button class="cart-clear-btn" (click)="clearCart()" id="btn-limpar-carrinho">
+          <i class="pi pi-trash"></i>
+          Limpar Carrinho
+        </button>
+      </div>
     </div>
+
+    <!-- ── ORDER SUMMARY ── -->
+    <div class="cart-summary animate-fadeInUp delay-2">
+      <div class="cart-summary__header">
+        <i class="pi pi-receipt cart-summary__icon"></i>
+        <span>Resumo do Pedido</span>
+      </div>
+
+      <div class="cart-summary__row">
+        <span>Subtotal</span>
+        <span>{{ cart!.total | currency:'BRL' }}</span>
+      </div>
+
+      <div class="cart-summary__divider"></div>
+
+      <div class="cart-summary__total">
+        <span>Total</span>
+        <span class="cart-summary__total-value">{{ cart!.total | currency:'BRL' }}</span>
+      </div>
+
+      <button class="cart-summary__checkout btn-shimmer" (click)="checkout()" id="btn-finalizar-pedido">
+        <i class="pi pi-check-circle"></i>
+        Finalizar Pedido
+      </button>
+
+      <a routerLink="/cardapio" class="cart-summary__continue" id="btn-continuar-comprando">
+        <i class="pi pi-arrow-left"></i>
+        Continuar comprando
+      </a>
+
+      <!-- Trust badges -->
+      <div class="cart-trust">
+        <div class="cart-trust__item">
+          <i class="pi pi-lock"></i>
+          <span>Pagamento Seguro</span>
+        </div>
+        <div class="cart-trust__item">
+          <i class="pi pi-shield"></i>
+          <span>Dados Protegidos</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

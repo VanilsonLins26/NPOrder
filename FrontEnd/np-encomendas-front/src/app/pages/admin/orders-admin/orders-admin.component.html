@@ -1,305 +1,425 @@
-<div class="card p-4">
-    <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+<div class="admin-page">
+  <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
 
-    <div class="flex flex-column md:flex-row align-items-center justify-content-between mb-4 gap-3">
-        <h2 class="m-0 text-2xl font-bold text-900 brand-font">Gerenciar Encomendas</h2>
-        
-        <p-selectButton [options]="viewOptions" 
-                        [(ngModel)]="currentViewModel" 
-                        (onChange)="onViewChange()"
-                        optionLabel="label" 
-                        optionValue="value" 
-                        [allowEmpty]="false">
-        </p-selectButton>
+  <!-- ── Page Header ────────────────────────────────────────────── -->
+  <header class="admin-page-header animate-fadeInDown">
+    <div class="admin-page-header__left">
+      <h1 class="admin-page-header__title">Gerenciar Encomendas</h1>
+      <p class="admin-page-header__subtitle">Controle e acompanhamento de pedidos</p>
+    </div>
+    <div class="admin-page-header__right">
+      <span class="admin-page-header__date-badge">
+        <i class="pi pi-box mr-2"></i>
+        Painel Administrativo
+      </span>
+    </div>
+  </header>
+
+  <!-- ── Filter Card ────────────────────────────────────────────── -->
+  <div class="filter-card animate-fadeInUp delay-1">
+
+    <!-- Row 1: View Toggle + Counter -->
+    <div class="view-bar">
+      <p-selectButton
+        [options]="viewOptions"
+        [(ngModel)]="currentViewModel"
+        (onChange)="onViewChange()"
+        optionLabel="label"
+        optionValue="value"
+        [allowEmpty]="false">
+      </p-selectButton>
+
+      <span class="count-badge">
+        <i class="pi pi-list mr-1"></i>
+        {{ totalRecords }} encomendas
+      </span>
     </div>
 
-    <div class="surface-ground p-3 border-round-xl mb-4">
-        <div class="grid formgrid p-fluid">
-            
-            <div class="col-12 md:col-3 mb-3 md:mb-0">
-                <label class="block text-600 font-bold mb-2 text-sm">Data</label>
-                <p-datepicker [(ngModel)]="filterDates" 
-                              selectionMode="range" 
-                              [readonlyInput]="true" 
-                              dateFormat="dd/mm/yy"
-                              placeholder="Selecione as datas"
-                              [showButtonBar]="true"
-                              (onSelect)="applyFilters()"
-                              (onClear)="applyFilters()">
-                </p-datepicker>
-            </div>
+    <div class="filter-divider"></div>
 
-            <div class="col-12 md:col-3 mb-3 md:mb-0"> 
-                <label class="block text-600 font-bold mb-2 text-sm">Status</label>
-                <p-select [options]="statusOptions"   
-                          [(ngModel)]="status" 
-                          optionLabel="label"
-                          optionValue="value" 
-                          placeholder="Todos" 
-                          [showClear]="true"
-                          [disabled]="currentViewModel === 3" 
-                          (onChange)="cleanAndApplyFilters()">
-                    
-                    <ng-template #selectedItem let-selected>
-                        <div class="flex align-items-center gap-2" *ngIf="selected">
-                            <p-tag [value]="selected.label" [severity]="selected.severity"></p-tag>
-                        </div>
-                    </ng-template>
+    <!-- Row 2: Filters -->
+    <div class="filter-grid">
 
-                    <ng-template #item let-item>
-                        <div class="flex align-items-center gap-2">
-                            <p-tag [value]="item.label" [severity]="item.severity"></p-tag>
-                        </div>
-                    </ng-template>
-                </p-select>
-            </div>
+      <div class="filter-field">
+        <label class="filter-label">
+          <i class="pi pi-calendar mr-1"></i> Data
+        </label>
+        <p-datepicker
+          [(ngModel)]="filterDates"
+          selectionMode="range"
+          [readonlyInput]="true"
+          dateFormat="dd/mm/yy"
+          placeholder="Selecione as datas"
+          [showButtonBar]="true"
+          (onSelect)="applyFilters()"
+          (onClear)="applyFilters()">
+        </p-datepicker>
+      </div>
 
-            <div class="col-12 md:col-4 mb-3 md:mb-0">
-                <label class="block text-600 font-bold mb-2 text-sm">Buscar</label>
-                <p-iconfield iconPosition="left">
-                    <p-inputicon styleClass="pi pi-search" />
-                    <input pInputText type="text" 
-                           [(ngModel)]="filterText" 
-                           (input)="applyFilters()" 
-                           placeholder="Nome ou ID..." />
-                </p-iconfield>
-            </div>
+      <div class="filter-field">
+        <label class="filter-label">
+          <i class="pi pi-tag mr-1"></i> Status
+        </label>
+        <p-select
+          [options]="statusOptions"
+          [(ngModel)]="status"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Todos"
+          [showClear]="true"
+          [disabled]="currentViewModel === 3"
+          (onChange)="cleanAndApplyFilters()">
 
-            <div class="col-12 md:col-2 flex align-items-end">
-                <button pButton icon="pi pi-filter-slash" 
-                        label="Limpar" 
-                        class="p-button-outlined w-full" 
-                        (click)="clearFilters()">
-                </button>
+          <ng-template #selectedItem let-selected>
+            <div class="flex align-items-center gap-2" *ngIf="selected">
+              <p-tag [value]="selected.label" [severity]="selected.severity"></p-tag>
             </div>
-        </div>
+          </ng-template>
+
+          <ng-template #item let-item>
+            <div class="flex align-items-center gap-2">
+              <p-tag [value]="item.label" [severity]="item.severity"></p-tag>
+            </div>
+          </ng-template>
+        </p-select>
+      </div>
+
+      <div class="filter-field filter-field--search">
+        <label class="filter-label">
+          <i class="pi pi-search mr-1"></i> Buscar
+        </label>
+        <p-iconfield iconPosition="left">
+          <p-inputicon styleClass="pi pi-search" />
+          <input pInputText type="text"
+                 [(ngModel)]="filterText"
+                 (input)="applyFilters()"
+                 placeholder="Nome ou ID..." />
+        </p-iconfield>
+      </div>
+
+      <div class="filter-field filter-field--action">
+        <label class="filter-label">&nbsp;</label>
+        <button pButton icon="pi pi-filter-slash"
+                label="Limpar"
+                class="p-button-outlined w-full filter-clear-btn"
+                (click)="clearFilters()">
+        </button>
+      </div>
+
     </div>
+  </div>
 
-    <p-table [value]="orders" [lazy]="true" (onLazyLoad)="loadOrders($event)" [totalRecords]="totalRecords"
-    [loading]="loading" [rows]="10" [paginator]="true" [rowHover]="true" responsiveLayout="stack" breakpoint="960px"
-    sortField="groupKey" sortMode="single" dataKey="id" rowGroupMode="subheader" groupRowsBy="groupKey">
+  <!-- ── Data Table ─────────────────────────────────────────────── -->
+  <div class="table-wrapper animate-fadeInUp delay-2">
+    <p-table
+      [value]="orders"
+      [lazy]="true"
+      (onLazyLoad)="loadOrders($event)"
+      [totalRecords]="totalRecords"
+      [loading]="loading"
+      [rows]="10"
+      [paginator]="true"
+      [rowHover]="true"
+      responsiveLayout="stack"
+      breakpoint="960px"
+      sortField="groupKey"
+      sortMode="single"
+      dataKey="id"
+      rowGroupMode="subheader"
+      groupRowsBy="groupKey"
+      styleClass="admin-table">
 
-    <ng-template pTemplate="header">
-        <tr>
-            <th class="text-center" style="width: 5%">ID</th>
-            <th class="text-left" style="width: 25%">Cliente</th>
-            <th class="text-center" style="width: 15%">Horário</th>
-            <th class="text-right" style="width: 15%">Total</th> <th class="text-center" style="width: 15%">Método</th>
-            <th class="text-center" style="width: 15%">Status</th>
-            <th class="text-center" style="width: 10%">Ações</th>
+      <!-- Table Header -->
+      <ng-template pTemplate="header">
+        <tr class="table-header-row">
+          <th class="th-id text-center" style="width: 5%">ID</th>
+          <th class="th-client text-left" style="width: 25%">Cliente</th>
+          <th class="th-time text-center" style="width: 15%">Horário</th>
+          <th class="th-total text-right" style="width: 15%">Total</th>
+          <th class="th-method text-center" style="width: 15%">Método</th>
+          <th class="th-status text-center" style="width: 15%">Status</th>
+          <th class="th-actions text-center" style="width: 10%">Ações</th>
         </tr>
-    </ng-template>
+      </ng-template>
 
-    <ng-template pTemplate="groupheader" let-order>
+      <!-- Group Header -->
+      <ng-template pTemplate="groupheader" let-order>
         <tr pRowGroupHeader class="group-header-row">
-            <td colspan="7">
-                <div class="flex align-items-center gap-2">
-                    <span class="font-bold text-lg p-2 border-round w-full md:w-auto" [ngClass]="{
-                        'bg-green-100 text-green-900': isToday(order.deliverTime),
-                        'bg-blue-50 text-blue-900': !isToday(order.deliverTime) && getGroupLabel(order.deliverTime) === 'AMANHÃ',
-                        'surface-200 text-700': !isToday(order.deliverTime) && getGroupLabel(order.deliverTime) !== 'AMANHÃ'
-                    }">
-                        <i class="pi pi-calendar mr-2"></i>
-                        {{ getGroupLabel(order.deliverTime) }}
-                        <span class="text-sm font-normal ml-2">({{ order.deliverTime | date:'dd/MM' }})</span>
-                    </span>
-                </div>
-            </td>
+          <td colspan="7">
+            <div class="group-date-wrapper">
+              <span class="group-date-pill"
+                [class.group-date-pill--today]="isToday(order.deliverTime)"
+                [class.group-date-pill--tomorrow]="!isToday(order.deliverTime) && getGroupLabel(order.deliverTime) === 'AMANHÃ'"
+                [class.group-date-pill--other]="!isToday(order.deliverTime) && getGroupLabel(order.deliverTime) !== 'AMANHÃ'">
+                <i class="pi pi-calendar-clock mr-2"></i>
+                {{ getGroupLabel(order.deliverTime) }}
+                <span class="group-date-pill__sub">&nbsp;({{ order.deliverTime | date:'dd/MM' }})</span>
+              </span>
+            </div>
+          </td>
         </tr>
-    </ng-template>
+      </ng-template>
 
-    <ng-template pTemplate="body" let-order>
+      <!-- Body -->
+      <ng-template pTemplate="body" let-order>
         <tr class="order-row">
-            <td class="col-id text-center">
-                <span class="font-bold text-500">#{{order.id}}</span>
-            </td>
 
-            <td class="col-client text-left">
-                <span class="font-bold text-900 text-lg block">{{order.userName}}</span>
-                <div class="text-sm text-500 mt-1 flex align-items-center">
-                    <i class="pi pi-whatsapp mr-1 text-green-500"></i>{{order.phone}}
-                </div>
-            </td>
+          <!-- ID -->
+          <td class="col-id text-center">
+            <span class="order-id">#{{ order.id }}</span>
+          </td>
 
-            <td class="col-time text-center">
-                <div class="flex align-items-center justify-content-center md:justify-content-center">
-                    <i class="pi pi-clock mr-2 text-primary"></i>
-                    <span class="font-bold text-xl">{{order.deliverTime | date:'HH:mm'}}</span>
-                </div>
-            </td>
+          <!-- Client -->
+          <td class="col-client text-left">
+            <span class="client-name">{{ order.userName }}</span>
+            <div class="client-phone">
+              <i class="pi pi-whatsapp mr-1"></i>{{ order.phone }}
+            </div>
+          </td>
 
-            <td class="col-total text-right">
-                <span class="font-bold text-green-700 text-lg">
-                    {{order.totalAmount | currency:'BRL'}}
-                </span>
-            </td>
+          <!-- Time -->
+          <td class="col-time text-center">
+            <div class="order-time-display">
+              <i class="pi pi-clock time-icon"></i>
+              <span class="time-value">{{ order.deliverTime | date:'HH:mm' }}</span>
+            </div>
+          </td>
 
-            <td class="col-method text-center">
-                <div class="flex align-items-center justify-content-center">
-                    <i class="pi mr-2" [ngClass]="{
-                        'pi-truck text-blue-500': order.deliveryMethod === 1, 
-                        'pi-shopping-bag text-orange-500': order.deliveryMethod === 2
-                    }"></i>
-                    <span>{{ order.deliveryMethod === 1 ? 'Retirada' : 'Entrega' }}</span>
-                </div>
-            </td>
+          <!-- Total -->
+          <td class="col-total text-right">
+            <span class="order-total">{{ order.totalAmount | currency:'BRL' }}</span>
+          </td>
 
-            <td class="col-status text-center">
-                <p-tag [value]="getStatusLabel(order.statusName)" 
-                       [severity]="getSeverity(getStatusLabel(order.statusName))" 
-                       [rounded]="true">
-                </p-tag>
-            </td>
+          <!-- Delivery Method -->
+          <td class="col-method text-center">
+            <div class="delivery-method"
+              [class.delivery-method--pickup]="order.deliveryMethod === 1"
+              [class.delivery-method--delivery]="order.deliveryMethod === 2">
+              <i class="pi mr-1" [ngClass]="{
+                'pi-shopping-bag': order.deliveryMethod === 1,
+                'pi-truck': order.deliveryMethod === 2
+              }"></i>
+              <span>{{ order.deliveryMethod === 1 ? 'Retirada' : 'Entrega' }}</span>
+            </div>
+          </td>
 
-            <td class="col-actions text-center">
-                <button pButton icon="pi pi-eye" label="Ver Detalhes"
-                    class="p-button-outlined p-button-info p-button-sm w-full md:hidden" (click)="viewOrder(order)">
-                </button>
+          <!-- Status -->
+          <td class="col-status text-center">
+            <p-tag
+              [value]="getStatusLabel(order.statusName)"
+              [severity]="getSeverity(getStatusLabel(order.statusName))"
+              [rounded]="true">
+            </p-tag>
+          </td>
 
-                <button pButton icon="pi pi-eye"
-                    class="p-button-rounded p-button-text p-button-info hidden md:inline-flex"
-                    pTooltip="Ver Detalhes" tooltipPosition="bottom" (click)="viewOrder(order)">
-                </button>
-            </td>
+          <!-- Actions -->
+          <td class="col-actions text-center">
+            <button pButton icon="pi pi-eye" label="Ver Detalhes"
+              class="p-button-outlined p-button-info p-button-sm w-full md:hidden"
+              (click)="viewOrder(order)">
+            </button>
+            <button pButton icon="pi pi-eye"
+              class="p-button-rounded p-button-text p-button-info hidden md:inline-flex action-btn"
+              pTooltip="Ver Detalhes" tooltipPosition="bottom"
+              (click)="viewOrder(order)">
+            </button>
+          </td>
+
         </tr>
-    </ng-template>
+      </ng-template>
 
-    <ng-template pTemplate="emptymessage">
+      <!-- Empty State -->
+      <ng-template pTemplate="emptymessage">
         <tr>
-            <td colspan="7" class="text-center p-4">Nenhuma encomenda encontrada.</td>
+          <td colspan="7" class="empty-state">
+            <div class="empty-state__content">
+              <i class="pi pi-inbox empty-state__icon"></i>
+              <p class="empty-state__text">Nenhuma encomenda encontrada.</p>
+              <p class="empty-state__hint">Tente ajustar os filtros acima.</p>
+            </div>
+          </td>
         </tr>
+      </ng-template>
+
+    </p-table>
+  </div>
+
+  <!-- ── Order Detail Dialog ────────────────────────────────────── -->
+  <p-dialog
+    [(visible)]="orderDialog"
+    [style]="{width: '720px'}"
+    [header]="'Encomenda #' + selectedOrder.id"
+    [modal]="true"
+    styleClass="p-fluid order-detail-dialog"
+    *ngIf="selectedOrder">
+
+    <ng-template pTemplate="content">
+      <div class="dialog-body">
+
+        <!-- Info Cards Row -->
+        <div class="dialog-info-row">
+
+          <!-- Client Card -->
+          <div class="dialog-section dialog-section--client">
+            <div class="dialog-section__header">
+              <i class="pi pi-user dialog-section__icon dialog-section__icon--blue"></i>
+              <span class="dialog-section__title">Cliente</span>
+            </div>
+            <div class="dialog-section__content">
+              <div class="info-row">
+                <i class="pi pi-id-card info-row__icon"></i>
+                <span class="info-row__value info-row__value--bold">{{ selectedOrder.userName }}</span>
+              </div>
+              <div class="info-row">
+                <i class="pi pi-whatsapp info-row__icon info-row__icon--green"></i>
+                <span class="info-row__value">{{ selectedOrder.phone }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Address / Pickup Card -->
+          <div class="dialog-section dialog-section--address">
+            <div class="dialog-section__header">
+              <i class="pi pi-map-marker dialog-section__icon dialog-section__icon--orange"></i>
+              <span class="dialog-section__title">
+                {{ selectedOrder.deliveryMethod === DeliveryMethod.Delivery ? 'Endereço de Entrega' : 'Retirada' }}
+              </span>
+            </div>
+            <div class="dialog-section__content">
+
+              <div *ngIf="selectedOrder.deliveryMethod === DeliveryMethod.Delivery; else pickupTemplate">
+                <div *ngIf="selectedOrder.address; else noAddress">
+                  <p class="address-line address-line--main">{{ selectedOrder.address.street }}, {{ selectedOrder.address.number }}</p>
+                  <p class="address-line">{{ selectedOrder.address.street }} - {{ selectedOrder.address.district }}</p>
+                  <p class="address-line address-line--muted" *ngIf="selectedOrder.address.complement">
+                    <i class="pi pi-info-circle mr-1"></i> Comp: {{ selectedOrder.address.complement }}
+                  </p>
+                </div>
+                <ng-template #noAddress>
+                  <span class="address-missing">
+                    <i class="pi pi-exclamation-triangle mr-1"></i> Endereço não informado!
+                  </span>
+                </ng-template>
+              </div>
+
+              <ng-template #pickupTemplate>
+                <div class="pickup-badge">
+                  <i class="pi pi-shopping-bag mr-2"></i>
+                  Cliente retira no balcão
+                </div>
+              </ng-template>
+
+              <div class="deliver-time-row">
+                <i class="pi pi-calendar mr-2"></i>
+                <span>Entrega/Retirada:</span>
+                <strong class="ml-1">{{ selectedOrder.deliverTime | date:'dd/MM/yyyy HH:mm' }}</strong>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Items Table -->
+        <div class="dialog-section dialog-section--items">
+          <div class="dialog-section__header">
+            <i class="pi pi-list dialog-section__icon dialog-section__icon--teal"></i>
+            <span class="dialog-section__title">Itens do Pedido</span>
+          </div>
+          <p-table [value]="selectedOrder.orderItens" styleClass="p-datatable-sm p-datatable-gridlines items-table">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Produto</th>
+                <th class="text-center" style="width: 80px">Qtd</th>
+                <th class="text-right" style="width: 120px">Total</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+              <tr>
+                <td>
+                  <span class="item-name">{{ item.productName }}</span>
+                  <div *ngIf="item.comment" class="item-comment">
+                    <i class="pi pi-comment mr-1"></i> {{ item.comment }}
+                  </div>
+                </td>
+                <td class="text-center">
+                  <span class="item-qty">{{ item.quantity }}</span>
+                </td>
+                <td class="text-right">
+                  <span class="item-subtotal">{{ item.subTotal | currency:'BRL' }}</span>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="footer">
+              <tr>
+                <td colspan="2" class="text-right">
+                  <span class="items-total-label">Total do Pedido:</span>
+                </td>
+                <td class="text-right">
+                  <span class="items-total-value">{{ selectedOrder.totalAmount | currency:'BRL' }}</span>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+
+      </div>
     </ng-template>
-</p-table>
 
-    <p-dialog [(visible)]="orderDialog" [style]="{width: '700px'}" [header]="'Encomenda #' + selectedOrder.id"
-        [modal]="true" styleClass="p-fluid" *ngIf="selectedOrder">
+    <!-- Dialog Footer -->
+    <ng-template pTemplate="footer">
+      <div class="dialog-footer">
 
-        <ng-template pTemplate="content">
-            <div class="grid mt-1">
-                <div class="col-12 md:col-6">
-                    <div class="surface-100 p-3 border-round h-full">
-                        <div class="text-lg font-bold mb-2 text-900 border-bottom-1 surface-border pb-2">Cliente</div>
-                        <div class="flex align-items-center mb-2">
-                            <i class="pi pi-user mr-2 text-primary"></i>
-                            <span class="font-semibold">{{selectedOrder.userName}}</span>
-                        </div>
-                        <div class="flex align-items-center">
-                            <i class="pi pi-whatsapp mr-2 text-green-500"></i>
-                            <span>{{selectedOrder.phone}}</span>
-                        </div>
-                    </div>
-                </div>
+        <button pButton label="Cancelar Pedido" icon="pi pi-times"
+          class="p-button-danger p-button-outlined"
+          (click)="changeStatus('cancel')"
+          *ngIf="selectedOrder.statusName !== 'Canceled' && selectedOrder.statusName !== 'Delivered'">
+        </button>
 
-                <div class="col-12 md:col-6">
-                    <div class="surface-100 p-3 border-round h-full">
-                        <div class="text-lg font-bold mb-2 text-900 border-bottom-1 surface-border pb-2">
-                            {{ selectedOrder.deliveryMethod === DeliveryMethod.Delivery ? 'Endereço de Entrega' :
-                            'Retirada' }}
-                        </div>
+        <div *ngIf="selectedOrder.statusName === 'Canceled' || selectedOrder.statusName === 'Delivered'"></div>
 
-                        <div *ngIf="selectedOrder.deliveryMethod === DeliveryMethod.Delivery; else pickupTemplate">
-                            <div *ngIf="selectedOrder.address; else noAddress">
-                                <p class="m-0 font-semibold">{{selectedOrder.address.street}},
-                                    {{selectedOrder.address.number}}</p>
-                                <p class="m-0 text-sm text-600">{{selectedOrder.address.street}} -
-                                    {{selectedOrder.address.district}}</p>
-                                <p class="m-0 text-sm text-500" *ngIf="selectedOrder.address.complement">
-                                    Comp: {{selectedOrder.address.complement}}
-                                </p>
-                            </div>
-                            <ng-template #noAddress>
-                                <span class="text-red-500 font-bold">Endereço não informado!</span>
-                            </ng-template>
-                        </div>
-                        <ng-template #pickupTemplate>
-                            <div class="flex align-items-center text-orange-600 font-bold">
-                                <i class="pi pi-shopping-bag mr-2 text-xl"></i>
-                                <span>Cliente retira no balcão</span>
-                            </div>
-                        </ng-template>
+        <div class="dialog-footer__actions">
+          <button pButton label="Fechar" icon="pi pi-times"
+            class="p-button-text"
+            (click)="orderDialog = false">
+          </button>
 
-                        <div class="mt-3 pt-2 border-top-1 surface-border flex align-items-center text-sm text-500">
-                            <i class="pi pi-calendar mr-2"></i>
-                            Entrega/Retirada: <span class="font-bold ml-1 text-900">{{selectedOrder.deliverTime |
-                                date:'dd/MM/yyyy HH:mm'}}</span>
-                        </div>
-                    </div>
-                </div>
+          <button *ngIf="selectedOrder.statusName === 'Confirmed' && selectedOrder.deliveryMethod === 1"
+            pButton label="Pronto para Retirada" icon="pi pi-box"
+            class="p-button-help"
+            (click)="changeStatus('pickup')">
+          </button>
 
-                <div class="col-12 mt-3">
-                    <p-table [value]="selectedOrder.orderItens" styleClass="p-datatable-sm p-datatable-gridlines">
-                        <ng-template pTemplate="header">
-                            <tr>
-                                <th>Produto</th>
-                                <th class="text-center" style="width: 80px">Qtd</th>
-                                <th class="text-right" style="width: 120px">Total</th>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="body" let-item>
-                            <tr>
-                                <td>
-                                    <span class="font-bold">{{item.productName}}</span>
-                                    <div *ngIf="item.comment"
-                                        class="text-sm text-500 font-italic mt-1 bg-yellow-50 p-1 border-round inline-block">
-                                        <i class="pi pi-comment mr-1 text-xs"></i> {{item.comment}}
-                                    </div>
-                                </td>
-                                <td class="text-center font-bold">{{item.quantity}}</td>
-                                <td class="text-right">{{item.subTotal | currency:'BRL'}}</td>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="footer">
-                            <tr>
-                                <td colspan="2" class="text-right font-bold text-lg">Total:</td>
-                                <td class="text-right font-bold text-lg text-green-700">{{selectedOrder.totalAmount |
-                                    currency:'BRL'}}</td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                </div>
-            </div>
-        </ng-template>
+          <button *ngIf="selectedOrder.statusName === 'Confirmed' && selectedOrder.deliveryMethod === 2"
+            pButton label="Saiu para Entrega" icon="pi pi-send"
+            class="p-button-warning"
+            (click)="changeStatus('delivery')">
+          </button>
 
-        <ng-template pTemplate="footer">
-            <div class="flex flex-wrap justify-content-between w-full gap-2">
+          <button *ngIf="selectedOrder.statusName === 'OutForDelivery'"
+            pButton label="Confirmar Entrega" icon="pi pi-check-circle"
+            class="p-button-success"
+            (click)="changeStatus('delivered')">
+          </button>
 
-                <button pButton label="Cancelar Pedido" icon="pi pi-times" class="p-button-danger p-button-outlined"
-                    (click)="changeStatus('cancel')"
-                    *ngIf="selectedOrder.statusName !== 'Canceled' && selectedOrder.statusName !== 'Delivered'">
-                </button>
+          <button *ngIf="selectedOrder.statusName === 'ReadyForPickup' && selectedOrder.deliveryMethod === 1"
+            pButton label="Confirmar Retirada" icon="pi pi-check"
+            class="p-button-success"
+            (click)="changeStatus('delivered')">
+          </button>
 
-                <div *ngIf="selectedOrder.statusName === 'Canceled' || selectedOrder.statusName === 'Delivered'"></div>
+          <p-tag *ngIf="selectedOrder.statusName === 'Delivered'"
+            severity="success" icon="pi pi-check" value="Concluído">
+          </p-tag>
 
-                <div class="flex gap-2 ml-auto">
-                    <button pButton label="Fechar" icon="pi pi-times" class="p-button-text"
-                        (click)="orderDialog = false"></button>
+          <p-tag *ngIf="selectedOrder.statusName === 'Canceled'"
+            severity="danger" icon="pi pi-times" value="Cancelado">
+          </p-tag>
+        </div>
 
-                    <button *ngIf="selectedOrder.statusName === 'Confirmed' && selectedOrder.deliveryMethod === 1"
-                        pButton label="Pronto para Retirada" icon="pi pi-box" class="p-button-help"
-                        (click)="changeStatus('pickup')">
-                    </button>
+      </div>
+    </ng-template>
 
-                    <button *ngIf="selectedOrder.statusName === 'Confirmed' && selectedOrder.deliveryMethod === 2"
-                        pButton label="Saiu para Entrega" icon="pi pi-send" class="p-button-warning"
-                        (click)="changeStatus('delivery')">
-                    </button>
+  </p-dialog>
 
-                    <button *ngIf="selectedOrder.statusName === 'OutForDelivery'" pButton label="Confirmar Entrega"
-                        icon="pi pi-check-circle" class="p-button-success" (click)="changeStatus('delivered')">
-                    </button>
-
-                    <button *ngIf="selectedOrder.statusName === 'ReadyForPickup' && selectedOrder.deliveryMethod === 1"
-                        pButton label="Confirmar Retirada" icon="pi pi-check" class="p-button-success"
-                        (click)="changeStatus('delivered')">
-                    </button>
-
-                    <p-tag *ngIf="selectedOrder.statusName === 'Delivered'" severity="success" icon="pi pi-check"
-                        value="Concluído"></p-tag>
-
-                    <p-tag *ngIf="selectedOrder.statusName === 'Canceled'" severity="danger" icon="pi pi-times"
-                        value="Cancelado"></p-tag>
-                </div>
-            </div>
-        </ng-template>
-    </p-dialog>
 </div>

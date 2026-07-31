@@ -1,17 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 
 @Component({
   selector: 'app-payment-result',
-  imports: [CommonModule, CardModule, ButtonModule],
+  imports: [CommonModule, CardModule, ButtonModule, RouterModule],
   templateUrl: './payment-result.component.html',
-  styles: [`
-    .result-card { max-width: 500px; margin: 0 auto; text-align: center; }
-    .icon-large { font-size: 4rem; margin-bottom: 1rem; }
-  `]
+  styleUrl: './payment-result.component.scss'
 })
 export class PaymentResultComponent implements OnInit {
   private route = inject(ActivatedRoute);

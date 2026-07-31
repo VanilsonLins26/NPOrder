@@ -1,0 +1,333 @@
+/* ============================================================
+   MEUS PEDIDOS — Premium Card Layout
+   ============================================================ */
+
+.orders-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+    min-height: 100vh;
+}
+
+/* ── Hero ── */
+.orders-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    background: var(--gradient-hero);
+    border-radius: var(--border-radius-xl);
+    padding: 1.75rem 2rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: -40px; right: -40px;
+        width: 200px; height: 200px;
+        background: rgba(255,255,255,0.06);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: -60px; left: 20%;
+        width: 160px; height: 160px;
+        background: rgba(217, 154, 38, 0.12);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    &__content {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        position: relative;
+    }
+
+    &__icon {
+        width: 52px; height: 52px;
+        background: rgba(255,255,255,0.15);
+        border-radius: var(--border-radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        color: white;
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.2);
+        flex-shrink: 0;
+    }
+
+    &__title {
+        font-family: 'Dancing Script', cursive;
+        color: white;
+        font-size: 2rem;
+        margin: 0 0 0.2rem;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+
+    &__subtitle {
+        color: rgba(255,255,255,0.78);
+        font-size: 0.875rem;
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    &__badge {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.25);
+        color: white;
+        border-radius: var(--border-radius-full);
+        padding: 8px 16px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.875rem;
+        font-weight: 600;
+        position: relative;
+        white-space: nowrap;
+    }
+}
+
+/* ── Grid ── */
+.orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+/* ── Order Card ── */
+.order-card {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(74, 50, 33, 0.07);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: var(--transition-md);
+
+    &:hover {
+        box-shadow: var(--shadow-lg) !important;
+        transform: translateY(-4px);
+        border-color: rgba(74, 50, 33, 0.15);
+    }
+
+    &--skeleton {
+        cursor: default;
+        &:hover { transform: none; box-shadow: var(--shadow-sm) !important; }
+    }
+
+    /* Colored accent bar on top */
+    &__accent {
+        height: 4px;
+        width: 100%;
+        transition: height 0.2s ease;
+
+        &.accent-pending  { background: var(--gradient-warning); }
+        &.accent-confirmed { background: var(--gradient-success); }
+        &.accent-delivery { background: linear-gradient(90deg, #2563EB, #60A5FA); }
+        &.accent-delivered { background: var(--gradient-success); }
+        &.accent-cancelled { background: var(--gradient-danger); }
+        &.accent-default  { background: var(--gradient-brand); }
+    }
+
+    &:hover &__accent { height: 5px; }
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.25rem 0.75rem;
+        gap: 0.5rem;
+    }
+
+    &__id {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--padaria-brown);
+    }
+
+    &__id-hash {
+        color: var(--padaria-gold-dark);
+        margin-right: 1px;
+    }
+
+    &__body {
+        padding: 0 1.25rem 0.75rem;
+        flex: 1;
+    }
+
+    &__info-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.83rem;
+        color: var(--text-muted);
+    }
+
+    &__info-icon {
+        font-size: 0.8rem;
+        color: var(--padaria-gold-dark);
+        flex-shrink: 0;
+    }
+
+    &__time {
+        margin-left: auto;
+        font-size: 0.78rem;
+        color: #9CA3AF;
+        background: #F3F4F6;
+        padding: 2px 8px;
+        border-radius: 20px;
+    }
+
+    &__footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.875rem 1.25rem;
+        background: #FAFAFA;
+        border-top: 1px solid rgba(74, 50, 33, 0.06);
+    }
+
+    &__total {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__total-label {
+        font-size: 0.68rem;
+        color: var(--text-muted);
+        font-family: 'Poppins', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    &__total-value {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--padaria-brown);
+    }
+
+    &__action {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--gradient-brand);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 14px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition-md);
+        white-space: nowrap;
+
+        i { font-size: 0.75rem; transition: transform 0.2s ease; }
+
+        &:hover {
+            background: var(--gradient-gold);
+            box-shadow: var(--shadow-gold);
+
+            i { transform: translateX(3px); }
+        }
+    }
+}
+
+/* ── Empty State ── */
+.orders-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 5rem 2rem;
+
+    &__icon {
+        width: 100px; height: 100px;
+        background: linear-gradient(135deg, var(--padaria-cream-dark), var(--padaria-cream));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        color: var(--padaria-gold-dark);
+        margin-bottom: 1.5rem;
+        border: 3px solid rgba(217, 154, 38, 0.2);
+        box-shadow: 0 0 40px rgba(217, 154, 38, 0.15);
+    }
+
+    &__title {
+        font-family: 'Dancing Script', cursive;
+        font-size: 2rem;
+        color: var(--padaria-brown);
+        margin: 0 0 0.75rem;
+    }
+
+    &__message {
+        color: var(--text-muted);
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.95rem;
+        max-width: 340px;
+        line-height: 1.6;
+        margin: 0 0 2rem;
+    }
+
+    &__cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--gradient-brand);
+        color: white;
+        text-decoration: none;
+        border-radius: var(--border-radius-md);
+        padding: 12px 28px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 600;
+        box-shadow: 0 4px 16px rgba(74, 50, 33, 0.28);
+        transition: var(--transition-md);
+
+        &:hover {
+            background: var(--gradient-gold);
+            box-shadow: var(--shadow-gold);
+            transform: translateY(-2px);
+        }
+    }
+}
+
+/* ── Pagination ── */
+.orders-pagination {
+    display: flex;
+    justify-content: center;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+    .orders-page { padding: 1rem 0.75rem 2rem; }
+
+    .orders-hero {
+        padding: 1.25rem;
+        &__title { font-size: 1.6rem; }
+        &__badge { display: none; }
+    }
+
+    .orders-grid {
+        grid-template-columns: 1fr;
+    }
+}

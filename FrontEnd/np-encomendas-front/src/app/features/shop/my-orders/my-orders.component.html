@@ -1,48 +1,117 @@
-<div class="surface-ground min-h-screen p-4">
-    <div class="surface-card p-4 shadow-2 border-round">
-        <div class="text-3xl font-bold text-900 mb-4 brand-font">Meus Pedidos</div>
+<!-- ======================================================
+     MEUS PEDIDOS — Premium Card Layout
+     ====================================================== -->
+<div class="orders-page">
 
-        <p-table [value]="orders" [lazy]="true" (onLazyLoad)="loadOrders($event)" 
-                 [paginator]="true" [rows]="pageSize" [totalRecords]="totalRecords" 
-                 [loading]="loading" responsiveLayout="stack" breakpoint="960px">
-            
-            <ng-template pTemplate="header">
-                <tr>
-                    <th>Nº Pedido</th>
-                    <th>Data</th>
-                    <th>Status</th>
-                    <th>Total</th>
-                    <th>Ações</th>
-                </tr>
-            </ng-template>
-            
-            <ng-template pTemplate="body" let-order>
-                <tr>
-                    <td><span class="p-column-title font-bold">Nº:</span> #{{ order.id }}</td>
-                    <td><span class="p-column-title font-bold">Data:</span> {{ order.orderTime | date:'dd/MM/yyyy HH:mm' }}</td>
-                    <td>
-                        <span class="p-column-title font-bold">Status:</span>
-                        <p-tag [value]="getStatusLabel(order.statusName)" 
-                               [severity]="getStatusSeverity(order.statusName)">
-                        </p-tag>
-                    </td>
-                    <td><span class="p-column-title font-bold">Total:</span> {{ order.totalAmount | currency:'BRL' }}</td>
-                    <td>
-                        <div class="flex gap-2">
-                            <p-button icon="pi pi-search" label="Detalhes" 
-                                      styleClass="p-button-rounded p-button-outlined p-button-sm"
-                                      (onClick)="viewDetails(order.id)">
-                            </p-button>
-                        </div>
-                    </td>
-                </tr>
-            </ng-template>
-
-            <ng-template pTemplate="emptymessage">
-                <tr>
-                    <td colspan="5" class="text-center p-4">Nenhum pedido encontrado.</td>
-                </tr>
-            </ng-template>
-        </p-table>
+  <!-- ── PAGE HERO ── -->
+  <div class="orders-hero animate-fadeInDown">
+    <div class="orders-hero__content">
+      <div class="orders-hero__icon">
+        <i class="pi pi-box"></i>
+      </div>
+      <div>
+        <h1 class="orders-hero__title">Minhas Encomendas</h1>
+        <p class="orders-hero__subtitle">Acompanhe o status de todos os seus pedidos</p>
+      </div>
     </div>
+    <div class="orders-hero__badge" *ngIf="!loading && totalRecords > 0">
+      <i class="pi pi-list"></i>
+      {{ totalRecords }} pedido{{ totalRecords !== 1 ? 's' : '' }}
+    </div>
+  </div>
+
+  <!-- ── SKELETON LOADING ── -->
+  <div *ngIf="loading" class="orders-grid">
+    <div *ngFor="let i of [1,2,3,4,5,6]" class="order-card order-card--skeleton animate-fadeInUp"
+         [class]="'delay-' + i">
+      <div class="order-card__header">
+        <div class="skeleton skeleton-title" style="width: 120px;"></div>
+        <div class="skeleton" style="width: 90px; height: 26px; border-radius: 20px;"></div>
+      </div>
+      <div class="order-card__body">
+        <div class="skeleton skeleton-text" style="width: 80%;"></div>
+        <div class="skeleton skeleton-text" style="width: 60%;"></div>
+      </div>
+      <div class="order-card__footer">
+        <div class="skeleton" style="width: 80px; height: 36px; border-radius: 8px;"></div>
+        <div class="skeleton" style="width: 60px; height: 20px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── EMPTY STATE ── -->
+  <div *ngIf="!loading && orders.length === 0" class="orders-empty animate-scaleIn">
+    <div class="orders-empty__icon animate-float">
+      <i class="pi pi-shopping-bag"></i>
+    </div>
+    <h2 class="orders-empty__title">Ainda sem pedidos</h2>
+    <p class="orders-empty__message">
+      Que tal explorar nosso cardápio e fazer sua primeira encomenda fresquinha? 🥐
+    </p>
+    <a routerLink="/cardapio" class="orders-empty__cta" id="btn-ir-cardapio-empty">
+      <i class="pi pi-book"></i>
+      Ver Cardápio
+    </a>
+  </div>
+
+  <!-- ── ORDERS GRID ── -->
+  <div *ngIf="!loading && orders.length > 0" class="orders-grid">
+    <div *ngFor="let order of orders; let i = index"
+         class="order-card hover-lift animate-fadeInUp"
+         [ngClass]="'delay-' + (i < 6 ? i + 1 : 6)"
+         (click)="viewDetails(order.id)"
+         [id]="'order-card-' + order.id"
+         role="button"
+         tabindex="0"
+         (keypress)="viewDetails(order.id)">
+
+      <!-- Top accent bar -->
+      <div class="order-card__accent" [ngClass]="getStatusAccentClass(order.statusName)"></div>
+
+      <!-- Header: id + status -->
+      <div class="order-card__header">
+        <div class="order-card__id">
+          <span class="order-card__id-hash">#</span>{{ order.id }}
+        </div>
+        <span class="status-badge" [ngClass]="getStatusBadgeClass(order.statusName)">
+          <i [class]="'pi ' + getStatusIcon(order.statusName)"></i>
+          {{ getStatusLabel(order.statusName) }}
+        </span>
+      </div>
+
+      <!-- Body: data e método -->
+      <div class="order-card__body">
+        <div class="order-card__info-row">
+          <i class="pi pi-calendar order-card__info-icon"></i>
+          <span>{{ order.orderTime | date:'dd/MM/yyyy' }}</span>
+          <span class="order-card__time">{{ order.orderTime | date:'HH:mm' }}</span>
+        </div>
+      </div>
+
+      <!-- Footer: total + botão -->
+      <div class="order-card__footer">
+        <div class="order-card__total">
+          <span class="order-card__total-label">Total</span>
+          <span class="order-card__total-value">{{ order.totalAmount | currency:'BRL' }}</span>
+        </div>
+        <button class="order-card__action" (click)="viewDetails(order.id); $event.stopPropagation()"
+                [id]="'btn-detalhe-' + order.id" aria-label="Ver detalhes do pedido">
+          <span>Detalhes</span>
+          <i class="pi pi-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PAGINAÇÃO ── -->
+  <div *ngIf="!loading && totalRecords > pageSize" class="orders-pagination animate-fadeInUp">
+    <p-paginator
+      (onPageChange)="loadOrders({ first: $event.first, rows: $event.rows })"
+      [first]="0"
+      [rows]="pageSize"
+      [totalRecords]="totalRecords"
+      [showFirstLastIcon]="true">
+    </p-paginator>
+  </div>
+
 </div>

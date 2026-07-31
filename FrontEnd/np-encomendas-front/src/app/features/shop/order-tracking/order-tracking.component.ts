@@ -95,6 +95,48 @@ export class OrderTrackingComponent implements OnInit {
       return statusMap[status] || status;
   }
 
+  getStatusBadgeClass(status: string): string {
+    switch (status?.toLowerCase()) {
+      case 'pendingpayment':  return 'status-pending';
+      case 'confirmed':       return 'status-confirmed';
+      case 'readyforpickup':  return 'status-ready';
+      case 'outfordelivery':  return 'status-delivery';
+      case 'delivered':       return 'status-delivered';
+      case 'canceled':        return 'status-cancelled';
+      default:                return 'status-pending';
+    }
+  }
+
+  getStatusIcon(status: string): string {
+    switch (status?.toLowerCase()) {
+      case 'pendingpayment':  return 'pi-clock';
+      case 'confirmed':       return 'pi-check-circle';
+      case 'readyforpickup':  return 'pi-shopping-bag';
+      case 'outfordelivery':  return 'pi-send';
+      case 'delivered':       return 'pi-verified';
+      case 'canceled':        return 'pi-times-circle';
+      default:                return 'pi-info-circle';
+    }
+  }
+
+  getOrderSteps(): { label: string; desc: string; icon: string; done: boolean; active: boolean }[] {
+    const s = this.order?.statusName?.toLowerCase() || '';
+    const steps = [
+      { key: 'pendingpayment', label: 'Aguardando Pagamento', desc: 'Confirme o pagamento para prosseguir', icon: 'pi-clock' },
+      { key: 'confirmed',      label: 'Pedido Confirmado',    desc: 'Estamos preparando com carinho',       icon: 'pi-check-circle' },
+      { key: 'readyforpickup', label: 'Pronto para Retirada', desc: 'Venha buscar na loja',                  icon: 'pi-shopping-bag' },
+      { key: 'outfordelivery', label: 'Saiu para Entrega',    desc: 'A caminho da sua casa!',                icon: 'pi-send' },
+      { key: 'delivered',      label: 'Entregue',             desc: 'Aproveite! 🎉',                          icon: 'pi-verified' },
+    ];
+    const order = ['pendingpayment','confirmed','readyforpickup','outfordelivery','delivered'];
+    const current = order.indexOf(s);
+    return steps.map((step, i) => ({
+      ...step,
+      done:   i < current,
+      active: i === current,
+    }));
+  }
+
   handlePayment() {
     if (!this.order) return;
 

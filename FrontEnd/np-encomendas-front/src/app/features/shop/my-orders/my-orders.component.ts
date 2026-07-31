@@ -7,10 +7,11 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { OrderService } from '../../../core/services/order.service';
 import { TooltipModule } from 'primeng/tooltip';
+import { PaginatorModule } from 'primeng/paginator';
 
 @Component({
   selector: 'app-my-orders',
-  imports: [CommonModule, TableModule, ButtonModule, TagModule, RouterModule, CardModule, TooltipModule],
+  imports: [CommonModule, TableModule, ButtonModule, TagModule, RouterModule, CardModule, TooltipModule, PaginatorModule],
   templateUrl: './my-orders.component.html',
   styleUrl: './my-orders.component.scss'
 })
@@ -78,6 +79,42 @@ export class MyOrdersComponent implements OnInit {
       case 'pendingpayment': return 'warn';
       case 'outfordelivery': return 'info';
       default: return 'info';
+    }
+  }
+
+  getStatusBadgeClass(status: string): string {
+    switch (status?.toLowerCase()) {
+      case 'pendingpayment':  return 'status-pending';
+      case 'confirmed':       return 'status-confirmed';
+      case 'readyforpickup':  return 'status-ready';
+      case 'outfordelivery':  return 'status-delivery';
+      case 'delivered':       return 'status-delivered';
+      case 'canceled':        return 'status-cancelled';
+      default:                return 'status-pending';
+    }
+  }
+
+  getStatusAccentClass(status: string): string {
+    switch (status?.toLowerCase()) {
+      case 'pendingpayment':  return 'accent-pending';
+      case 'confirmed':       return 'accent-confirmed';
+      case 'readyforpickup':  return 'accent-confirmed';
+      case 'outfordelivery':  return 'accent-delivery';
+      case 'delivered':       return 'accent-delivered';
+      case 'canceled':        return 'accent-cancelled';
+      default:                return 'accent-default';
+    }
+  }
+
+  getStatusIcon(status: string): string {
+    switch (status?.toLowerCase()) {
+      case 'pendingpayment':  return 'pi-clock';
+      case 'confirmed':       return 'pi-check-circle';
+      case 'readyforpickup':  return 'pi-shopping-bag';
+      case 'outfordelivery':  return 'pi-send';
+      case 'delivered':       return 'pi-verified';
+      case 'canceled':        return 'pi-times-circle';
+      default:                return 'pi-info-circle';
     }
   }
 

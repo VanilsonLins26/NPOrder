@@ -1,37 +1,474 @@
-.navbar {
-    background-color: var(--padaria-brown);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    padding: 0.5rem 0;
+/* ============================================================
+   NAVBAR — Glassmorphism Premium
+   ============================================================ */
+.np-navbar {
     position: sticky;
     top: 0;
-    z-index: 100;
-}
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(74, 50, 33, 0.10);
+    box-shadow: 0 2px 20px rgba(74, 50, 33, 0.08);
+    transition: all 0.3s ease;
 
-.navbar-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-}
+    &__inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 1.25rem;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+    }
 
-.brand-logo {
-    height: 70px;
-    width: auto;
+    /* ── Brand ── */
+    &__brand {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        cursor: pointer;
+        user-select: none;
+        flex-shrink: 0;
+    }
 
-}
+    &__logo-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
 
-.nav-links {
-    display: flex;
-    gap: 10px;
+    &__logo {
+        height: 42px;
+        width: auto;
+        object-fit: contain;
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 
-    ::ng-deep .p-button-text.text-white {
-        color: var(--padaria-cream) !important;
-        
-        &:hover {
-            background-color: rgba(217, 154, 38, 0.2) !important; 
-            color: var(--padaria-gold) !important;
+        &:hover { transform: scale(1.08) rotate(-2deg); }
+    }
+
+    &__logo-glow {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(217, 154, 38, 0.3), transparent 70%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+
+    &__brand:hover &__logo-glow { opacity: 1; }
+
+    &__brand-name {
+        font-family: 'Dancing Script', cursive;
+        font-size: 1.45rem;
+        font-weight: 700;
+        color: var(--padaria-brown);
+        white-space: nowrap;
+        letter-spacing: 0.01em;
+        transition: color 0.2s ease;
+
+        &:hover { color: var(--padaria-gold-dark); }
+    }
+
+    &__hamburger {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 8px;
+        color: var(--padaria-brown);
+        font-size: 1.2rem;
+        transition: background 0.2s ease;
+
+        &:hover { background: rgba(74, 50, 33, 0.08); }
+
+        @media (max-width: 768px) { display: flex; align-items: center; }
+    }
+
+    /* ── Nav Links ── */
+    &__links {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        flex: 1;
+        justify-content: center;
+    }
+
+    &__link {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        color: var(--padaria-brown);
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.875rem;
+        font-weight: 600;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        border: none;
+        background: transparent;
+        white-space: nowrap;
+
+        &-icon {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            transition: transform 0.2s ease;
         }
+
+        &-bar {
+            position: absolute;
+            bottom: 2px;
+            left: 14px;
+            right: 14px;
+            height: 2px;
+            background: var(--gradient-gold);
+            border-radius: 2px;
+            transform: scaleX(0);
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: left;
+        }
+
+        &:hover {
+            background: rgba(74, 50, 33, 0.06);
+            color: var(--padaria-brown-dark);
+
+            .np-navbar__link-bar { transform: scaleX(1); }
+            .np-navbar__link-icon { transform: translateY(-1px); }
+        }
+
+        &--admin {
+            color: var(--padaria-brown-light);
+        }
+    }
+
+    /* ── Actions ── */
+    &__actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-shrink: 0;
+    }
+
+    &__cart-btn {
+        position: relative;
+        background: rgba(74, 50, 33, 0.06);
+        border: 1px solid rgba(74, 50, 33, 0.12);
+        border-radius: 10px;
+        padding: 8px 12px;
+        cursor: pointer;
+        color: var(--padaria-brown);
+        font-size: 1.1rem;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background: var(--padaria-cream-dark);
+            border-color: var(--padaria-brown);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+    }
+
+    &__cart-badge {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        background: var(--gradient-danger);
+        color: white;
+        font-size: 0.65rem;
+        font-weight: 700;
+        font-family: 'Poppins', sans-serif;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid white;
+        animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    &__divider {
+        width: 1px;
+        height: 28px;
+        background: rgba(74, 50, 33, 0.12);
+    }
+
+    &__user {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 10px;
+        border-radius: 10px;
+        background: rgba(74, 50, 33, 0.04);
+    }
+
+    &__user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--gradient-brand);
+        color: white;
+        font-size: 0.85rem;
+        font-weight: 700;
+        font-family: 'Poppins', sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    &__user-info {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+    }
+
+    &__user-greeting {
+        font-size: 0.68rem;
+        color: var(--text-muted);
+        font-family: 'Poppins', sans-serif;
+    }
+
+    &__user-name {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--padaria-brown);
+        font-family: 'Poppins', sans-serif;
+    }
+
+    &__logout-btn {
+        background: rgba(239, 68, 68, 0.08);
+        border: 1px solid rgba(239, 68, 68, 0.15);
+        border-radius: 8px;
+        padding: 7px 10px;
+        cursor: pointer;
+        color: #DC2626;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background: rgba(239, 68, 68, 0.15);
+            transform: translateY(-1px);
+        }
+    }
+
+    &__login-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--gradient-brand);
+        border: none;
+        border-radius: 10px;
+        padding: 9px 18px;
+        color: white;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(74, 50, 33, 0.25);
+        transition: all 0.25s ease;
+
+        &:hover {
+            background: var(--gradient-gold);
+            box-shadow: var(--shadow-gold);
+            transform: translateY(-1px);
+        }
+    }
+}
+
+/* ============================================================
+   SIDEBAR MOBILE
+   ============================================================ */
+.np-sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0;
+
+    &__header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 1.25rem 1.25rem 1rem;
+        border-bottom: 1px solid rgba(74, 50, 33, 0.08);
+    }
+
+    &__logo {
+        height: 44px;
+        width: auto;
+    }
+
+    &__brand {
+        font-family: 'Dancing Script', cursive;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--padaria-brown);
+        line-height: 1.2;
+    }
+
+    &__tagline {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        font-family: 'Poppins', sans-serif;
+    }
+
+    &__user {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 1rem 1.25rem;
+        background: linear-gradient(135deg, rgba(74, 50, 33, 0.04), rgba(217, 154, 38, 0.06));
+        border-bottom: 1px solid rgba(74, 50, 33, 0.06);
+    }
+
+    &__user-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: var(--gradient-brand);
+        color: white;
+        font-size: 1rem;
+        font-weight: 700;
+        font-family: 'Poppins', sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &__user-name {
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--padaria-brown);
+    }
+
+    &__nav {
+        flex: 1;
+        padding: 0.75rem 0.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    &__section-label {
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 0.5rem 0.75rem 0.25rem;
+    }
+
+    &__link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        cursor: pointer;
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--padaria-brown);
+        transition: all 0.2s ease;
+        position: relative;
+
+        &:hover {
+            background: rgba(74, 50, 33, 0.06);
+            color: var(--padaria-brown-dark);
+
+            .np-sidebar__link-arrow { opacity: 1; transform: translateX(2px); }
+        }
+
+        &-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(74, 50, 33, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--padaria-brown);
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        &-arrow {
+            margin-left: auto;
+            opacity: 0.3;
+            font-size: 0.7rem;
+            transition: all 0.2s ease;
+        }
+    }
+
+    &__badge {
+        margin-left: auto;
+        background: var(--gradient-danger);
+        color: white;
+        font-size: 0.68rem;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 20px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    &__footer {
+        padding: 1rem 1.25rem;
+        border-top: 1px solid rgba(74, 50, 33, 0.08);
+    }
+
+    &__logout {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 11px;
+        border-radius: 10px;
+        border: 1px solid rgba(239, 68, 68, 0.25);
+        background: rgba(239, 68, 68, 0.06);
+        color: #DC2626;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background: rgba(239, 68, 68, 0.12);
+        }
+    }
+
+    &__login-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 12px;
+        border-radius: 10px;
+        border: none;
+        background: var(--gradient-brand);
+        color: white;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(74, 50, 33, 0.25);
+        transition: all 0.2s ease;
+
+        &:hover { opacity: 0.9; }
     }
 }
