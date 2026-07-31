@@ -1,4 +1,4 @@
-﻿using NP_Encomendas_BackEnd.DTOs.Request;
+using NP_Encomendas_BackEnd.DTOs.Request;
 using NP_Encomendas_BackEnd.DTOs.Response;
 using NP_Encomendas_BackEnd.Pagination;
 using NP_Encomendas_BackEnd.Services;
@@ -228,7 +228,7 @@ public class OrderController : ControllerBase
 
     private string? GetUserId()
     {
-        return User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
     }
 
 

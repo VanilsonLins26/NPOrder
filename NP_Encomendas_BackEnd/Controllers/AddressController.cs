@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NP_Encomendas_BackEnd.DTOs.Request;
 using NP_Encomendas_BackEnd.DTOs.Response;
@@ -86,6 +86,6 @@ public class AddressController : ControllerBase
 
     private string? GetUserId()
     {
-        return User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
     }
 }
