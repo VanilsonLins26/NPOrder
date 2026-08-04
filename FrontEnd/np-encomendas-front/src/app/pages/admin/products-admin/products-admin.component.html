@@ -1,197 +1,123 @@
-<div class="admin-page animate-fadeInUp">
-  <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
+<!-- ======================================================
+     GERENCIAR PRODUTOS — Admin Premium
+     ====================================================== -->
+<div class="admin-page">
+  <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
 
-  <!-- ══ PAGE HEADER ══ -->
+  <!-- ── PAGE HEADER ── -->
   <div class="admin-page-header animate-fadeInDown">
-    <div class="admin-header-content">
-      <div class="admin-header-icon">
-        <i class="pi pi-box"></i>
-      </div>
-      <div>
-        <h1 class="admin-header-title">Gerenciar Produtos</h1>
-        <p class="admin-header-subtitle">Cardápio da padaria</p>
-      </div>
+    <div class="admin-page-header__left">
+      <h1 class="admin-page-header__title">Gerenciar Produtos</h1>
+      <p class="admin-page-header__subtitle">Cardápio da padaria</p>
     </div>
-    <div class="admin-header-actions">
-      <button
-        id="btn-novo-produto"
-        pButton
-        pRipple
-        label="Novo Produto"
-        icon="pi pi-plus"
-        class="btn-new-product btn-shimmer"
-        (click)="openNew()"
-      ></button>
+    <div class="admin-page-header__right">
+      <button class="btn-new-product" (click)="openNew()" id="btn-novo-produto">
+        <i class="pi pi-plus"></i>
+        Novo Produto
+      </button>
     </div>
   </div>
 
-  <!-- ══ FILTER BAR ══ -->
+  <!-- ── FILTERS ── -->
   <div class="filter-card animate-fadeInUp delay-1">
-    <div class="filter-card__inner">
-      <div class="filter-field filter-field--grow">
+    <div class="filter-grid filter-grid--products">
+      <div class="filter-field filter-field--wide">
         <label class="filter-label">Buscar Produto</label>
         <p-iconfield iconPosition="left">
           <p-inputicon>
             <i class="pi pi-search"></i>
           </p-inputicon>
-          <input
-            pInputText
-            type="text"
-            [(ngModel)]="filterName"
-            (input)="onSearch($event)"
-            placeholder="Nome do produto..."
-            class="filter-input"
-          />
+          <input pInputText type="text" [(ngModel)]="filterName" (input)="onSearch($event)"
+                 placeholder="Nome do produto..." />
         </p-iconfield>
       </div>
       <div class="filter-field filter-field--action">
-        <label class="filter-label">&nbsp;</label>
-        <button
-          pButton
-          pRipple
-          icon="pi pi-filter-slash"
-          label="Limpar"
-          class="p-button-outlined filter-clear-btn"
-          (click)="cleanSearch()"
-        ></button>
+        <button pButton icon="pi pi-filter-slash" label="Limpar"
+                class="p-button-outlined filter-clear-btn w-full"
+                (click)="cleanSearch()">
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- ══ PRODUCTS TABLE ══ -->
+  <!-- ── DATA TABLE ── -->
   <div class="table-wrapper animate-fadeInUp delay-2">
-    <p-table
-      [value]="products"
-      [lazy]="true"
-      (onLazyLoad)="loadProducts($event)"
-      [totalRecords]="totalRecords"
-      [loading]="loading"
-      [rows]="10"
-      [paginator]="true"
-      [rowsPerPageOptions]="[5, 10, 20]"
-      responsiveLayout="stack"
-      breakpoint="960px"
-      styleClass="admin-table p-datatable-sm"
-      rowHover="true"
-    >
+    <p-table [value]="products" [lazy]="true" (onLazyLoad)="loadProducts($event)" [totalRecords]="totalRecords"
+             [loading]="loading" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[5, 10, 20]"
+             responsiveLayout="stack" breakpoint="960px" styleClass="p-datatable-sm admin-table" rowHover="true">
+
       <ng-template pTemplate="header">
         <tr>
-          <th class="text-center" style="width: 9%">Imagem</th>
-          <th class="text-left" style="width: 28%">Nome / Descrição</th>
+          <th class="text-center" style="width: 10%">Img</th>
+          <th class="text-left" style="width: 25%">Nome</th>
           <th class="text-center" style="width: 15%">Preço</th>
           <th class="text-center hidden md:table-cell" style="width: 10%">Unidade</th>
           <th class="text-center hidden md:table-cell" style="width: 10%">Custom</th>
           <th class="text-center" style="width: 10%">Status</th>
-          <th class="text-center" style="width: 18%">Ações</th>
+          <th class="text-center" style="width: 15%">Ações</th>
         </tr>
       </ng-template>
 
       <ng-template pTemplate="body" let-product>
-        <tr class="product-row">
-
-          <!-- Image -->
-          <td class="col-img text-center">
-            <div class="product-thumb mx-auto" *ngIf="product.imageUrl; else emptyThumb">
-              <img [src]="product.imageUrl" class="product-thumb__img" [alt]="product.name" />
+        <tr>
+          <td class="text-center">
+            <div class="product-thumb" *ngIf="product.imageUrl; else noImg">
+              <img [src]="product.imageUrl" class="product-thumb__img" />
             </div>
-            <ng-template #emptyThumb>
-              <div class="product-thumb product-thumb--empty mx-auto">
+            <ng-template #noImg>
+              <div class="product-thumb product-thumb--empty">
                 <i class="pi pi-image"></i>
               </div>
             </ng-template>
           </td>
 
-          <!-- Name + Description -->
-          <td class="col-name text-left">
-            <div class="flex justify-content-between w-full align-items-start">
-              <div>
-                <div class="product-name font-bold">{{ product.name }}</div>
-                <div class="product-desc text-500 text-sm mt-1" *ngIf="product.description">
-                  {{ product.description | slice:0:55 }}{{ product.description.length > 55 ? '…' : '' }}
-                </div>
-              </div>
-              <div class="md:hidden flex flex-column align-items-end gap-1 ml-2" style="min-width: fit-content;">
-                <span class="unit-pill-mobile">{{ product.unitOfMeasure }}</span>
-                <p-tag
-                  *ngIf="product.customizable"
-                  value="Custom"
-                  severity="info"
-                  icon="pi pi-check-circle"
-                  styleClass="text-xs py-0 px-2"
-                ></p-tag>
+          <td class="text-left">
+            <div class="flex justify-content-between w-full">
+              <span class="product-name-cell">{{product.name}}</span>
+              <div class="md:hidden flex flex-column align-items-end" style="min-width: fit-content;">
+                <span class="unit-badge">{{product.unitOfMeasure}}</span>
+                <p-tag *ngIf="product.customizable" value="Customizável" severity="info"
+                       icon="pi pi-check-circle" styleClass="text-xs py-0 px-2 mt-1">
+                </p-tag>
               </div>
             </div>
           </td>
 
-          <!-- Price -->
-          <td class="col-price text-center">
-            <div class="price-sale" *ngIf="product.isOnSale; else normalPrice">
-              <span class="price-sale__original">{{ product.price | currency:'BRL' }}</span>
-              <span class="price-sale__final">{{ product.finalPrice | currency:'BRL' }}</span>
-              <span class="price-sale__badge">Promo</span>
+          <td class="text-center">
+            <div *ngIf="product.isOnSale; else normalPrice" class="price-sale">
+              <span class="price-sale__old">{{ product.price | currency:'BRL' }}</span>
+              <span class="price-sale__new">{{ product.finalPrice | currency:'BRL' }}</span>
             </div>
             <ng-template #normalPrice>
               <span class="price-normal">{{ product.price | currency:'BRL' }}</span>
             </ng-template>
           </td>
 
-          <!-- Unit (desktop) -->
           <td class="hidden md:table-cell text-center">
-            <span class="unit-pill">{{ product.unitOfMeasure }}</span>
+            <span class="unit-badge">{{product.unitOfMeasure}}</span>
           </td>
 
-          <!-- Custom (desktop) -->
           <td class="hidden md:table-cell text-center">
-            <span class="custom-indicator"
-              [class.custom-indicator--yes]="product.customizable"
-              [class.custom-indicator--no]="!product.customizable">
-              <i class="pi" [ngClass]="{ 'pi-check-circle': product.customizable, 'pi-times-circle': !product.customizable }"></i>
-            </span>
+            <i class="pi custom-icon"
+               [ngClass]="{'pi-check-circle custom-icon--yes': product.customizable, 'pi-times-circle custom-icon--no': !product.customizable}"></i>
           </td>
 
-          <!-- Status Toggle -->
-          <td class="col-status text-center">
-            <span class="md:hidden text-xs font-bold text-500 mr-1">Ativo:</span>
+          <td class="text-center">
+            <span class="md:hidden text-sm font-bold text-500 mr-2">Ativo:</span>
             <p-toggleSwitch [(ngModel)]="product.active" (onChange)="onStatusChange(product)"></p-toggleSwitch>
           </td>
 
-          <!-- Actions -->
-          <td class="col-actions text-center">
+          <td class="text-center">
             <div class="action-btn-group">
-              <button
-                pButton pRipple
-                icon="pi pi-pencil"
-                class="p-button-rounded p-button-text action-btn action-btn--edit"
-                pTooltip="Editar produto" tooltipPosition="bottom"
-                (click)="editProduct(product)"
-              ></button>
-              <button
-                pButton pRipple
-                icon="pi pi-tag"
-                class="p-button-rounded p-button-text action-btn action-btn--promo"
-                pTooltip="Criar promoção" tooltipPosition="bottom"
-                (click)="openPromoDialog(product)"
-              ></button>
-              <button
-                pButton pRipple
-                icon="pi pi-trash"
-                class="p-button-rounded p-button-text action-btn action-btn--delete"
-                pTooltip="Excluir produto" tooltipPosition="bottom"
-                (click)="deleteProduct(product)"
-              ></button>
-            </div>
-          </td>
-
-        </tr>
-      </ng-template>
-
-      <ng-template pTemplate="emptymessage">
-        <tr>
-          <td colspan="7" class="text-center p-5">
-            <div class="empty-state">
-              <i class="pi pi-box empty-state__icon"></i>
-              <div class="empty-state__title">Nenhum produto encontrado</div>
-              <div class="empty-state__sub">Tente ajustar os filtros ou cadastre um novo produto</div>
+              <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-success action-btn"
+                      pTooltip="Editar" tooltipPosition="bottom"
+                      (click)="editProduct(product)"></button>
+              <button pButton icon="pi pi-tag" class="p-button-rounded p-button-text p-button-warning action-btn"
+                      pTooltip="Promoção" tooltipPosition="bottom"
+                      (click)="openPromoDialog(product)"></button>
+              <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger action-btn"
+                      pTooltip="Excluir" tooltipPosition="bottom"
+                      (click)="deleteProduct(product)"></button>
             </div>
           </td>
         </tr>
@@ -199,191 +125,103 @@
     </p-table>
   </div>
 
-  <!-- ══ PRODUCT DIALOG ══ -->
-  <p-dialog
-    [(visible)]="productDialog"
-    [style]="{ width: '520px' }"
-    header="Detalhes do Produto"
-    [modal]="true"
-    styleClass="p-fluid product-dialog"
-    [draggable]="false"
-    [resizable]="false"
-  >
+  <!-- ── PRODUCT DIALOG ── -->
+  <p-dialog [(visible)]="productDialog" [style]="{width: '500px'}" header="Detalhes do Produto"
+            [modal]="true" styleClass="p-fluid">
     <ng-template pTemplate="content">
-      <div class="product-form flex flex-column gap-4 mt-2">
-
-        <!-- Upload Zone -->
+      <div class="dialog-form">
         <div class="upload-zone">
-          <div *ngIf="imagePreview || product.imageUrl; else noImageZone" class="upload-zone__preview">
-            <img [src]="imagePreview || product.imageUrl" class="upload-zone__img" alt="Preview" />
-            <div class="upload-zone__overlay">
-              <i class="pi pi-camera"></i>
-              <span>Alterar foto</span>
-            </div>
+          <div *ngIf="imagePreview || product.imageUrl; else noImage"
+               class="upload-zone__preview">
+            <img [src]="imagePreview || product.imageUrl" class="upload-zone__img">
           </div>
-          <ng-template #noImageZone>
-            <div class="upload-zone__placeholder">
-              <i class="pi pi-image upload-zone__ph-icon"></i>
-              <span class="upload-zone__ph-text">Adicionar imagem do produto</span>
-            </div>
+          <ng-template #noImage>
+            <i class="pi pi-image upload-zone__placeholder"></i>
           </ng-template>
-          <div class="upload-zone__btn-wrap">
-            <p-fileUpload
-              mode="basic"
-              chooseLabel="Escolher Imagem"
-              chooseIcon="pi pi-upload"
-              accept="image/*"
-              maxFileSize="1000000"
-              (onSelect)="onFileSelect($event)"
-              [auto]="false"
-              styleClass="p-button-outlined p-button-secondary upload-btn"
-            ></p-fileUpload>
-          </div>
+          <p-fileUpload mode="basic" chooseLabel="Escolher Imagem" chooseIcon="pi pi-upload" accept="image/*"
+                        maxFileSize="1000000" (onSelect)="onFileSelect($event)" [auto]="false"
+                        styleClass="p-button-outlined p-button-secondary w-auto">
+          </p-fileUpload>
         </div>
 
-        <!-- Name -->
-        <div class="field">
-          <label for="name" class="form-label">
-            <i class="pi pi-tag form-label__icon"></i>
-            Nome do Produto
-          </label>
-          <input type="text" pInputText id="name" [(ngModel)]="product.name" required class="w-full" placeholder="Ex: Pão Francês" />
+        <div class="dialog-field">
+          <label for="name" class="dialog-field__label">Nome</label>
+          <input type="text" pInputText id="name" [(ngModel)]="product.name" required class="w-full" />
           <small class="p-error block mt-1" *ngIf="submitted && !product.name">Obrigatório.</small>
         </div>
 
-        <!-- Price + Unit -->
-        <div class="formgrid grid">
-          <div class="field col-6">
-            <label for="price" class="form-label">
-              <i class="pi pi-dollar form-label__icon"></i>
-              Preço
-            </label>
+        <div class="dialog-field-row">
+          <div class="dialog-field flex-1">
+            <label for="price" class="dialog-field__label">Preço</label>
             <p-inputNumber id="price" [(ngModel)]="product.price" (onFocus)="selecionarTexto($event)"
-              mode="currency" currency="BRL" locale="pt-BR" [required]="true"
-              styleClass="w-full" inputStyleClass="w-full"></p-inputNumber>
+                           mode="currency" currency="BRL" locale="pt-BR" [required]="true"
+                           styleClass="w-full" inputStyleClass="w-full"></p-inputNumber>
             <small class="p-error block mt-1" *ngIf="submitted && !product.price">Obrigatório.</small>
           </div>
-          <div class="field col-6">
-            <label for="unit" class="form-label">
-              <i class="pi pi-list form-label__icon"></i>
-              Unidade
-            </label>
+          <div class="dialog-field" style="min-width: 160px;">
+            <label for="unit" class="dialog-field__label">Unidade</label>
             <p-select id="unit" [options]="units" [(ngModel)]="product.unitOfMeasure"
-              placeholder="Selecione..." [required]="true" styleClass="w-full" appendTo="body"></p-select>
+                      placeholder="Selecione..." [required]="true" styleClass="w-full" appendTo="body">
+            </p-select>
             <small class="p-error block mt-1" *ngIf="submitted && !product.unitOfMeasure">Obrigatório.</small>
           </div>
         </div>
 
-        <!-- Customizable -->
-        <div class="field custom-field">
-          <div class="custom-field__inner">
-            <p-checkbox [(ngModel)]="product.customizable" [binary]="true" inputId="custom"></p-checkbox>
-            <label for="custom" class="custom-field__label">
-              <i class="pi pi-sliders-h mr-2"></i>
-              Produto Customizável?
-              <span class="custom-field__hint">(Cliente escolhe sabores)</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Description -->
-        <div class="field">
-          <label for="description" class="form-label">
-            <i class="pi pi-align-left form-label__icon"></i>
-            Descrição
+        <div class="dialog-field dialog-field--checkbox">
+          <p-checkbox [(ngModel)]="product.customizable" [binary]="true" inputId="custom"></p-checkbox>
+          <label for="custom" class="dialog-field__label dialog-field__label--inline">
+            Produto Customizável? (Cliente escolhe sabores)
           </label>
-          <textarea id="description" pInputTextarea [(ngModel)]="product.description" required rows="3"
-            class="w-full" placeholder="Descreva o produto brevemente..."></textarea>
         </div>
 
+        <div class="dialog-field">
+          <label for="description" class="dialog-field__label">Descrição</label>
+          <textarea id="description" pInputTextarea [(ngModel)]="product.description" required rows="3" class="w-full"></textarea>
+        </div>
       </div>
     </ng-template>
 
     <ng-template pTemplate="footer">
-      <div class="dialog-footer">
-        <button pButton pRipple label="Cancelar" icon="pi pi-times"
-          class="p-button-text p-button-secondary dialog-footer__cancel"
-          (click)="hideDialog()"></button>
-        <button pButton pRipple label="Salvar Produto" icon="pi pi-check"
-          class="p-button-primary dialog-footer__save btn-shimmer"
-          (click)="saveProduct()"></button>
+      <div class="dialog-actions">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-primary" (click)="saveProduct()"></button>
       </div>
     </ng-template>
   </p-dialog>
 
-  <!-- ══ PROMO DIALOG ══ -->
-  <p-dialog
-    [(visible)]="promoDialog"
-    [style]="{ width: '420px' }"
-    header="Criar Promoção"
-    [modal]="true"
-    styleClass="p-fluid promo-dialog"
-    [draggable]="false"
-    [resizable]="false"
-  >
+  <!-- ── PROMO DIALOG ── -->
+  <p-dialog [(visible)]="promoDialog" [style]="{width: '400px'}" header="Criar Promoção"
+            [modal]="true" styleClass="p-fluid">
     <ng-template pTemplate="content">
-      <div class="promo-form flex flex-column gap-4 mt-2">
-
-        <!-- Gold product banner -->
-        <div class="promo-banner" *ngIf="product">
-          <div class="promo-banner__icon">
-            <i class="pi pi-percentage"></i>
-          </div>
-          <div>
-            <div class="promo-banner__product">{{ product.name }}</div>
-            <div class="promo-banner__price">
-              Preço atual: <strong>{{ product.price | currency:'BRL' }}</strong>
-            </div>
-          </div>
-        </div>
-
-        <!-- Promotional price -->
-        <div class="field">
-          <label class="form-label">
-            <i class="pi pi-tag form-label__icon"></i>
-            Preço Promocional
-          </label>
+      <div class="dialog-form">
+        <div class="dialog-field">
+          <label class="dialog-field__label">Preço Promocional</label>
           <p-inputNumber [(ngModel)]="newPromo.promotionalPrice" (onFocus)="selecionarTexto($event)"
-            mode="currency" currency="BRL" locale="pt-BR" placeholder="Novo valor"
-            styleClass="w-full" inputStyleClass="w-full"></p-inputNumber>
-          <small class="p-error block mt-1" *ngIf="submittedPromo && !newPromo.promotionalPrice">
-            Informe o valor.
-          </small>
+                         mode="currency" currency="BRL" locale="pt-BR"
+                         placeholder="Novo valor" styleClass="w-full" inputStyleClass="w-full"></p-inputNumber>
+          <small class="p-error block mt-1" *ngIf="submittedPromo && !newPromo.promotionalPrice">Informe o valor.</small>
         </div>
 
-        <!-- Date range -->
-        <div class="formgrid grid">
-          <div class="field col-6">
-            <label class="form-label">
-              <i class="pi pi-calendar form-label__icon"></i>
-              Início
-            </label>
-            <p-datepicker [(ngModel)]="newPromo.initialDate" [showTime]="true"
-              dateFormat="dd/mm/yy" appendTo="body" inputStyleClass="w-full"></p-datepicker>
-          </div>
-          <div class="field col-6">
-            <label class="form-label">
-              <i class="pi pi-calendar-times form-label__icon"></i>
-              Fim
-            </label>
-            <p-datepicker [(ngModel)]="newPromo.finalDate" [showTime]="true"
-              dateFormat="dd/mm/yy" appendTo="body" inputStyleClass="w-full"></p-datepicker>
-          </div>
+        <div class="dialog-field">
+          <label class="dialog-field__label">Início</label>
+          <p-datepicker [(ngModel)]="newPromo.initialDate" [showTime]="true" dateFormat="dd/mm/yy"
+                        appendTo="body" inputStyleClass="w-full">
+          </p-datepicker>
         </div>
 
+        <div class="dialog-field">
+          <label class="dialog-field__label">Fim</label>
+          <p-datepicker [(ngModel)]="newPromo.finalDate" [showTime]="true" dateFormat="dd/mm/yy"
+                        appendTo="body" inputStyleClass="w-full">
+          </p-datepicker>
+        </div>
       </div>
     </ng-template>
-
     <ng-template pTemplate="footer">
-      <div class="dialog-footer">
-        <button pButton pRipple label="Cancelar"
-          class="p-button-text p-button-secondary dialog-footer__cancel"
-          (click)="promoDialog = false"></button>
-        <button pButton pRipple label="Criar Promoção" icon="pi pi-tag"
-          class="p-button-warning dialog-footer__save btn-shimmer"
-          (click)="savePromotion()"></button>
+      <div class="dialog-actions">
+        <button pButton pRipple label="Cancelar" class="p-button-text" (click)="promoDialog = false"></button>
+        <button pButton pRipple label="Criar Promoção" class="p-button-warning" (click)="savePromotion()"></button>
       </div>
     </ng-template>
   </p-dialog>
-
 </div>
