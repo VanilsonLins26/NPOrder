@@ -22,8 +22,31 @@
     </a>
   </div>
 
+  <!-- ── SKELETON LOADING ── -->
+  <div *ngIf="isLoading" class="cart-layout animate-fadeInUp">
+    <div class="cart-items">
+      <div *ngFor="let s of [1,2,3]" class="cart-item cart-item--skeleton" [ngClass]="'animate-fadeInUp delay-' + s">
+        <div class="cart-skeleton__image"></div>
+        <div class="cart-skeleton__body">
+          <div class="cart-skeleton__line cart-skeleton__line--title"></div>
+          <div class="cart-skeleton__line cart-skeleton__line--text"></div>
+          <div class="cart-skeleton__row">
+            <div class="cart-skeleton__line cart-skeleton__line--price"></div>
+            <div class="cart-skeleton__line cart-skeleton__line--qty"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cart-summary cart-summary--skeleton animate-fadeInUp delay-3">
+      <div class="cart-skeleton__line cart-skeleton__line--title" style="width: 60%;"></div>
+      <div class="cart-skeleton__line cart-skeleton__line--text" style="width: 100%; height: 40px;"></div>
+      <div class="cart-skeleton__line cart-skeleton__line--text" style="width: 80%;"></div>
+      <div class="cart-skeleton__line cart-skeleton__line--text" style="width: 100%; height: 48px; border-radius: 12px;"></div>
+    </div>
+  </div>
+
   <!-- ── EMPTY STATE ── -->
-  <div *ngIf="!cart?.cartItems?.length" class="cart-empty animate-scaleIn">
+  <div *ngIf="!isLoading && !cart?.cartItems?.length" class="cart-empty animate-scaleIn">
     <div class="cart-empty__icon animate-float">
       <i class="pi pi-shopping-bag"></i>
     </div>
@@ -38,7 +61,7 @@
   </div>
 
   <!-- ── CART CONTENT ── -->
-  <div *ngIf="cart?.cartItems?.length" class="cart-layout">
+  <div *ngIf="!isLoading && cart?.cartItems?.length" class="cart-layout">
 
     <!-- ── ITEMS LIST ── -->
     <div class="cart-items animate-fadeInUp delay-1">

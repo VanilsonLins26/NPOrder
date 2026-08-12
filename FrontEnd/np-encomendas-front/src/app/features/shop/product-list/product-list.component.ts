@@ -46,6 +46,7 @@ export class ProductListComponent implements OnInit {
   maxPrice: number | undefined;
   private searchSubject = new Subject<string>();
   products: Product[] = [];
+  loading = true;
   isAuthenticated = false;
 
   totalRecords: number = 0;
@@ -82,6 +83,7 @@ onSearch(event: any) {
 
 
   loadProducts() {
+    this.loading = true;
     this.productService.getProducts(
         this.pageNumber, 
         this.pageSize, 
@@ -90,15 +92,15 @@ onSearch(event: any) {
         this.maxPrice
     ).subscribe({
       next: (response) => {
-
         this.products = response.data;
-
         if (response.meta) {
           this.totalRecords = response.meta.TotalCount;
         }
+        this.loading = false;
       },
       error: (err) => {
         console.error(err);
+        this.loading = false;
         this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possível carregar os produtos.' });
       }
     });

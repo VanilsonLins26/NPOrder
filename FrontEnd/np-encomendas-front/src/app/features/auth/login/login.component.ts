@@ -15,7 +15,6 @@ export class LoginComponent {
   private readonly oidcSecurityService = inject(OidcSecurityService);
 
   login() {
-    // Inicia o redirecionamento para o IdentityServer
     this.oidcSecurityService.authorize();
   }
 

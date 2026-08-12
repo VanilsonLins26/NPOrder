@@ -50,8 +50,28 @@
     </div>
   </div>
 
+  <!-- ── SKELETON LOADING ── -->
+  <div *ngIf="loading" class="cardapio-grid">
+    <div *ngFor="let s of [1,2,3,4,5,6,7,8]"
+         class="product-card product-card--skeleton animate-fadeInUp"
+         [ngClass]="'delay-' + s">
+      <div class="product-card__image-wrap product-card__image-wrap--skeleton">
+        <div class="skeleton skeleton--image"></div>
+      </div>
+      <div class="product-card__body">
+        <div class="skeleton skeleton--title" style="width: 75%;"></div>
+        <div class="skeleton skeleton--text" style="width: 100%;"></div>
+        <div class="skeleton skeleton--text" style="width: 55%;"></div>
+        <div class="product-card__footer" style="border-top: none; padding-top: 0.5rem;">
+          <div class="skeleton skeleton--price" style="width: 80px;"></div>
+          <div class="skeleton skeleton--btn"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ── PRODUCTS GRID ── -->
-  <div class="cardapio-grid" *ngIf="products.length > 0">
+  <div class="cardapio-grid" *ngIf="!loading && products.length > 0">
     <div *ngFor="let product of products; let i = index"
          class="product-card animate-fadeInUp"
          [ngClass]="'delay-' + ((i % 6) + 1)"
@@ -107,7 +127,7 @@
   </div>
 
   <!-- ── EMPTY STATE ── -->
-  <div *ngIf="products.length === 0" class="cardapio-empty animate-scaleIn">
+  <div *ngIf="!loading && products.length === 0" class="cardapio-empty animate-scaleIn">
     <div class="cardapio-empty__icon animate-float">
       <i class="pi pi-search"></i>
     </div>
