@@ -108,8 +108,8 @@ public class OrderController : ControllerBase
     public async Task<ActionResult<OrderResponseDTO>> CreateOrder([FromBody] CreateOrderDTO dto)
     {
         var userId = GetUserId();
-        var userName = User.FindFirstValue("name");
-        var phone = User.FindFirstValue("phone_number");
+        var userName = User.FindFirstValue("name") ?? User.FindFirstValue("nickname") ?? User.FindFirstValue("email") ?? User.FindFirstValue(ClaimTypes.Name) ?? User.FindFirstValue(ClaimTypes.Email) ?? "Cliente";
+        var phone = User.FindFirstValue("phone_number") ?? "";
 
 
         if (dto.DeliveryMethod == Models.DeliveryMethod.Delivery)
